@@ -22,10 +22,14 @@ public class Game {
     public static ImageIcon btn_pressed = new ImageIcon("assets/buttonPressed.png");    
 
     public static class fancyButton extends JButton {
+
         private java.awt.Image backgroundImage;
         private boolean pressed = false;
-        public fancyButton(String title){
+
+        public fancyButton(String title)
+        {
             super(title);
+
         //    this.setFont(new Font("Cooper Black", Font.PLAIN, 15));
         //    this.setFont(new Font("Segoe UI Semibold Italic", Font.PLAIN, 15));     
             this.setFont(new Font("ByteBounce", Font.PLAIN, 15));
@@ -35,50 +39,35 @@ public class Game {
             this.setFocusPainted(false);
             this.setBorderPainted(false);
 
-            this.setForeground(new Color(0,0,0));
+        //    this.setForeground(new Color(255,255,255));
 
             backgroundImage = btn_default.getImage();
 
-            this.setHorizontalTextPosition(SwingConstants.CENTER); // Yazıyı yatayda merkeze al
-            this.setVerticalTextPosition(SwingConstants.CENTER);   // Yazıyı dikeyde merkeze al
+            this.setHorizontalTextPosition(SwingConstants.CENTER);
+            this.setVerticalTextPosition(SwingConstants.CENTER);
 
             this.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                //    setForeground(new Color(0, 0, 0, 1f));
                     backgroundImage = btn_pressed.getImage();
                     pressed = true;
                 }
             
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                //    setForeground(new Color(0, 0, 0, 1f));
                     backgroundImage = btn_default.getImage();
                     pressed = false;
                 }
             });
         }
+        
         protected void paintComponent(java.awt.Graphics g) {
-        //    if (backgroundImage != null) {
-        //        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-        //    }
-        //    super.paintComponent(g);
-
 
             if (backgroundImage != null) {
-            //    int x = getWidth();
-            //    int y = getHeight();
-            //    g.drawImage(backgroundImage, (int)(x*.1), (int)(y*.1), (int)(x*.8), (int)(y*.8), this);
                 g.drawImage(backgroundImage, 0,0, getWidth(), getHeight(), this);
             }
 
-            int shiftAmount;
-            if (pressed){
-                shiftAmount = -getHeight() / 12;
-            }
-            else{
-                shiftAmount = getHeight() / 24;
-            }
+            int shiftAmount = pressed ? -getHeight() / 12 : getHeight()/24;
 
             g.translate(0, -shiftAmount); 
 
@@ -92,13 +81,13 @@ public class Game {
     public static void main(String[] args) {
     
         try {
-            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("assets/ByteBounce.ttf"));
-            java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(customFont);
+            java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
+                Font.createFont(Font.TRUETYPE_FONT, new java.io.File("assets/ByteBounce.ttf"))
+            );
         } catch (java.awt.FontFormatException e) {
-            System.err.println("Font formatı hatalı!");
+            System.err.println("Font format is not valid!");
         } catch (java.io.IOException e) {
-            System.err.println("Font dosyası bulunamadı! Yolun doğru olduğundan emin ol.");
+            System.err.println("Font file could not be found.");
         }
 
         // menu setup
