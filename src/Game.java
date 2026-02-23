@@ -104,7 +104,7 @@ public class Game {
         // menu setup
         JFrame game = new JFrame("oyun");
         game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        game.setSize(1280,900);
+        game.setSize(1200,720);
 
         JPanel panel = new JPanel();
         panel.setLayout(new FancyLayout());        
@@ -119,9 +119,9 @@ public class Game {
             .setAnchor(.5, 0)
         );
 
-        panel.add(playButton, new FancyLayout.UDim2(0.5, 0.41, 0.2, 0.07));
-        panel.add(setButton, new FancyLayout.UDim2(0.5, 0.5, 0.2, 0.07));
-        panel.add(exitButton, new FancyLayout.UDim2(0.5, 0.59, 0.2, 0.07));
+        panel.add(playButton, new FancyLayout.UDim2(0.5, 0.41, 0.15, 0.075));
+        panel.add(setButton, new FancyLayout.UDim2(0.5, 0.5, 0.15, 0.075));
+        panel.add(exitButton, new FancyLayout.UDim2(0.5, 0.59, 0.15, 0.075));
         game.add(panel);
         
         game.setVisible(true);
