@@ -15,7 +15,7 @@ public class FancyLayout implements LayoutManager2 {
         public double sizeX, sizeY;
         
         public double anchorX = 0.5, anchorY = 0.5; 
-        public double textScale = 0.6; 
+        public double textScale = 0.8; 
 
         public UDim2(double posX, double posY, double sizeX, double sizeY) {
             this.posX = posX;
