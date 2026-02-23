@@ -104,13 +104,18 @@ public class Game {
 
         JLabel title = new JLabel("Dungeonfall");
         title.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(title,new FancyLayout.UDim2(0.5, 0.03, 0.3, 0.08)
+        panel.add(title,new FancyLayout.Constraints(0.5, 0.03, 0.3, 0.08)
             .setAnchor(.5, 0)
         );
 
-        panel.add(playButton, new FancyLayout.UDim2(0.5, 0.41, 0.15, 0.075));
-        panel.add(setButton, new FancyLayout.UDim2(0.5, 0.5, 0.15, 0.075));
-        panel.add(exitButton, new FancyLayout.UDim2(0.5, 0.59, 0.15, 0.075));
+        panel.add(playButton, new FancyLayout.Constraints(0.5, 0.445, 0.3, 0.07, 4)
+            .setAnchor(.5, 1));
+
+        panel.add(setButton, new FancyLayout.Constraints(0.5, 0.5, 0.3, 0.07, 4));
+
+        panel.add(exitButton, new FancyLayout.Constraints(0.5, 0.555, 0.3, 0.07, 4)
+            .setAnchor(.5, 0));
+
         game.add(panel);
         
         game.setVisible(true);
