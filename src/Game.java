@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.Timer;
 
 
 public class Game {
@@ -68,7 +69,32 @@ public class Game {
         
         game.setVisible(true);
 
+        
         // menu functions
-    
+
+        playButton.addActionListener(e -> {
+            playButton.setText("In maintenance.");
+            Timer timer = new Timer(1000, event -> {
+                playButton.setText("Play");
+                playButton.setEnabled(true);
+            });
+            timer.setRepeats(false);
+            timer.start();            
+        });
+
+        setButton.addActionListener(e -> {
+            setButton.setText("In maintenance.");
+            Timer timer = new Timer(1000, event -> {
+                setButton.setText("Settings");
+                setButton.setEnabled(true);
+            });
+            timer.setRepeats(false);
+            timer.start();            
+        });
+
+        exitButton.addActionListener(e -> {
+            System.exit(0);
+        });
+
     }
 }
