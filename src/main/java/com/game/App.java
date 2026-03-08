@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -26,6 +27,13 @@ public class App extends Application {
     private final double WIDTH = 1280; 
     private final double HEIGHT = 720;
 
+    private StackPane mainPane; // used for transitioning between menus
+    private StackPane mainMenu;
+    private StackPane settingsMenu;
+    private StackPane saveMenu;
+    private StackPane gamemodeMenu;
+    private StackPane game;
+
     private Image btnDefault, btnPressed, bgImageRaw;
     private Font customFont, titleFont;
 
@@ -40,7 +48,7 @@ public class App extends Application {
             customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 36 * UI_SCALE);
             titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 80 * UI_SCALE);
 
-            // title
+            // main menu title
             Text titleText = new Text("DUNGEONFALL");
             titleText.setFont(titleFont);
             titleText.setFill(Color.WHITE);
@@ -49,55 +57,79 @@ public class App extends Application {
             outerStroke.setColor(Color.rgb(124, 14, 250));
             outerStroke.setRadius(5.0);
             outerStroke.setSpread(0.8);
-            titleText.setEffect(outerStroke);
+            titleText.setEffect(outerStroke);   
 
-            // title container
-            VBox titleContainer = new VBox();
-            titleContainer.setAlignment(Pos.TOP_CENTER);
-            titleContainer.setPadding(new Insets(85 * UI_SCALE, 0, 0, 0));
-            titleContainer.getChildren().add(titleText);
+            // main menu title container
+            VBox mainMenuTitleContainer = new VBox(titleText);
+            mainMenuTitleContainer.setAlignment(Pos.TOP_CENTER);
+            mainMenuTitleContainer.setPadding(new Insets(85 * UI_SCALE, 0, 0, 0));
 
-            // buttons
+            // main menu buttons
             Button playBtn = createStyledButton("PLAY");
             Button settingsBtn = createStyledButton("SETTINGS");
             Button exitBtn = createStyledButton("EXIT");
+            Button leaderboardBtn = createStyledButton("LEADERBOARD");
+            
+            VBox mainMenuButtonContainer = new VBox(15 * UI_SCALE, playBtn, settingsBtn, leaderboardBtn, exitBtn);
+            mainMenuButtonContainer.setAlignment(Pos.CENTER);
+
+            mainMenu = new StackPane(new ImageView(bgImageRaw), mainMenuTitleContainer, mainMenuButtonContainer );
+            mainMenu.setBackground(new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null)));
+
+            mainPane = new StackPane(mainMenu);
+
+            // settings menu
+            Button resetSettingsBtn = createStyledButton("RESET SETTINGS");
+            Button exitSettingsBtn = createStyledButton("CLOSE");
+            Label settingsTitle = new Label("SETTINGS");
+            settingsTitle.setFont(customFont);
+            settingsTitle.setAlignment(Pos.TOP_CENTER);
+
+            VBox settingsMenuContainer = new VBox(settingsTitle, resetSettingsBtn, exitSettingsBtn);
+            settingsMenuContainer.setAlignment(Pos.CENTER);
+            
+            settingsMenu = new StackPane(new ImageView(bgImageRaw), settingsMenuContainer);
+            settingsMenu.setBackground(new Background(new BackgroundFill(Color.rgb(153, 217, 111), null, null)));
+
+            // gamemode menu
+            Button standardBtn = createStyledButton("STANDARD");
+            Button infiniteBtn = createStyledButton("INFINITE");
+            Button exitGamemodeBtn = createStyledButton("GO BACK");
+
+            VBox gamemodeButtonContainer = new VBox(30 * UI_SCALE, standardBtn, infiniteBtn, exitGamemodeBtn);
+            gamemodeButtonContainer.setAlignment(Pos.CENTER);
+            
+            gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer);
+            gamemodeMenu.setBackground(new Background(new BackgroundFill(Color.rgb(153, 217, 111), null, null)));
+
+            // save file menu
+            Button exitSavesBtn = createStyledButton("GO BACK");
+            exitSavesBtn.setAlignment(Pos.BOTTOM_CENTER);
+
+            saveMenu = new StackPane(exitSavesBtn);
+            saveMenu.setBackground(new Background(new BackgroundFill(Color.rgb(26, 50, 112), null, null)));
 
             // button functions
+            playBtn.setOnAction(e -> changeMenu(gamemodeMenu));
+            settingsBtn.setOnAction(e -> changeMenu(settingsMenu));
             exitBtn.setOnAction(e -> Platform.exit());
 
-            // button container
-            VBox buttonContainer = new VBox(15 * UI_SCALE);
-            buttonContainer.setAlignment(Pos.CENTER);
-            buttonContainer.getChildren().addAll(playBtn, settingsBtn, exitBtn);
-            buttonContainer.setOpacity(0);
+            exitSettingsBtn.setOnAction(e -> changeMenu(mainMenu));
 
-            // entrance animation (title)
-            titleContainer.setOpacity(0);
-            FadeTransition titleFade = new FadeTransition(Duration.seconds(2), titleContainer);
-            titleFade.setToValue(1);
-            titleFade.play();
+            standardBtn.setOnAction(e -> changeMenu(saveMenu));
+            infiniteBtn.setOnAction(e -> changeMenu(saveMenu));
+            exitGamemodeBtn.setOnAction(e -> changeMenu(mainMenu));
 
-            // entrance animation (buttons)
-            FadeTransition btnFade = new FadeTransition(Duration.seconds(2), buttonContainer);
-            btnFade.setToValue(1);
-            btnFade.setDelay(Duration.seconds(1.5));
-            btnFade.play();
-
-            TranslateTransition btnSlide = new TranslateTransition(Duration.seconds(1.8), buttonContainer);
-            btnSlide.setFromY(150 * UI_SCALE);
-            btnSlide.setToY(30 * UI_SCALE);
-            btnSlide.setDelay(Duration.seconds(1.5));
-            btnSlide.play();
-
+            exitSavesBtn.setOnAction(e -> changeMenu(gamemodeMenu));
+            
             // setup
-            StackPane root = new StackPane();
-            root.setBackground(new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null)));
-            root.getChildren().addAll(new ImageView(bgImageRaw), titleContainer, buttonContainer);
+            playVBoxFade(mainMenuTitleContainer, 0);
+            playVBoxFade(mainMenuButtonContainer, 2);
+            playVBoxSlide(mainMenuButtonContainer, 1.5);
 
-            Scene scene = new Scene(root, WIDTH, HEIGHT);
             primaryStage.setTitle("Dungeonfall");
-            primaryStage.setScene(scene);
-            primaryStage.setResizable(false);
+            primaryStage.setScene(new Scene(mainPane));
+            primaryStage.setResizable(true);
             primaryStage.show();
 
         } catch (Exception e) {
@@ -144,6 +176,28 @@ public class App extends Application {
         });
         
         return btn;
+    }
+
+    private void playVBoxFade(VBox vbox, double fadeDelayDuration) {
+        vbox.setOpacity(0);
+        FadeTransition vFade = new FadeTransition(Duration.seconds(2), vbox);
+        vFade.setToValue(1);
+        vFade.setDelay(Duration.seconds(fadeDelayDuration));
+        vFade.play();
+    }
+
+    private void playVBoxSlide(VBox box, double fadeDelayDuration) {
+        TranslateTransition boxSlide = new TranslateTransition(Duration.seconds(1.8), box);
+        box.setOpacity(0);
+        boxSlide.setFromY(150 * UI_SCALE);
+        boxSlide.setToY(30 * UI_SCALE);
+        boxSlide.setDelay(Duration.seconds(fadeDelayDuration));
+        boxSlide.play();
+    }
+
+    private void changeMenu(StackPane menu) {
+        mainPane.getChildren().clear();
+        mainPane.getChildren().add(menu);
     }
 
     public static void main(String[] args) {
