@@ -32,10 +32,10 @@ public class App extends Application {
     private StackPane settingsMenu;
     private StackPane saveMenu;
     private StackPane gamemodeMenu;
-    private StackPane game;
 
     private Image btnDefault, btnPressed, bgImageRaw;
     private Font customFont, titleFont;
+    private Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
 
     @Override
     public void start(Stage primaryStage) {
@@ -74,7 +74,7 @@ public class App extends Application {
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
 
             mainMenu = new StackPane(new ImageView(bgImageRaw), mainMenuTitleContainer, mainMenuButtonContainer );
-            mainMenu.setBackground(new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null)));
+            mainMenu.setBackground(bgFill);
 
             mainPane = new StackPane(mainMenu);
 
@@ -89,7 +89,7 @@ public class App extends Application {
             settingsMenuContainer.setAlignment(Pos.CENTER);
             
             settingsMenu = new StackPane(new ImageView(bgImageRaw), settingsMenuContainer);
-            settingsMenu.setBackground(new Background(new BackgroundFill(Color.rgb(153, 217, 111), null, null)));
+            settingsMenu.setBackground(bgFill);
 
             // gamemode menu
             Button standardBtn = createStyledButton("STANDARD");
@@ -100,7 +100,7 @@ public class App extends Application {
             gamemodeButtonContainer.setAlignment(Pos.CENTER);
             
             gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer);
-            gamemodeMenu.setBackground(new Background(new BackgroundFill(Color.rgb(153, 217, 111), null, null)));
+            gamemodeMenu.setBackground(bgFill);
 
             // save file menu
             Button exitSavesBtn = createStyledButton("GO BACK");
@@ -128,8 +128,8 @@ public class App extends Application {
             playVBoxSlide(mainMenuButtonContainer, 1.5);
 
             primaryStage.setTitle("Dungeonfall");
-            primaryStage.setScene(new Scene(mainPane));
-            primaryStage.setResizable(true);
+            primaryStage.setScene(new Scene(mainPane, WIDTH, HEIGHT));
+            primaryStage.setResizable(false);
             primaryStage.show();
 
         } catch (Exception e) {
