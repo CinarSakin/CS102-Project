@@ -15,9 +15,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -33,7 +36,7 @@ public class App extends Application {
     private StackPane saveMenu;
     private StackPane gamemodeMenu;
 
-    private Image btnDefault, btnPressed, bgImageRaw;
+    private Image btnDefault, btnPressed, bgImageRaw, bgTexture;
     private Font customFont, titleFont;
     private Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
 
@@ -45,6 +48,7 @@ public class App extends Application {
             btnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/buttonDefault.png"), 192 * UI_SCALE, 0, true, false);
             btnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/buttonPressed.png"), 192 * UI_SCALE, 0, true, false);   
             bgImageRaw = new Image(getClass().getResourceAsStream("/sprites/ui/mainMenuBackground.png"), 0, HEIGHT, true, false);
+            bgTexture = new Image(getClass().getResourceAsStream("/sprites/ui/backgroundTexture.png"), 0, HEIGHT, true, false);
             customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 36 * UI_SCALE);
             titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 80 * UI_SCALE);
 
@@ -85,11 +89,12 @@ public class App extends Application {
             settingsTitle.setFont(customFont);
             settingsTitle.setAlignment(Pos.TOP_CENTER);
 
-            VBox settingsMenuContainer = new VBox(settingsTitle, resetSettingsBtn, exitSettingsBtn);
+            VBox settingsMenuContainer = new VBox(15*UI_SCALE, settingsTitle, resetSettingsBtn, exitSettingsBtn);
             settingsMenuContainer.setAlignment(Pos.CENTER);
             
-            settingsMenu = new StackPane(new ImageView(bgImageRaw), settingsMenuContainer);
-            settingsMenu.setBackground(bgFill);
+            Rectangle settingsBG = new Rectangle(WIDTH, HEIGHT);
+            settingsBG.setFill(new ImagePattern(bgTexture, 0, 0, bgTexture.getWidth(), HEIGHT, false));
+            settingsMenu = new StackPane(settingsBG, settingsMenuContainer);
 
             // gamemode menu
             Button standardBtn = createStyledButton("STANDARD");
@@ -98,7 +103,7 @@ public class App extends Application {
 
             VBox gamemodeButtonContainer = new VBox(30 * UI_SCALE, standardBtn, infiniteBtn, exitGamemodeBtn);
             gamemodeButtonContainer.setAlignment(Pos.CENTER);
-            
+
             gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer);
             gamemodeMenu.setBackground(bgFill);
 
@@ -106,8 +111,9 @@ public class App extends Application {
             Button exitSavesBtn = createStyledButton("GO BACK");
             exitSavesBtn.setAlignment(Pos.BOTTOM_CENTER);
 
-            saveMenu = new StackPane(exitSavesBtn);
-            saveMenu.setBackground(new Background(new BackgroundFill(Color.rgb(26, 50, 112), null, null)));
+            Rectangle saveBG = new Rectangle(WIDTH, HEIGHT);
+            saveBG.setFill(new ImagePattern(bgTexture, 0, 0, bgTexture.getWidth(), HEIGHT, false));
+            saveMenu = new StackPane(saveBG, exitSavesBtn);
 
             // button functions
             playBtn.setOnAction(e -> changeMenu(gamemodeMenu));
@@ -117,15 +123,15 @@ public class App extends Application {
             exitSettingsBtn.setOnAction(e -> changeMenu(mainMenu));
 
             standardBtn.setOnAction(e -> changeMenu(saveMenu));
-            infiniteBtn.setOnAction(e -> changeMenu(saveMenu));
+        //    infiniteBtn.setOnAction(e -> ); // will pass to the game directly 
             exitGamemodeBtn.setOnAction(e -> changeMenu(mainMenu));
 
             exitSavesBtn.setOnAction(e -> changeMenu(gamemodeMenu));
             
             // setup
             playVBoxFade(mainMenuTitleContainer, 0);
-            playVBoxFade(mainMenuButtonContainer, 2);
-            playVBoxSlide(mainMenuButtonContainer, 1.5);
+            playVBoxFade(mainMenuButtonContainer, 1.5);
+            playVBoxSlide(mainMenuButtonContainer, 1.2);
 
             primaryStage.setTitle("Dungeonfall");
             primaryStage.setScene(new Scene(mainPane, WIDTH, HEIGHT));
@@ -155,11 +161,13 @@ public class App extends Application {
 
         // hover effect
         btn.setOnMouseEntered(e -> {
-            btn.setScaleX(1.05);
-            btn.setScaleY(1.05);
+            btn.setRotate((6*Math.pow(Math.random()-0.5,2) + .8) * (Math.random()<.5 ? 1 : -1));
+            btn.setScaleX(1.07);
+            btn.setScaleY(1.07);
         });
         
         btn.setOnMouseExited(e -> {
+            btn.setRotate(0);
             btn.setScaleX(1.0);
             btn.setScaleY(1.0);
         });
