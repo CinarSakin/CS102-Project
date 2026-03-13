@@ -3,6 +3,7 @@ package com.game;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -11,11 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
@@ -81,6 +78,7 @@ public class App extends Application {
             mainMenu.setBackground(bgFill);
 
             mainPane = new StackPane(mainMenu);
+            mainPane.setBackground(bgFill);
 
             // settings menu
             Button resetSettingsBtn = createStyledButton("RESET SETTINGS");
@@ -106,9 +104,7 @@ public class App extends Application {
 
             VBox gamemodeButtonContainer = new VBox(30 * UI_SCALE, standardBtn, infiniteBtn, exitGamemodeBtn);
             gamemodeButtonContainer.setAlignment(Pos.CENTER);
-
             gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer);
-            gamemodeMenu.setBackground(bgFill);
 
             // save file menu
             Button exitSavesBtn = createStyledButton("GO BACK");
@@ -135,6 +131,14 @@ public class App extends Application {
             playVBoxFade(mainMenuTitleContainer, 0);
             playVBoxFade(mainMenuButtonContainer, 1.5);
             playVBoxSlide(mainMenuButtonContainer, 1.2);
+
+            mainPane.getChildren().addAll(gamemodeMenu,saveMenu,settingsMenu);
+            for (javafx.scene.Node n : mainPane.getChildren()){
+                if (n != mainMenu){
+                    n.setVisible(false);
+                    n.setOpacity(0);
+                }
+            }
 
             primaryStage.setTitle("Dungeonfall");
             primaryStage.setScene(new Scene(mainPane, WIDTH, HEIGHT));
@@ -206,9 +210,24 @@ public class App extends Application {
         boxSlide.play();
     }
 
-    private void changeMenu(StackPane menu) {
-        mainPane.getChildren().clear();
-        mainPane.getChildren().add(menu);
+    private void changeMenu(StackPane menu) {     
+        for (javafx.scene.Node n : mainPane.getChildren()){
+            if (n.isVisible()){
+                FadeTransition fadeOut = new FadeTransition(Duration.seconds(.5),n);
+                fadeOut.setToValue(0);
+                fadeOut.setInterpolator(Interpolator.EASE_OUT);
+                fadeOut.setOnFinished(e -> {
+                    n.setVisible(false);
+                });
+                fadeOut.play();
+            }
+        }
+        menu.setVisible(true);
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(.5),menu);
+        fadeIn.setInterpolator(Interpolator.EASE_IN);
+        fadeIn.setToValue(1);
+        fadeIn.setDelay(Duration.seconds(.5));
+        fadeIn.play();
     }
 
     public static void main(String[] args) {
