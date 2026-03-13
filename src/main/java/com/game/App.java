@@ -7,6 +7,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -47,12 +48,13 @@ public class App extends Application {
             bgImageRaw = new Image(getClass().getResourceAsStream("/sprites/ui/mainMenuBackground.png"), 0, HEIGHT, true, false);
             bgTexture = new Image(getClass().getResourceAsStream("/sprites/ui/backgroundTexture.png"), 0, HEIGHT, true, false);
             customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 40 * UI_SCALE);
-            titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 80 * UI_SCALE);
+            titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 84 * UI_SCALE);
 
             // main menu title
             Text titleText = new Text("DUNGEONFALL");
             titleText.setFont(titleFont);
             titleText.setFill(Color.WHITE);
+            titleText.setScaleX(.9);
 
             javafx.scene.effect.DropShadow outerStroke = new javafx.scene.effect.DropShadow();
             outerStroke.setColor(Color.rgb(124, 14, 250));
@@ -74,7 +76,8 @@ public class App extends Application {
             VBox mainMenuButtonContainer = new VBox(15 * UI_SCALE, playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
 
-            mainMenu = new StackPane(new ImageView(bgImageRaw), mainMenuTitleContainer, mainMenuButtonContainer );
+            ImageView bgImage = new ImageView(bgImageRaw);
+            mainMenu = new StackPane(bgImage, mainMenuTitleContainer, mainMenuButtonContainer );
             mainMenu.setBackground(bgFill);
 
             mainPane = new StackPane(mainMenu);
@@ -108,7 +111,8 @@ public class App extends Application {
 
             // save file menu
             Button exitSavesBtn = createStyledButton("GO BACK");
-            exitSavesBtn.setAlignment(Pos.BOTTOM_CENTER);
+        //    StackPane.setAlignment(exitSavesBtn, Pos.BOTTOM_CENTER);
+
 
             Rectangle saveBG = new Rectangle(WIDTH, HEIGHT);
             saveBG.setFill(new ImagePattern(bgTexture, 0, 0, bgTexture.getWidth(), HEIGHT, false));
@@ -128,9 +132,10 @@ public class App extends Application {
             exitSavesBtn.setOnAction(e -> changeMenu(gamemodeMenu));
             
             // setup
-            playVBoxFade(mainMenuTitleContainer, 0);
-            playVBoxFade(mainMenuButtonContainer, 1.5);
-            playVBoxSlide(mainMenuButtonContainer, 1.2);
+            slideInTransition(mainMenuButtonContainer, 100, 30, 1, 1.5);
+            fadeInTransition(mainMenuButtonContainer, 1, 1.5);
+            fadeInTransition(mainMenuTitleContainer, 1.5, 1.5);
+            fadeInTransition(bgImage, 2, .2);
 
             mainPane.getChildren().addAll(gamemodeMenu,saveMenu,settingsMenu);
             for (javafx.scene.Node n : mainPane.getChildren()){
@@ -169,48 +174,52 @@ public class App extends Application {
 
         // hover effect
         btn.setOnMouseEntered(e -> {
-            btn.setRotate((6*Math.pow(Math.random()-0.5,2) + .8) * (Math.random()<.5 ? 1 : -1));
-            btn.setScaleX(1.07);
-            btn.setScaleY(1.07);
+        //    btn.setRotate((6*Math.pow(Math.random()-0.5,2) + .8) * (Math.random()<.5 ? 1 : -1));
+            btn.setScaleX(1.05);
+            btn.setScaleY(1.05);
+            btn.setEffect(new javafx.scene.effect.ColorAdjust(0, 0, 0.2, 0));
         });
         
         btn.setOnMouseExited(e -> {
-            btn.setRotate(0);
+        //    btn.setRotate(0);
             btn.setScaleX(1.0);
             btn.setScaleY(1.0);
+            btn.setEffect(null);
         });
 
         // press effect
         btn.setOnMousePressed(e -> {
             btnView.setImage(btnPressed);
-            btnText.setTranslateY(3 * UI_SCALE); 
+            btnText.setTranslateY(2.5 * UI_SCALE); 
         });
         
         btn.setOnMouseReleased(e -> {
             btnView.setImage(btnDefault);
-            btnText.setTranslateY(-3 * UI_SCALE); 
+            btnText.setTranslateY(-4 * UI_SCALE); 
         });
         
         return btn;
     }
 
-    private void playVBoxFade(VBox vbox, double fadeDelayDuration) {
-        vbox.setOpacity(0);
-        FadeTransition vFade = new FadeTransition(Duration.seconds(2), vbox);
+    private void fadeInTransition(Node node, double duration, double delay) {
+        node.setOpacity(0);
+        FadeTransition vFade = new FadeTransition(Duration.seconds(duration), node);
         vFade.setToValue(1);
-        vFade.setDelay(Duration.seconds(fadeDelayDuration));
+        vFade.setDelay(Duration.seconds(delay));
         vFade.play();
     }
 
-    private void playVBoxSlide(VBox box, double fadeDelayDuration) {
-        TranslateTransition boxSlide = new TranslateTransition(Duration.seconds(1.8), box);
-        boxSlide.setFromY(150 * UI_SCALE);
-        boxSlide.setToY(30 * UI_SCALE);
-        boxSlide.setDelay(Duration.seconds(fadeDelayDuration));
-        boxSlide.play();
+    private void slideInTransition(Node box, double fromY, double toY, double duration, double delay){
+        TranslateTransition slideTrans = new TranslateTransition(Duration.seconds(duration), box);
+        slideTrans.setInterpolator(Interpolator.EASE_OUT);
+        slideTrans.setFromY(fromY);
+        slideTrans.setToY(toY);
+        slideTrans.setDelay(Duration.seconds(delay));
+        slideTrans.play();
     }
 
     private void changeMenu(StackPane menu) {     
+        mainPane.setMouseTransparent(true);
         for (javafx.scene.Node n : mainPane.getChildren()){
             if (n.isVisible()){
                 FadeTransition fadeOut = new FadeTransition(Duration.seconds(.5),n);
@@ -225,8 +234,10 @@ public class App extends Application {
         menu.setVisible(true);
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(.5),menu);
         fadeIn.setInterpolator(Interpolator.EASE_IN);
+        fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
         fadeIn.setDelay(Duration.seconds(.5));
+        fadeIn.setOnFinished(e -> mainPane.setMouseTransparent(false));
         fadeIn.play();
     }
 
