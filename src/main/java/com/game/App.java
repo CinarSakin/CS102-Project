@@ -49,7 +49,7 @@ public class App extends Application {
             btnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/buttonPressed.png"), 192 * UI_SCALE, 0, true, false);   
             bgImageRaw = new Image(getClass().getResourceAsStream("/sprites/ui/mainMenuBackground.png"), 0, HEIGHT, true, false);
             bgTexture = new Image(getClass().getResourceAsStream("/sprites/ui/backgroundTexture.png"), 0, HEIGHT, true, false);
-            customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 36 * UI_SCALE);
+            customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 40 * UI_SCALE);
             titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 80 * UI_SCALE);
 
             // main menu title
@@ -59,8 +59,8 @@ public class App extends Application {
 
             javafx.scene.effect.DropShadow outerStroke = new javafx.scene.effect.DropShadow();
             outerStroke.setColor(Color.rgb(124, 14, 250));
-            outerStroke.setRadius(5.0);
-            outerStroke.setSpread(0.8);
+            outerStroke.setRadius(12.0);
+            outerStroke.setSpread(0.5);
             titleText.setEffect(outerStroke);   
 
             // main menu title container
@@ -84,6 +84,9 @@ public class App extends Application {
 
             // settings menu
             Button resetSettingsBtn = createStyledButton("RESET SETTINGS");
+            StackPane stpane = (StackPane)(resetSettingsBtn.getGraphic());
+            stpane.getChildren().get(1).setScaleX(.7);
+
             Button exitSettingsBtn = createStyledButton("CLOSE");
             Label settingsTitle = new Label("SETTINGS");
             settingsTitle.setFont(customFont);
@@ -152,7 +155,8 @@ public class App extends Application {
         Text btnText = new Text(label);
         btnText.setFont(customFont);
         btnText.setFill(Color.WHITE);
-        btnText.setTranslateY(-3 * UI_SCALE); 
+        btnText.setTranslateY(-4 * UI_SCALE); 
+        btnText.setScaleX(.8);
 
         StackPane btnContent = new StackPane(btnView, btnText);
         btn.setGraphic(btnContent);
@@ -196,7 +200,6 @@ public class App extends Application {
 
     private void playVBoxSlide(VBox box, double fadeDelayDuration) {
         TranslateTransition boxSlide = new TranslateTransition(Duration.seconds(1.8), box);
-        box.setOpacity(0);
         boxSlide.setFromY(150 * UI_SCALE);
         boxSlide.setToY(30 * UI_SCALE);
         boxSlide.setDelay(Duration.seconds(fadeDelayDuration));
