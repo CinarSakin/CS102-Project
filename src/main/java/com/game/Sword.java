@@ -1,0 +1,55 @@
+package com.game;
+
+import javafx.scene.image.Image;
+
+public class Sword extends Weapon {
+    private SwordType swordType;
+
+    public enum SwordType {
+        FLAMING(
+            new Image("flaming_sword.png"),
+            "Flaming Sword",
+            "It Burns.",
+            1.5,
+            10
+        ),
+        ICY(
+            new Image("icy_sword.png"),
+            "Icy Sword",
+            "Freezes the enemies!",
+            1.5,
+            10
+        );
+    
+        public final Image image;
+        public final String name;
+        public final String description;
+        public final double attackSpeed;
+        public final double damage;
+    
+        SwordType(Image image, String name, String description, double attackSpeed, double damage) {
+            this.image = image;
+            this.name = name;
+            this.description = description;
+            this.attackSpeed = attackSpeed;
+            this.damage = damage;
+        }
+    }
+
+    public Sword(SwordType swordType, double damageMultiplier) {
+        super(swordType.image, swordType.name, swordType.description, swordType.attackSpeed, swordType.damage*damageMultiplier);
+        this.swordType = swordType;
+    }
+
+    @Override
+    public void use() {
+        if (this.swordType == SwordType.FLAMING) {
+            // ToDo
+        }
+    }
+
+    @Override
+    public void draw() {
+        // ToDo
+    }
+}
