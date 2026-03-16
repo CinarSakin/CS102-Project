@@ -34,7 +34,8 @@ public class App extends Application {
     private StackPane saveMenu;
     private StackPane gamemodeMenu;
 
-    private Image btnDefault, btnPressed, bgImageRaw, bgTexture;
+    private Image longBtnDefault, longBtnPressed, shortBtnDefault, shortBtnPressed, squareBtnDefault, squareBtnPressed;
+    private Image bgImageRaw, bgTexture;
     private Font customFont, titleFont;
     private Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
 
@@ -43,8 +44,12 @@ public class App extends Application {
         try {
 
             // loading assets
-            btnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/buttonDefault.png"), 192 * UI_SCALE, 0, true, false);
-            btnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/buttonPressed.png"), 192 * UI_SCALE, 0, true, false);   
+            longBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnDefault.png"), 0, 48*UI_SCALE, true, false);
+            longBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnPressed.png"), 0, 48*UI_SCALE, true, false);   
+            shortBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnDefault.png"), 0, 48*UI_SCALE, true, false);
+            shortBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnPressed.png"), 0, 48*UI_SCALE, true, false);   
+            squareBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnDefault.png"), 0, 48*UI_SCALE, true, false);
+            squareBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnPressed.png"), 0, 48*UI_SCALE, true, false);   
             bgImageRaw = new Image(getClass().getResourceAsStream("/sprites/ui/mainMenuBackground.png"), 0, HEIGHT, true, false);
             bgTexture = new Image(getClass().getResourceAsStream("/sprites/ui/backgroundTexture.png"), 0, HEIGHT, true, false);
             customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 40 * UI_SCALE);
@@ -57,7 +62,7 @@ public class App extends Application {
             titleText.setScaleX(.9);
 
             javafx.scene.effect.DropShadow outerStroke = new javafx.scene.effect.DropShadow();
-            outerStroke.setColor(Color.rgb(124, 14, 250));
+            outerStroke.setColor(Color.rgb(100, 14, 250));
             outerStroke.setRadius(12.0);
             outerStroke.setSpread(0.5);
             titleText.setEffect(outerStroke);   
@@ -68,10 +73,10 @@ public class App extends Application {
             mainMenuTitleContainer.setPadding(new Insets(85 * UI_SCALE, 0, 0, 0));
 
             // main menu buttons
-            Button playBtn = createStyledButton("PLAY");
-            Button settingsBtn = createStyledButton("SETTINGS");
-            Button exitBtn = createStyledButton("EXIT");
-            Button leaderboardBtn = createStyledButton("LEADERBOARD");
+            Button playBtn = createStyledButton("PLAY", 0);
+            Button settingsBtn = createStyledButton("SETTINGS", 0);
+            Button exitBtn = createStyledButton("EXIT", 0);
+            Button leaderboardBtn = createStyledButton("LEADERBOARD", 0);
             
             VBox mainMenuButtonContainer = new VBox(15 * UI_SCALE, playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
@@ -84,11 +89,11 @@ public class App extends Application {
             mainPane.setBackground(bgFill);
 
             // settings menu
-            Button resetSettingsBtn = createStyledButton("RESET SETTINGS");
+            Button resetSettingsBtn = createStyledButton("RESET SETTINGS", 0);
             StackPane stpane = (StackPane)(resetSettingsBtn.getGraphic());
             stpane.getChildren().get(1).setScaleX(.7);
 
-            Button exitSettingsBtn = createStyledButton("CLOSE");
+            Button exitSettingsBtn = createStyledButton("CLOSE", 0);
             Label settingsTitle = new Label("SETTINGS");
             settingsTitle.setFont(customFont);
             settingsTitle.setAlignment(Pos.TOP_CENTER);
@@ -101,18 +106,23 @@ public class App extends Application {
             settingsMenu = new StackPane(settingsBG, settingsMenuContainer);
 
             // gamemode menu
-            Button standardBtn = createStyledButton("STANDARD");
-            Button infiniteBtn = createStyledButton("INFINITE");
-            Button exitGamemodeBtn = createStyledButton("GO BACK");
+            Button standardBtn = createStyledButton("STANDARD", 0);
+            Button infiniteBtn = createStyledButton("INFINITE", 0);
+            Button exitGamemodeBtn = createStyledButton("GO BACK", 1);
+            exitGamemodeBtn.setScaleX(.8);
+            exitGamemodeBtn.setScaleY(.8);
 
-            VBox gamemodeButtonContainer = new VBox(30 * UI_SCALE, standardBtn, infiniteBtn, exitGamemodeBtn);
+            VBox gamemodeButtonContainer = new VBox(15 * UI_SCALE, standardBtn, infiniteBtn);
             gamemodeButtonContainer.setAlignment(Pos.CENTER);
-            gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer);
+
+            StackPane.setAlignment(exitGamemodeBtn, Pos.BOTTOM_RIGHT);
+            StackPane.setMargin(exitGamemodeBtn, new Insets(0, 20 * UI_SCALE, 25 * UI_SCALE, 0));
+
+            gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer, exitGamemodeBtn);
 
             // save file menu
-            Button exitSavesBtn = createStyledButton("GO BACK");
+            Button exitSavesBtn = createStyledButton("GO BACK", 1);
         //    StackPane.setAlignment(exitSavesBtn, Pos.BOTTOM_CENTER);
-
 
             Rectangle saveBG = new Rectangle(WIDTH, HEIGHT);
             saveBG.setFill(new ImagePattern(bgTexture, 0, 0, bgTexture.getWidth(), HEIGHT, false));
@@ -155,10 +165,14 @@ public class App extends Application {
         }
     }
 
-    private Button createStyledButton(String label) {
+    private Button createStyledButton(String label, int type) { // type 0: long, 1: short, 2: square
+
+        Image def = type == 0 ? longBtnDefault : (type == 1 ? shortBtnDefault : squareBtnDefault);
+        Image press = type == 0 ? longBtnPressed : (type == 1 ? shortBtnPressed : squareBtnPressed);
+
         Button btn = new Button();
         
-        ImageView btnView = new ImageView(btnDefault);
+        ImageView btnView = new ImageView(def);
         btnView.setSmooth(false); 
 
         Text btnText = new Text(label);
@@ -175,17 +189,17 @@ public class App extends Application {
         // hover effect
         btn.setOnMouseEntered(e -> {
         //    btn.setRotate((6*Math.pow(Math.random()-0.5,2) + .8) * (Math.random()<.5 ? 1 : -1));
-            btn.setScaleX(1.05);
-            btn.setScaleY(1.05);
+            btn.setScaleX(btn.getScaleX() * 1.05);
+            btn.setScaleY(btn.getScaleY() * 1.05);
         //    btn.setEffect(new javafx.scene.effect.ColorAdjust(0, 0, 0.2, 0));
-            btnText.setFill(Color.rgb(241, 242, 255));
+            btnText.setFill(Color.rgb(246, 244, 255));
             btnView.setEffect(new javafx.scene.effect.ColorAdjust(0.05, .2, 0.05, 0));
         });
         
         btn.setOnMouseExited(e -> {
         //    btn.setRotate(0);
-            btn.setScaleX(1.0);
-            btn.setScaleY(1.0);
+            btn.setScaleX(btn.getScaleX() / 1.05);
+            btn.setScaleY(btn.getScaleY() / 1.05);
         //    btn.setEffect(null);
             btnText.setFill(Color.WHITE);
             btnView.setEffect(null);
@@ -193,12 +207,12 @@ public class App extends Application {
 
         // press effect
         btn.setOnMousePressed(e -> {
-            btnView.setImage(btnPressed);
+            btnView.setImage(press);
             btnText.setTranslateY(2.5 * UI_SCALE); 
         });
         
         btn.setOnMouseReleased(e -> {
-            btnView.setImage(btnDefault);
+            btnView.setImage(def);
             btnText.setTranslateY(-4 * UI_SCALE); 
         });
         
