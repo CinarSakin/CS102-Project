@@ -1,24 +1,50 @@
 package com.game;
 
-/*
-maybe we can make Effect an interface, because we need a different startEffect() each time.
-We can make Entities implement "Effectable" and set a bool isEffected and call startEffect()
-if true when something needs to burn messelaaa yağni
+import com.game.LivingEntity.LivingType;
 
-same with attack() for enemies and interact() for WorldObjects.
-*/
 public class Effect {
-    private int effectType; // enumeration
-    private long remaningDuration;
+    private EffectType effectType;
+    private long remainingDuration;
     private LivingEntity targetEntity;
 
-    public Effect(int effectType, long remaningDuration, LivingEntity targetEntity) { // effectType yerine enum da olabilir yine int gerçi
+    enum EffectType {
+        BURN {
+            @Override
+            public void startEffect(LivingEntity targetEntity) {
+                targetEntity.health += -1;
+            }
+        },
+        FREEZE {
+            @Override
+            public void startEffect(LivingEntity targetEntity) {
+                targetEntity.walkSpeed += -1; 
+                targetEntity.attackSpeed += -1;
+            }
+        },
+        STUN {
+            @Override
+            public void startEffect(LivingEntity targetEntity) {
+                targetEntity.walkSpeed = 0; 
+                targetEntity.attackSpeed = 0;
+            }
+        },
+        HEAL {
+            @Override
+            public void startEffect(LivingEntity targetEntity) {
+                targetEntity.health += 1;
+            }
+        };
+
+        abstract void startEffect(LivingEntity targetEntity);
+    }
+
+    public Effect(EffectType effectType, long remainingDuration, LivingEntity targetEntity) {
         this.effectType = effectType;
-        this.remaningDuration =remaningDuration ;
-        this.targetEntity = targetEntity ;
+        this.remainingDuration = remainingDuration ;
+        this.targetEntity = targetEntity;
     }
 
     public void startEffect() {
-
+        effectType.startEffect(targetEntity);
     }
 }
