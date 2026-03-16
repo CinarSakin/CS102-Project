@@ -13,11 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
@@ -181,14 +177,18 @@ public class App extends Application {
         //    btn.setRotate((6*Math.pow(Math.random()-0.5,2) + .8) * (Math.random()<.5 ? 1 : -1));
             btn.setScaleX(1.05);
             btn.setScaleY(1.05);
-            btn.setEffect(new javafx.scene.effect.ColorAdjust(0, 0, 0.2, 0));
+        //    btn.setEffect(new javafx.scene.effect.ColorAdjust(0, 0, 0.2, 0));
+            btnText.setFill(Color.rgb(241, 242, 255));
+            btnView.setEffect(new javafx.scene.effect.ColorAdjust(0.05, .2, 0.05, 0));
         });
         
         btn.setOnMouseExited(e -> {
         //    btn.setRotate(0);
             btn.setScaleX(1.0);
             btn.setScaleY(1.0);
-            btn.setEffect(null);
+        //    btn.setEffect(null);
+            btnText.setFill(Color.WHITE);
+            btnView.setEffect(null);
         });
 
         // press effect

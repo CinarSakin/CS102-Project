@@ -1,18 +1,18 @@
 package com.game;
 
 public class Hero extends LivingEntity {
-    private Talisman[] talismans;
-    private Consumable[] consumables;
-    private int inventorySpace;
-    private Weapon[] weapons; // weapons[0]= SWORD, weapons[1] = BOW
-    // do talismans and consumables share the same inventory space, or are they separate?
 
-    public Hero(int x, int y, int maxHp, int armor, int baseDmg, int atkSpeed, int inventorySpace, Weapon primaryWeapon, Weapon secondaryWeapon) {
-        super(x, y, LivingType.HERO);
+    // to silence the compiler
+    public class Talisman{}
+    public class Consumable{}
 
-        talismans = new Talisman[inventorySpace];
-        consumables = new Consumable[inventorySpace];
-        weapons[0] = primaryWeapon;
-        weapons[1] = secondaryWeapon;
+    private Talisman[] talismans = new Talisman[3];
+    private Consumable[] consumables = new Consumable[3];
+    private Weapon[] weapons = new Weapon[2];
+
+    public Hero(int x, int y, Sword starterSword, double diffMulti) {
+        super(x, y, LivingType.HERO, diffMulti);
+
+        weapons[0] = starterSword;
     }
 }

@@ -13,14 +13,9 @@ public abstract class Item {
         this.description = description;
     }
 
-    // to silence the compiler
-    public class LivingEntity{}
-    public class Effect{}
-
     public Effect applyEffect(LivingEntity target){
         // ToDo
-
-        return new Effect(); // to silence the compiler
+        return new Effect(0, 1, target); // to silence the compiler
     }
 
     public abstract void draw();
