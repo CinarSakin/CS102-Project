@@ -74,7 +74,16 @@ public abstract class LivingEntity {
         // todo
     }
 
-    public void changeHealth(int health) {
-        this.health += health;
+    public void heal(double healAmount) {
+        this.health = Math.min(this.health+healAmount, this.maxHealth);
+        // + heal animation
+    }
+
+    public void getDamaged(double damage){
+        this.health = Math.max(this.health+damage, 0);
+        if (this.health == 0){
+            // if hero > lose the game
+            // if enemy > despawn
+        }
     }
 }

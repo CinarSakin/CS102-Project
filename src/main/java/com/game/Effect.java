@@ -1,7 +1,5 @@
 package com.game;
 
-import com.game.LivingEntity.LivingType;
-
 public class Effect {
     private EffectType effectType;
     private long remainingDuration;
@@ -10,32 +8,32 @@ public class Effect {
     enum EffectType {
         BURN {
             @Override
-            public void startEffect(LivingEntity targetEntity) {
-                targetEntity.health += -1;
+            public void affectEntity(LivingEntity targetEntity) {
+                targetEntity.getDamaged(5);
             }
         },
         FREEZE {
             @Override
-            public void startEffect(LivingEntity targetEntity) {
-                targetEntity.walkSpeed += -1; 
+            public void affectEntity(LivingEntity targetEntity) {
+                targetEntity.walkSpeed += -1;
                 targetEntity.attackSpeed += -1;
             }
         },
         STUN {
             @Override
-            public void startEffect(LivingEntity targetEntity) {
+            public void affectEntity(LivingEntity targetEntity) {
                 targetEntity.walkSpeed = 0; 
                 targetEntity.attackSpeed = 0;
             }
         },
         HEAL {
             @Override
-            public void startEffect(LivingEntity targetEntity) {
+            public void affectEntity(LivingEntity targetEntity) {
                 targetEntity.health += 1;
             }
         };
 
-        abstract void startEffect(LivingEntity targetEntity);
+        abstract void affectEntity(LivingEntity targetEntity);
     }
 
     public Effect(EffectType effectType, long remainingDuration, LivingEntity targetEntity) {
@@ -45,6 +43,7 @@ public class Effect {
     }
 
     public void startEffect() {
-        effectType.startEffect(targetEntity);
+        effectType.affectEntity(targetEntity);
+        targetEntity.effects.add(this);
     }
 }
