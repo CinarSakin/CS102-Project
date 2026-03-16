@@ -15,7 +15,7 @@ public abstract class Item {
 
     public Effect applyEffect(LivingEntity target){
         // ToDo
-        return new Effect(0, 1, target); // to silence the compiler
+        return new Effect(Effect.EffectType.BURN, 0, target); // to silence the compiler
     }
 
     public abstract void draw();
