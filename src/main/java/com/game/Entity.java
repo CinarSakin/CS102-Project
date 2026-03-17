@@ -1,7 +1,7 @@
 package com.game;
 
 public abstract class Entity {
-    private Dimension dimension;
+    protected  Dimension dimension;
 
     public Entity(Dimension dimension) {
         if (dimension == null) {

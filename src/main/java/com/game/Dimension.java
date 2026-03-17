@@ -1,5 +1,7 @@
 package com.game;
 
+import javafx.geometry.Point2D;
+
 public class Dimension {
     private double x;
     private double y;
@@ -32,11 +34,19 @@ public class Dimension {
         return height;
     }
 
-    public void move(double dx, double dy) {
+    public void moveBy(double dx, double dy) {
         this.x += dx;
         this.y += dy;
     }
- public void setSize(double width, double height) {
+    public void moveBy(Point2D velocity) {
+        this.x += velocity.getX();
+        this.y += velocity.getY();
+    }
+    public void moveTo(double x, double y) {
+        this.x += x;
+        this.y += y;
+    }
+    public void setSize(double width, double height) {
         if (width < 0 || height < 0) {
             throw new IllegalArgumentException("Width/Height can not be negative.");
         }
@@ -46,12 +56,11 @@ public class Dimension {
 
     public boolean intersects(Dimension other) {
         boolean noCollision =
-    this.x + this.width <= other.x ||   // completely left
-    this.x >= other.x + other.width ||  // completely right
-    this.y + this.height <= other.y ||  // completely above
-    this.y >= other.y + other.height;   // completely below
-
-return !noCollision;
+        this.x + this.width <= other.x ||   // completely left
+        this.x >= other.x + other.width ||  // completely right
+        this.y + this.height <= other.y ||  // completely above
+        this.y >= other.y + other.height;   // completely below 
+        return !noCollision;
     }
 
     @Override
