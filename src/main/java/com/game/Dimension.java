@@ -20,48 +20,28 @@ public class Dimension {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public double getWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
-        if (width < 0) {
-            throw new IllegalArgumentException("Width cannot be negative.");
-        }
-        this.width = width;
-    }
-
     public double getHeight() {
         return height;
-    }
-
-    public void setHeight(double height) {
-        if (height < 0) {
-            throw new IllegalArgumentException("Height cannot be negative.");
-        }
-        this.height = height;
     }
 
     public void move(double dx, double dy) {
         this.x += dx;
         this.y += dy;
     }
-
-    public void setPosition(double x, double y) {
-        this.x = x;
-        this.y = y;
+ public void setSize(double width, double height) {
+        if (width < 0 || height < 0) {
+            throw new IllegalArgumentException("Width/Height can not be negative.");
+        }
+        this.width = width;
+        this.height = height;
     }
 
     public boolean intersects(Dimension other) {
