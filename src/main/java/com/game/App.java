@@ -1,32 +1,41 @@
 package com.game;
 
-import javafx.application.Application;
-import javafx.application.Platform;
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.TranslateTransition;
-import javafx.geometry.Pos;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class App extends Application {
 
-    private double UI_SCALE = 1.0; 
-    private final double WIDTH = 1280; 
-    private final double HEIGHT = 720;
+    private double UI_SCALE = 1; // player chooses in settings
+    private double UI_SIZE; // calculates based on screen size
+    private double WIDTH, HEIGHT;
 
     private StackPane mainPane; // used for transitioning between menus
     private StackPane mainMenu;
@@ -43,26 +52,33 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         try {
 
+            // calculating screen size
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            WIDTH = screenBounds.getWidth() * .75;
+            HEIGHT = screenBounds.getHeight() * .75;
+            UI_SIZE = Math.min(WIDTH/1280.0, HEIGHT/720.0) ;
+
             // loading assets
-            longBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnDefault.png"), 0, 48*UI_SCALE, true, false);
-            longBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnPressed.png"), 0, 48*UI_SCALE, true, false);   
-            shortBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnDefault.png"), 0, 48*UI_SCALE, true, false);
-            shortBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnPressed.png"), 0, 48*UI_SCALE, true, false);   
-            squareBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnDefault.png"), 0, 48*UI_SCALE, true, false);
-            squareBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnPressed.png"), 0, 48*UI_SCALE, true, false);   
+            longBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnDefault.png"), 0, getScale(48), true, false);
+            longBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnPressed.png"), 0, getScale(48), true, false);   
+            shortBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnDefault.png"), 0, getScale(48), true, false);
+            shortBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnPressed.png"), 0, getScale(48), true, false);   
+            squareBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnDefault.png"), 0, getScale(48), true, false);
+            squareBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnPressed.png"), 0, getScale(48), true, false);   
             bgImageRaw = new Image(getClass().getResourceAsStream("/sprites/ui/mainMenuBackground.png"), 0, HEIGHT, true, false);
             bgTexture = new Image(getClass().getResourceAsStream("/sprites/ui/backgroundTexture.png"), 0, HEIGHT, true, false);
-            customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 40 * UI_SCALE);
-            titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 84 * UI_SCALE);
+            customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), getScale(40));
+            titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), getScale(84));
 
             // main menu title
             Text titleText = new Text("DUNGEONFALL");
             titleText.setFont(titleFont);
             titleText.setFill(Color.WHITE);
-            titleText.setScaleX(.9);
+            titleText.setScaleX(.85);
+            titleText.setBoundsType(javafx.scene.text.TextBoundsType.VISUAL);
 
             javafx.scene.effect.DropShadow outerStroke = new javafx.scene.effect.DropShadow();
-            outerStroke.setColor(Color.rgb(100, 14, 250));
+            outerStroke.setColor(Color.rgb(103, 15, 255));
             outerStroke.setRadius(12.0);
             outerStroke.setSpread(0.5);
             titleText.setEffect(outerStroke);   
@@ -70,7 +86,7 @@ public class App extends Application {
             // main menu title container
             VBox mainMenuTitleContainer = new VBox(titleText);
             mainMenuTitleContainer.setAlignment(Pos.TOP_CENTER);
-            mainMenuTitleContainer.setPadding(new Insets(85 * UI_SCALE, 0, 0, 0));
+            mainMenuTitleContainer.setPadding(new Insets(HEIGHT*.13, 0, 0, 0));
 
             // main menu buttons
             Button playBtn = createStyledButton("PLAY", 0);
@@ -78,7 +94,7 @@ public class App extends Application {
             Button exitBtn = createStyledButton("EXIT", 0);
             Button leaderboardBtn = createStyledButton("LEADERBOARD", 0);
             
-            VBox mainMenuButtonContainer = new VBox(15 * UI_SCALE, playBtn, settingsBtn, leaderboardBtn, exitBtn);
+            VBox mainMenuButtonContainer = new VBox(getScale(15), playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
 
             ImageView bgImage = new ImageView(bgImageRaw);
@@ -98,7 +114,7 @@ public class App extends Application {
             settingsTitle.setFont(customFont);
             settingsTitle.setAlignment(Pos.TOP_CENTER);
 
-            VBox settingsMenuContainer = new VBox(15*UI_SCALE, settingsTitle, resetSettingsBtn, exitSettingsBtn);
+            VBox settingsMenuContainer = new VBox(getScale(15), settingsTitle, resetSettingsBtn, exitSettingsBtn);
             settingsMenuContainer.setAlignment(Pos.CENTER);
             
             Rectangle settingsBG = new Rectangle(WIDTH, HEIGHT);
@@ -112,11 +128,11 @@ public class App extends Application {
             exitGamemodeBtn.setScaleX(.8);
             exitGamemodeBtn.setScaleY(.8);
 
-            VBox gamemodeButtonContainer = new VBox(15 * UI_SCALE, standardBtn, infiniteBtn);
+            VBox gamemodeButtonContainer = new VBox(getScale(15), standardBtn, infiniteBtn);
             gamemodeButtonContainer.setAlignment(Pos.CENTER);
 
             StackPane.setAlignment(exitGamemodeBtn, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(exitGamemodeBtn, new Insets(0, 20 * UI_SCALE, 25 * UI_SCALE, 0));
+            StackPane.setMargin(exitGamemodeBtn, new Insets(0, getScale(20), getScale(25), 0));
 
             gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer, exitGamemodeBtn);
 
@@ -131,21 +147,41 @@ public class App extends Application {
             // button functions
             playBtn.setOnAction(e -> changeMenu(gamemodeMenu));
             settingsBtn.setOnAction(e -> changeMenu(settingsMenu));
+            leaderboardBtn.setOnAction(e -> headShake(leaderboardBtn));
             exitBtn.setOnAction(e -> Platform.exit());
 
             exitSettingsBtn.setOnAction(e -> changeMenu(mainMenu));
 
             standardBtn.setOnAction(e -> changeMenu(saveMenu));
-        //    infiniteBtn.setOnAction(e -> ); // will pass to the game directly 
+            infiniteBtn.setOnAction(e -> headShake(infiniteBtn));
             exitGamemodeBtn.setOnAction(e -> changeMenu(mainMenu));
 
             exitSavesBtn.setOnAction(e -> changeMenu(gamemodeMenu));
             
-            // setup
-            slideInTransition(mainMenuButtonContainer, 100, 30, 1, 1.5);
-            fadeInTransition(mainMenuButtonContainer, 1, 1.5);
-            fadeInTransition(mainMenuTitleContainer, 1.5, 1.5);
-            fadeInTransition(bgImage, 2, .2);
+            // beginning transitions 
+            ArrayList<Animation> activeAnimations = new ArrayList<>();
+            slideInTransition(mainMenuButtonContainer, HEIGHT/5, HEIGHT/40, 1, 1.5, activeAnimations);
+            fadeInTransition(mainMenuButtonContainer, 1, 1.5, activeAnimations);
+            fadeInTransition(mainMenuTitleContainer, 1.3, 1.5, activeAnimations);
+            fadeInTransition(bgImage, 2.2, .2, activeAnimations);
+
+            // skip
+            mainPane.setOnMouseClicked(e -> {
+                for (javafx.animation.Animation anim : activeAnimations) {
+                    double currentTime = anim.getCurrentTime().toMillis();
+                    double totalDelay = anim.getDelay().toMillis();
+                    double remainingDelay = totalDelay - currentTime;
+                    if (remainingDelay > 0) {
+                        anim.stop();
+                        anim.setDelay(Duration.millis(remainingDelay / 10.0));  
+                        anim.setRate(2);
+                        anim.play(); 
+                    } else{
+                        anim.setRate(2);
+                    }
+                }
+                mainPane.setOnMouseClicked(null);
+            });
 
             mainPane.getChildren().addAll(gamemodeMenu,saveMenu,settingsMenu);
             for (javafx.scene.Node n : mainPane.getChildren()){
@@ -165,8 +201,21 @@ public class App extends Application {
         }
     }
 
-    private Button createStyledButton(String label, int type) { // type 0: long, 1: short, 2: square
+    private void headShake(Node node) {
+        javafx.animation.Timeline timeline = new javafx.animation.Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(node.translateXProperty(), 0)),
+            new KeyFrame(Duration.millis(30), new KeyValue(node.translateXProperty(), getScale(-7))),
+            new KeyFrame(Duration.millis(90), new KeyValue(node.translateXProperty(), getScale(7))),
+            new KeyFrame(Duration.millis(150), new KeyValue(node.translateXProperty(), getScale(-7))),
+            new KeyFrame(Duration.millis(210), new KeyValue(node.translateXProperty(), getScale(7))),
+            new KeyFrame(Duration.millis(270), new KeyValue(node.translateXProperty(), getScale(-7))),
+            new KeyFrame(Duration.millis(300), new KeyValue(node.translateXProperty(), 0))
+        );
+        timeline.play();
+    }
 
+    private Button createStyledButton(String label, int type)
+    { // type 0: long, 1: short, 2: square
         Image def = type == 0 ? longBtnDefault : (type == 1 ? shortBtnDefault : squareBtnDefault);
         Image press = type == 0 ? longBtnPressed : (type == 1 ? shortBtnPressed : squareBtnPressed);
 
@@ -178,7 +227,7 @@ public class App extends Application {
         Text btnText = new Text(label);
         btnText.setFont(customFont);
         btnText.setFill(Color.WHITE);
-        btnText.setTranslateY(-4 * UI_SCALE); 
+        btnText.setTranslateY(getScale(-4)); 
         btnText.setScaleX(.8);
 
         StackPane btnContent = new StackPane(btnView, btnText);
@@ -191,7 +240,6 @@ public class App extends Application {
         //    btn.setRotate((6*Math.pow(Math.random()-0.5,2) + .8) * (Math.random()<.5 ? 1 : -1));
             btn.setScaleX(btn.getScaleX() * 1.05);
             btn.setScaleY(btn.getScaleY() * 1.05);
-        //    btn.setEffect(new javafx.scene.effect.ColorAdjust(0, 0, 0.2, 0));
             btnText.setFill(Color.rgb(246, 244, 255));
             btnView.setEffect(new javafx.scene.effect.ColorAdjust(0.05, .2, 0.05, 0));
         });
@@ -200,7 +248,6 @@ public class App extends Application {
         //    btn.setRotate(0);
             btn.setScaleX(btn.getScaleX() / 1.05);
             btn.setScaleY(btn.getScaleY() / 1.05);
-        //    btn.setEffect(null);
             btnText.setFill(Color.WHITE);
             btnView.setEffect(null);
         });
@@ -208,31 +255,33 @@ public class App extends Application {
         // press effect
         btn.setOnMousePressed(e -> {
             btnView.setImage(press);
-            btnText.setTranslateY(2.5 * UI_SCALE); 
+            btnText.setTranslateY(getScale(2.5)); 
         });
         
         btn.setOnMouseReleased(e -> {
             btnView.setImage(def);
-            btnText.setTranslateY(-4 * UI_SCALE); 
+            btnText.setTranslateY(getScale(-4)); 
         });
         
         return btn;
     }
 
-    private void fadeInTransition(Node node, double duration, double delay) {
+    private void fadeInTransition(Node node, double duration, double delay, List<Animation> animList) {
         node.setOpacity(0);
-        FadeTransition vFade = new FadeTransition(Duration.seconds(duration), node);
-        vFade.setToValue(1);
-        vFade.setDelay(Duration.seconds(delay));
-        vFade.play();
+        FadeTransition fadeTrans = new FadeTransition(Duration.seconds(duration), node);
+        fadeTrans.setToValue(1);
+        fadeTrans.setDelay(Duration.seconds(delay));
+        animList.add(fadeTrans);
+        fadeTrans.play();
     }
 
-    private void slideInTransition(Node box, double fromY, double toY, double duration, double delay){
+    private void slideInTransition(Node box, double fromY, double toY, double duration, double delay, List animList){
         TranslateTransition slideTrans = new TranslateTransition(Duration.seconds(duration), box);
         slideTrans.setInterpolator(Interpolator.EASE_OUT);
         slideTrans.setFromY(fromY);
         slideTrans.setToY(toY);
         slideTrans.setDelay(Duration.seconds(delay));
+        animList.add(slideTrans);
         slideTrans.play();
     }
 
@@ -257,6 +306,10 @@ public class App extends Application {
         fadeIn.setDelay(Duration.seconds(.5));
         fadeIn.setOnFinished(e -> mainPane.setMouseTransparent(false));
         fadeIn.play();
+    }
+
+    private double getScale(double s) {
+        return UI_SIZE * UI_SCALE * s;
     }
 
     public static void main(String[] args) {
