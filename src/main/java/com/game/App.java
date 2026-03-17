@@ -33,7 +33,7 @@ import javafx.util.Duration;
 
 public class App extends Application {
 
-    private double UI_SCALE = 1; // player chooses in settings
+    private double UI_SCALE; // player's choice in settings
     private double UI_SIZE; // calculates based on screen size
     private double WIDTH, HEIGHT;
 
@@ -46,7 +46,6 @@ public class App extends Application {
     private Image longBtnDefault, longBtnPressed, shortBtnDefault, shortBtnPressed, squareBtnDefault, squareBtnPressed;
     private Image bgImageRaw, bgTexture;
     private Font customFont, titleFont;
-    private Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
 
     @Override
     public void start(Stage primaryStage) {
@@ -56,7 +55,8 @@ public class App extends Application {
             javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
             WIDTH = screenBounds.getWidth() * .75;
             HEIGHT = screenBounds.getHeight() * .75;
-            UI_SIZE = Math.min(WIDTH/1280.0, HEIGHT/720.0) ;
+            UI_SIZE = Math.min(WIDTH/1280.0, HEIGHT/720.0);
+            UI_SCALE = 1.0; // will load from settings file
 
             // loading assets
             longBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnDefault.png"), 0, getScale(48), true, false);
@@ -98,6 +98,7 @@ public class App extends Application {
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
 
             ImageView bgImage = new ImageView(bgImageRaw);
+            Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
             mainMenu = new StackPane(bgImage, mainMenuTitleContainer, mainMenuButtonContainer );
             mainMenu.setBackground(bgFill);
 
@@ -197,7 +198,7 @@ public class App extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("error: " + e.getMessage());
         }
     }
 
@@ -275,7 +276,7 @@ public class App extends Application {
         fadeTrans.play();
     }
 
-    private void slideInTransition(Node box, double fromY, double toY, double duration, double delay, List animList){
+    private void slideInTransition(Node box, double fromY, double toY, double duration, double delay, List<Animation> animList){
         TranslateTransition slideTrans = new TranslateTransition(Duration.seconds(duration), box);
         slideTrans.setInterpolator(Interpolator.EASE_OUT);
         slideTrans.setFromY(fromY);
