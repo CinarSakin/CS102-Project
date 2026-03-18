@@ -6,6 +6,26 @@ public class Effect {
     private LivingEntity targetEntity;
 
     enum EffectType {
+        FEAR {
+            @Override
+            public void affectEntity(LivingEntity targetEntity) {
+                ((Enemy)targetEntity).flee(); // could be nice if it was applicable to hero too
+            }
+        },
+        TIRE {
+            @Override
+            public void affectEntity(LivingEntity targetEntity) {
+                ((Enemy)targetEntity).setCanAttack(false);
+            }
+        },
+        STUN {
+            @Override
+            public void affectEntity(LivingEntity targetEntity) {
+                targetEntity.walkSpeed = 0; 
+                targetEntity.attackSpeed = 0;
+                TIRE.affectEntity(targetEntity);
+            }
+        },
         BURN {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
@@ -19,19 +39,13 @@ public class Effect {
                 targetEntity.attackSpeed += -1;
             }
         },
-        STUN {
-            @Override
-            public void affectEntity(LivingEntity targetEntity) {
-                targetEntity.walkSpeed = 0; 
-                targetEntity.attackSpeed = 0;
-            }
-        },
         HEAL {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
                 targetEntity.health += 1;
             }
-        };
+        },
+        ;
 
         abstract void affectEntity(LivingEntity targetEntity);
     }
@@ -43,7 +57,16 @@ public class Effect {
     }
 
     public void startEffect() {
-        effectType.affectEntity(targetEntity);
+        affectEntity();
         targetEntity.effects.add(this);
+    }
+
+    public void affectEntity() {
+        effectType.affectEntity(targetEntity);
+        remainingDuration += -100;
+    }
+
+    public long getRemainingDuration() {
+        return remainingDuration;
     }
 }

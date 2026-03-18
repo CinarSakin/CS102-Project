@@ -16,7 +16,7 @@ public class Sword extends Weapon {
         ICY(
             new Image("icy_sword.png"),
             "Icy Sword",
-            "Freezes the enemies!",
+            "Feezes the enemies!",
             1.5,
             10
         );

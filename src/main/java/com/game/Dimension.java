@@ -26,6 +26,10 @@ public class Dimension {
         return y;
     }
 
+    public Point2D getPos() {
+        return new Point2D(x, y);
+    }
+
     public double getWidth() {
         return width;
     }

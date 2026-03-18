@@ -65,4 +65,6 @@ public class Projectile extends Entity {
         }
     }
 
+    @Override
+    public void draw() {} // todo
 }
