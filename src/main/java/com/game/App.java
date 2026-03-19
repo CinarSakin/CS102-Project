@@ -1,9 +1,5 @@
 package com.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -160,28 +156,31 @@ public class App extends Application {
             exitSavesBtn.setOnAction(e -> changeMenu(gamemodeMenu));
             
             // beginning transitions 
-            ArrayList<Animation> activeAnimations = new ArrayList<>();
-            slideInTransition(mainMenuButtonContainer, HEIGHT/5, HEIGHT/40, 1, 1.5, activeAnimations);
-            fadeInTransition(mainMenuButtonContainer, 1, 1.5, activeAnimations);
-            fadeInTransition(mainMenuTitleContainer, 1.3, 1.5, activeAnimations);
-            fadeInTransition(bgImage, 2.2, .2, activeAnimations);
+            mainMenuButtonContainer.setTranslateY(HEIGHT/5);
+            TranslateTransition btnsSlide = slideInTransition(mainMenuButtonContainer, HEIGHT/40, 1, 1.5);
+            FadeTransition btnsFade = fadeInTransition(mainMenuButtonContainer, 1, 1.5);
+            FadeTransition titleFade = fadeInTransition(mainMenuTitleContainer, 1.3, 1.5);
+            FadeTransition bgFade = fadeInTransition(bgImage, 2.2, .2);
 
             // skip
-            mainPane.setOnMouseClicked(e -> {
-                for (javafx.animation.Animation anim : activeAnimations) {
-                    double currentTime = anim.getCurrentTime().toMillis();
-                    double totalDelay = anim.getDelay().toMillis();
-                    double remainingDelay = totalDelay - currentTime;
-                    if (remainingDelay > 0) {
-                        anim.stop();
-                        anim.setDelay(Duration.millis(remainingDelay / 10.0));  
-                        anim.setRate(2);
-                        anim.play(); 
-                    } else{
-                        anim.setRate(2);
-                    }
-                }
-                mainPane.setOnMouseClicked(null);
+            btnsSlide.setOnFinished(e -> {
+                mainPane.setOnMousePressed(null);});
+
+            mainPane.setOnMousePressed(e -> {
+                btnsFade.stop();
+                btnsSlide.stop();
+                titleFade.stop();
+                bgFade.stop();
+                btnsFade.setDelay(Duration.ZERO);
+                btnsSlide.setDelay(Duration.ZERO);
+                titleFade.setDelay(Duration.ZERO);
+                btnsFade.setRate(2);
+                btnsSlide.setRate(2);
+                titleFade.setRate(2);
+                btnsFade.play();
+                btnsSlide.play();
+                titleFade.play();
+                bgImage.setOpacity(1); 
             });
 
             mainPane.getChildren().addAll(gamemodeMenu,saveMenu,settingsMenu);
@@ -267,23 +266,22 @@ public class App extends Application {
         return btn;
     }
 
-    private void fadeInTransition(Node node, double duration, double delay, List<Animation> animList) {
+    private FadeTransition fadeInTransition(Node node, double duration, double delay) {
         node.setOpacity(0);
         FadeTransition fadeTrans = new FadeTransition(Duration.seconds(duration), node);
         fadeTrans.setToValue(1);
         fadeTrans.setDelay(Duration.seconds(delay));
-        animList.add(fadeTrans);
         fadeTrans.play();
+        return fadeTrans;
     }
 
-    private void slideInTransition(Node box, double fromY, double toY, double duration, double delay, List<Animation> animList){
+    private TranslateTransition slideInTransition(Node box, double toY, double duration, double delay){
         TranslateTransition slideTrans = new TranslateTransition(Duration.seconds(duration), box);
         slideTrans.setInterpolator(Interpolator.EASE_OUT);
-        slideTrans.setFromY(fromY);
         slideTrans.setToY(toY);
         slideTrans.setDelay(Duration.seconds(delay));
-        animList.add(slideTrans);
         slideTrans.play();
+        return slideTrans;
     }
 
     private void changeMenu(StackPane menu) {     

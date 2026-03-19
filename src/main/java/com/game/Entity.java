@@ -1,13 +1,16 @@
 package com.game;
 
 public abstract class Entity {
-    protected  Dimension dimension;
 
-    public Entity(Dimension dimension) {
+    protected Dimension dimension;
+    protected Room room;
+
+    public Entity(Dimension dimension, Room room) {
         if (dimension == null) {
             throw new IllegalArgumentException("Dimension cannot be null.");
         }
         this.dimension = dimension;
+        this.room = room;
     }
 
     public Dimension getDimension() {

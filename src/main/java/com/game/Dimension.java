@@ -1,13 +1,18 @@
 package com.game;
 
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Point2D;
 
 public class Dimension {
+
+    // variables
     private double x;
     private double y;
     private double width;
     private double height;
 
+
+    // constructor
     public Dimension(double x, double y, double width, double height) {
         if (width < 0 || height < 0) {
             throw new IllegalArgumentException("Width and height cannot be negative.");
@@ -18,38 +23,54 @@ public class Dimension {
         this.height = height;
     }
 
-    public double getX() {
-        return x;
+    // getters
+    public double getX() {return x;}
+    public double getY() {return y;}
+
+    public Point2D getPos() {return new Point2D(x, y);}
+
+    public double getWidth() {return width;}
+
+    public double getHeight() {return height;}
+
+    public Point2D getCenter() {
+        return new Point2D(x + width / 2, y + height / 2);
     }
 
-    public double getY() {
-        return y;
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(x, y, width, height);
     }
 
-    public Point2D getPos() {
-        return new Point2D(x, y);
+    public double distanceTo(Dimension other) {
+        if (other == null) return 0;
+        return this.getCenter().distance(other.getCenter());
     }
 
-    public double getWidth() {
-        return width;
+    public double distanceTo(Point2D point) {
+        if (point == null) return 0;
+        return this.getCenter().distance(point);
     }
 
-    public double getHeight() {
-        return height;
-    }
-
+    // setters
     public void moveBy(double dx, double dy) {
         this.x += dx;
         this.y += dy;
     }
+
     public void moveBy(Point2D velocity) {
-        this.x += velocity.getX();
-        this.y += velocity.getY();
+        moveBy(velocity.getX(), velocity.getY());
     }
+
     public void moveTo(double x, double y) {
-        this.x += x;
-        this.y += y;
+        this.x = x;
+        this.y = y;
     }
+
+    public void moveCenterTo(double centerX, double centerY) {
+        this.x = centerX - width / 2;
+        this.y = centerY - height / 2;
+    }
+    
     public void setSize(double width, double height) {
         if (width < 0 || height < 0) {
             throw new IllegalArgumentException("Width/Height can not be negative.");
@@ -58,13 +79,10 @@ public class Dimension {
         this.height = height;
     }
 
+    // methods
     public boolean intersects(Dimension other) {
-        boolean noCollision =
-        this.x + this.width <= other.x ||   // completely left
-        this.x >= other.x + other.width ||  // completely right
-        this.y + this.height <= other.y ||  // completely above
-        this.y >= other.y + other.height;   // completely below 
-        return !noCollision;
+        if (other == null) return false;
+        return this.getBoundingBox().intersects(other.getBoundingBox());
     }
 
     @Override

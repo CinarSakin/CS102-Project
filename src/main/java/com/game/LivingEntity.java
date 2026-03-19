@@ -52,8 +52,8 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-    public LivingEntity(Point2D position, LivingType livingType, double diffMulti) {
-        super(new Dimension(position.getX(), position.getY(), livingType.size.getX(), livingType.size.getY()) );
+    public LivingEntity(LivingType livingType, Point2D position, Room room, double diffMulti) {
+        super(new Dimension(position.getX(), position.getY(), livingType.size.getX(), livingType.size.getY()), room);
 
         this.maxHealth = (int)(livingType.maxHealth * diffMulti);
         this.health = this.maxHealth;

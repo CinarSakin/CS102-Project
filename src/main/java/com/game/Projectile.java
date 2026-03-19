@@ -39,8 +39,8 @@ public class Projectile extends Entity {
     private double speed;
     private int tick = 0;
 
-    public Projectile(ProjectileType projType, Point2D position, Point2D velocity, double speed) {
-        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()));
+    public Projectile(ProjectileType projType, Point2D position, Room room, Point2D velocity, double speed) {
+        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()), room);
         this.projType = projType;
         this.velocity = velocity.normalize();
         this.speed = projType.speed * speed;
@@ -54,14 +54,21 @@ public class Projectile extends Entity {
             speed = Math.max(speed*.95-.03, 0); // will slow down
             tick++;
             if (tick > 120){
-                // ToDo: explode
+                // ToDo: explode effect
+                for (LivingEntity living : room.getLivingEntities()){
+                    double dist = living.getDimension().distanceTo(dimension);
+                    if (dist < 14){
+                        living.getDamaged(300/(dist+6)); // damage range from 50 to 15
+                    }                    
+                }
             }
         }
         else if (projType.equals(ProjectileType.BOSS_ORB)) {
             
         }
         else{ // arrow
-            
+            // hits enemies if shooted by the hero
+            // hits only hero if shooted by an enemy
         }
     }
 
