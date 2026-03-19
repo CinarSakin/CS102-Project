@@ -9,8 +9,8 @@ public class Hero extends LivingEntity {
     private Weapon[] weapons = new Weapon[2];
     private int heldWeapon;
 
-    public Hero(Point2D position, Room room, Sword starterSword, double diffMulti) {
-        super(LivingType.HERO, position, room, diffMulti);
+    public Hero(Point2D position, Sword starterSword, double diffMulti) {
+        super(LivingType.HERO, position, diffMulti);
 
         weapons[0] = starterSword;
         this.heldWeapon = 0;

@@ -39,8 +39,8 @@ public class Projectile extends Entity {
     private double speed;
     private int tick = 0;
 
-    public Projectile(ProjectileType projType, Point2D position, Room room, Point2D velocity, double speed) {
-        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()), room);
+    public Projectile(ProjectileType projType, Point2D position, Point2D velocity, double speed) {
+        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()));
         this.projType = projType;
         this.velocity = velocity.normalize();
         this.speed = projType.speed * speed;
@@ -49,13 +49,14 @@ public class Projectile extends Entity {
     public void update() {
         
         dimension.moveBy(velocity.multiply(speed));
+        // will add check for walls
         
         if (projType.equals(ProjectileType.BOMB)){
-            speed = Math.max(speed*.95-.03, 0); // will slow down
+            speed = Math.max(speed*.95-.03, 0); // slows down
             tick++;
             if (tick > 120){
                 // ToDo: explode effect
-                for (LivingEntity living : room.getLivingEntities()){
+                for (LivingEntity living : LivingEntityManager.getLivingEntities()){
                     double dist = living.getDimension().distanceTo(dimension);
                     if (dist < 14){
                         living.getDamaged(300/(dist+6)); // damage range from 50 to 15

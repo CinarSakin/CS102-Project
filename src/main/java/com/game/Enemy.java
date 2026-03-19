@@ -9,8 +9,8 @@ public class Enemy extends LivingEntity {
     private LivingEntity targetEntity;
     private boolean canAttack = true;
 
-    public Enemy(LivingType LT, Point2D position, Room room, LivingEntity targetEntity, double diffMulti) {
-        super(LT, position, room, 1);
+    public Enemy(LivingType LT, Point2D position, LivingEntity targetEntity, double diffMulti) {
+        super(LT, position, 1);
         this.targetEntity = targetEntity;
     }
     
@@ -41,10 +41,10 @@ public class Enemy extends LivingEntity {
         
         switch(livingType) {
             case BOMBER:
-                new Projectile(ProjectileType.BOMB, dimension.getPos(), room, direction, 1);
+                new Projectile(ProjectileType.BOMB, dimension.getPos(), direction, 1);
                 break;
             case SKELETON:
-                new Projectile(ProjectileType.ARROW, dimension.getPos(), room, direction, 1);
+                new Projectile(ProjectileType.ARROW, dimension.getPos(), direction, 1);
                 break;
             // more enemies
             

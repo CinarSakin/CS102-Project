@@ -52,8 +52,8 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-    public LivingEntity(LivingType livingType, Point2D position, Room room, double diffMulti) {
-        super(new Dimension(position.getX(), position.getY(), livingType.size.getX(), livingType.size.getY()), room);
+    public LivingEntity(LivingType livingType, Point2D position, double diffMulti) {
+        super(new Dimension(position.getX(), position.getY(), livingType.size.getX(), livingType.size.getY()));
 
         this.maxHealth = (int)(livingType.maxHealth * diffMulti);
         this.health = this.maxHealth;
@@ -62,6 +62,8 @@ public abstract class LivingEntity extends Entity {
         this.walkSpeed = livingType.walkSpeed;
         this.attackSpeed = livingType.attackSpeed;
         this.fear = livingType.fear;
+
+        LivingEntityManager.register(this);
     }
 
     public void update() {
@@ -86,6 +88,12 @@ public abstract class LivingEntity extends Entity {
 
     @Override
     public void draw() {} // todo
+
+    @Override
+    public void despawn() {
+        super.despawn(); 
+        LivingEntityManager.unregister(this);
+    }
 
     public void heal(double healAmount) {
         this.health = Math.min(this.health+healAmount, this.maxHealth);
