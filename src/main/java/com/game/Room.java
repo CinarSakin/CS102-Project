@@ -2,8 +2,6 @@ package com.game;
 
 import java.util.ArrayList;
 
-import javafx.scene.control.Cell;
-
 public class Room {
     //class variables
     public static final int MINIMUM_SIZE = 80;//1 tile is 4 units for measurement
@@ -12,10 +10,13 @@ public class Room {
     //Instance variables
     ArrayList<Entity> entitys;
     public Dimension dim;
-    private Room right;
-    private Room left;
+    public Room right;
+    public Room left;
     public int type = (int)(Math.random()*2);
-
+    public Room[] hNeighbors;
+    public Room[] vNeighbors;
+    public Hall[] hHalls;
+    public Hall[] vHalls;
 
     public Room(double x1, double y1, double x2, double y2){
         dim = new Dimension(x1, y1, x2, y2);
@@ -83,10 +84,6 @@ public class Room {
         } else {
             for (Hall h : hHalls) h.draw();
             for (Hall h : vHalls) h.draw();
-            fill(type * 30, 80, 80);
-            stroke(0);
-            strokeWeight(2);
-            rect(x1, y1, x2, y2);
         }
     }
 

@@ -33,6 +33,11 @@ public class Dimension {
 
     public double getHeight() {return height;}
 
+    public void setX(double a){x=a;}
+    public void setY(double a){y=a;}
+    public void setHeight(double a){height=a;}
+    public void setWidth(double a){width=a;}
+
     public Point2D getCenter() {
         return new Point2D(x + width / 2, y + height / 2);
     }
