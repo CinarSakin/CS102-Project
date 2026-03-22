@@ -29,15 +29,11 @@ import javafx.util.Duration;
 
 public class App extends Application {
 
-    private double UI_SCALE; // player's choice in settings
-    private double UI_SIZE; // calculates based on screen size
-    private double WIDTH, HEIGHT;
+    private static double UI_SCALE;
+    private static double WIDTH, HEIGHT;
 
     private StackPane mainPane; // used for transitioning between menus
-    private StackPane mainMenu;
-    private StackPane settingsMenu;
-    private StackPane saveMenu;
-    private StackPane gamemodeMenu;
+    private StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
 
     private Image longBtnDefault, longBtnPressed, shortBtnDefault, shortBtnPressed, squareBtnDefault, squareBtnPressed;
     private Image bgImageRaw, bgTexture;
@@ -51,20 +47,19 @@ public class App extends Application {
             javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
             WIDTH = screenBounds.getWidth() * .75;
             HEIGHT = screenBounds.getHeight() * .75;
-            UI_SIZE = Math.min(WIDTH/1280.0, HEIGHT/720.0);
             UI_SCALE = 1.0; // will load from settings file
 
             // loading assets
-            longBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnDefault.png"), 0, getScale(48), true, false);
-            longBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/longBtnPressed.png"), 0, getScale(48), true, false);   
-            shortBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnDefault.png"), 0, getScale(48), true, false);
-            shortBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/shortBtnPressed.png"), 0, getScale(48), true, false);   
-            squareBtnDefault = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnDefault.png"), 0, getScale(48), true, false);
-            squareBtnPressed = new Image(getClass().getResourceAsStream("/sprites/ui/squareBtnPressed.png"), 0, getScale(48), true, false);   
-            bgImageRaw = new Image(getClass().getResourceAsStream("/sprites/ui/mainMenuBackground.png"), 0, HEIGHT, true, false);
-            bgTexture = new Image(getClass().getResourceAsStream("/sprites/ui/backgroundTexture.png"), 0, HEIGHT, true, false);
-            customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), getScale(40));
-            titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), getScale(84));
+            longBtnDefault = loadImage("/sprites/ui/longBtnDefault.png", uiScale(48));
+            longBtnPressed = loadImage("/sprites/ui/longBtnPressed.png", uiScale(48));   
+            shortBtnDefault = loadImage("/sprites/ui/shortBtnDefault.png", uiScale(48));
+            shortBtnPressed = loadImage("/sprites/ui/shortBtnPressed.png", uiScale(48));   
+            squareBtnDefault = loadImage("/sprites/ui/squareBtnDefault.png", uiScale(48));
+            squareBtnPressed = loadImage("/sprites/ui/squareBtnPressed.png", uiScale(48));   
+            bgImageRaw = loadImage("/sprites/ui/mainMenuBackground.png", HEIGHT);
+            bgTexture  = loadImage("/sprites/ui/backgroundTexture.png", HEIGHT);
+            customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiScale(40));
+            titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiScale(84));
 
             // main menu title
             Text titleText = new Text("DUNGEONFALL");
@@ -90,7 +85,7 @@ public class App extends Application {
             Button exitBtn = createStyledButton("EXIT", 0);
             Button leaderboardBtn = createStyledButton("LEADERBOARD", 0);
             
-            VBox mainMenuButtonContainer = new VBox(getScale(15), playBtn, settingsBtn, leaderboardBtn, exitBtn);
+            VBox mainMenuButtonContainer = new VBox(uiScale(15), playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
 
             ImageView bgImage = new ImageView(bgImageRaw);
@@ -111,7 +106,7 @@ public class App extends Application {
             settingsTitle.setFont(customFont);
             settingsTitle.setAlignment(Pos.TOP_CENTER);
 
-            VBox settingsMenuContainer = new VBox(getScale(15), settingsTitle, resetSettingsBtn, exitSettingsBtn);
+            VBox settingsMenuContainer = new VBox(uiScale(15), settingsTitle, resetSettingsBtn, exitSettingsBtn);
             settingsMenuContainer.setAlignment(Pos.CENTER);
             
             Rectangle settingsBG = new Rectangle(WIDTH, HEIGHT);
@@ -125,11 +120,11 @@ public class App extends Application {
             exitGamemodeBtn.setScaleX(.8);
             exitGamemodeBtn.setScaleY(.8);
 
-            VBox gamemodeButtonContainer = new VBox(getScale(15), standardBtn, infiniteBtn);
+            VBox gamemodeButtonContainer = new VBox(uiScale(15), standardBtn, infiniteBtn);
             gamemodeButtonContainer.setAlignment(Pos.CENTER);
 
             StackPane.setAlignment(exitGamemodeBtn, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(exitGamemodeBtn, new Insets(0, getScale(20), getScale(25), 0));
+            StackPane.setMargin(exitGamemodeBtn, new Insets(0, uiScale(20), uiScale(25), 0));
 
             gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer, exitGamemodeBtn);
 
@@ -204,11 +199,11 @@ public class App extends Application {
     private void headShake(Node node) {
         javafx.animation.Timeline timeline = new javafx.animation.Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(node.translateXProperty(), 0)),
-            new KeyFrame(Duration.millis(30), new KeyValue(node.translateXProperty(), getScale(-7))),
-            new KeyFrame(Duration.millis(90), new KeyValue(node.translateXProperty(), getScale(7))),
-            new KeyFrame(Duration.millis(150), new KeyValue(node.translateXProperty(), getScale(-7))),
-            new KeyFrame(Duration.millis(210), new KeyValue(node.translateXProperty(), getScale(7))),
-            new KeyFrame(Duration.millis(270), new KeyValue(node.translateXProperty(), getScale(-7))),
+            new KeyFrame(Duration.millis(30), new KeyValue(node.translateXProperty(), uiScale(-7))),
+            new KeyFrame(Duration.millis(90), new KeyValue(node.translateXProperty(), uiScale(7))),
+            new KeyFrame(Duration.millis(150), new KeyValue(node.translateXProperty(), uiScale(-7))),
+            new KeyFrame(Duration.millis(210), new KeyValue(node.translateXProperty(), uiScale(7))),
+            new KeyFrame(Duration.millis(270), new KeyValue(node.translateXProperty(), uiScale(-7))),
             new KeyFrame(Duration.millis(300), new KeyValue(node.translateXProperty(), 0))
         );
         timeline.play();
@@ -227,7 +222,7 @@ public class App extends Application {
         Text btnText = new Text(label);
         btnText.setFont(customFont);
         btnText.setFill(Color.WHITE);
-        btnText.setTranslateY(getScale(-4)); 
+        btnText.setTranslateY(uiScale(-4)); 
         btnText.setScaleX(.8);
 
         StackPane btnContent = new StackPane(btnView, btnText);
@@ -255,12 +250,12 @@ public class App extends Application {
         // press effect
         btn.setOnMousePressed(e -> {
             btnView.setImage(press);
-            btnText.setTranslateY(getScale(2.5)); 
+            btnText.setTranslateY(uiScale(2.5)); 
         });
         
         btn.setOnMouseReleased(e -> {
             btnView.setImage(def);
-            btnText.setTranslateY(getScale(-4)); 
+            btnText.setTranslateY(uiScale(-4)); 
         });
         
         return btn;
@@ -307,8 +302,15 @@ public class App extends Application {
         fadeIn.play();
     }
 
-    private double getScale(double s) {
-        return UI_SIZE * UI_SCALE * s;
+    public static double uiScale(double s) {
+        return Math.min(WIDTH/1280.0, HEIGHT/720.0) * UI_SCALE * s;
+    }
+
+    public static Image loadImage(String name, double height){
+        return new Image(
+            App.class.getResourceAsStream(name), 0,
+            height, true, false
+        );
     }
 
     public static void main(String[] args) {
