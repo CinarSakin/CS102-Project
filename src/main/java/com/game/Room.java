@@ -8,19 +8,32 @@ public class Room {
 
 
     //Instance variables
-    ArrayList<Entity> entitys;
+    public ArrayList<Entity> entitys;
     public Dimension dim;
     public Room right;
     public Room left;
-    public int type = (int)(Math.random()*2);
-    public Room[] hNeighbors;
-    public Room[] vNeighbors;
-    public Hall[] hHalls;
-    public Hall[] vHalls;
+    public int type ;
+    public ArrayList<Room> hNeighbors;
+    public ArrayList<Room> vNeighbors;
+    public ArrayList<Hall> hHalls;
+    public ArrayList<Hall> vHalls;
+    
 
     public Room(double x1, double y1, double x2, double y2){
-        dim = new Dimension(x1, y1, x2, y2);
-
+        type = (int)(Math.random()*2);
+        dim = new Dimension(x1, y1, x2-x1, y2-y1);
+        hNeighbors = new ArrayList<Room>();
+        vNeighbors = new ArrayList<Room>();
+        hHalls = new ArrayList<Hall>();
+        vHalls = new ArrayList<Hall>();
+    }
+    public Room(double x1, double y1, double x2, double y2,int newType){
+        type = newType;
+        dim = new Dimension(x1, y1, x2-x1, y2-y1);
+        hNeighbors = new ArrayList<Room>();
+        vNeighbors = new ArrayList<Room>();
+        hHalls = new ArrayList<Hall>();
+        vHalls = new ArrayList<Hall>();
     }
 
     public boolean divide(double minSize){
@@ -37,9 +50,6 @@ public class Room {
         double h = y2 - y1;
         if (w < minSize && h < minSize) return false;
 
-        int nextType = type;
-        if (Math.random() < .3) nextType++;
-
         if (w > h) { // Split vertically
         double mid = x1 + w * random(0.3, 0.7);
         left = new Room(x1, y1, mid, y2);
@@ -52,7 +62,7 @@ public class Room {
         return true;
     }
 
-    private void shrink(double minSize) {
+    public void shrink(double minSize) {
         if (left != null) {
         left.shrink(minSize);
         right.shrink(minSize);
@@ -74,6 +84,7 @@ public class Room {
 
     private void spawnEntities(int type){
         //ToDo
+
     }
 
 
@@ -95,4 +106,14 @@ public class Room {
         if(a<x){return x;}
         return a;
     }
+
+    public double getX1(){return dim.getX();}
+    public double getY1(){return dim.getY();}
+    public double getX2(){return dim.getWidth() + dim.getX();}
+    public double getY2(){return getHeight() + dim.getY();}
+    public double getHeight(){return dim.getHeight();}
+    public double getWidth(){return dim.getWidth();}
+    public int getType(){return this.type;}
+    public Dimension getDimension(){return this.dim;}
+
 }

@@ -16,20 +16,24 @@ public class Level {
     public Level(int levelCount){
         this.levelNo = levelCount;
         this.numRooms = 5 + levelNo;
-        divide();
+        generateLevel();
     }
 
     public Level(char saveSlot){
         //read from a file
     }
-    void divide() {
+
+    private void generateLevel(){
+
+    }
+    private void divide() {
         int count = 1;
         while (count < numRooms) {
         if (root.divide(gridSize * 2)) count++;
         }
     }
 
-    void getLeaves(Room c) {
+    private void getLeaves(Room c) {
         if (c.left == null) rooms.add(c);
         else {
         getLeaves(c.left);
@@ -37,28 +41,37 @@ public class Level {
         }
     }
 
-    void findNeighbors() {
+    private void findNeighbors() {
         getLeaves(root);
         for (Room c : rooms) {
         for (Room o : rooms) {
             if (c == o) continue;
-            if (c.x2 == o.x1 && max(c.y1, o.y1) < min(c.y2, o.y2)) c.hNeighbors.add(o);
-            if (c.y2 == o.y1 && max(c.x1, o.x1) < min(c.x2, o.x2)) c.vNeighbors.add(o);
+            if (c.getX2() == o.getX1() && max(c.getY1(), o.getY1()) < min(c.getY2(), o.getY2())) c.hNeighbors.add(o);
+            if (c.getY2() == o.getY1() && max(c.getX1(), o.getX1()) < min(c.getX2(), o.getX2())) c.vNeighbors.add(o);
         }
         }
     }
 
-    void addHalls() {
+    private void addHalls() {
         for (Room c : rooms) {
-        for (Room n : c.hNeighbors) {
-            double overlapTop = max(c.y1, n.y1);
-            double overlapBot = min(c.y2, n.y2);
-            if (overlapBot - overlapTop > gridSize) {
-            float y = random(overlapTop, overlapBot - gridSize);
-            c.hHalls.add(new Hall(c.dim.getWidth(), y, n.dim.getX(), y + gridSize));
+            for (Room n : c.hNeighbors) {
+                double overlapTop = max(c.getY1(), n.getY1());
+                double overlapBot = min(c.getY2(), n.getY2());
+                if (overlapBot - overlapTop > gridSize) {
+                double y = random(overlapTop, overlapBot - gridSize);
+                c.hHalls.add(new Hall(c.getX2(), y, n.getX1(), y + gridSize));
+                }
+            }
+            
+            // Repeat similar logic for vNeighbors/vHalls
+            for (Room n : c.vNeighbors) {
+                double overlapTop = max(c.getY1(), n.getY1());
+                double overlapBot = min(c.getY2(), n.getY2());
+                if (overlapBot - overlapTop > gridSize) {
+                double y = random(overlapTop, overlapBot - gridSize);
+                c.vHalls.add(new Hall(c.getX2(), y, n.getX1(), y + gridSize));
             }
         }
-        // Repeat similar logic for vNeighbors/vHalls
         }
     }
 
@@ -66,8 +79,17 @@ public class Level {
         //TODO
     }
 
-    void shrink() { root.shrink(gridSize * 2); }
-    void display() { root.display(); }
+    public void shrink() { root.shrink(gridSize * 2); }
+    public void draw() { root.draw(); }
+
+    public boolean isInBounds(Entity a){
+        for(int i = 0 ; i< rooms.size() ;i++){
+            Room b = rooms.get(i);
+            Dimension roomDim = b.getDimension();
+            if(){return true;}
+        }
+        return false;
+    }
 
     private double random(double a, double b){
         return Math.random()*(b-a)+a;
@@ -75,6 +97,11 @@ public class Level {
 
     private double max(double x, double a){
         if(a<x){return x;}
+        return a;
+    }
+
+    private double min(double x, double a){
+        if(x>a){return x;}
         return a;
     }
 
