@@ -3,29 +3,48 @@ package com.game;
 import java.util.ArrayList;
 
 public class Level {
-    //class variables
-    public static double gridSize = 20;
 
-    //instance variables
+    // class variables
+    public static double gridSize = 20;
+    private static Level currentLevel;
+
+    // instance variables
     public int levelNo;
     private ArrayList<Room> rooms;
-    private ArrayList<Entity> entitys;
+    private ArrayList<Entity> entities;
     private Room root;
     private int numRooms;
     
-    public Level(int levelCount){
+    private Level(int levelCount){
         this.levelNo = levelCount;
         this.numRooms = 5 + levelNo;
         generateLevel();
     }
 
-    public Level(char saveSlot){
-        //read from a file
-    }
-
     private void generateLevel(){
 
     }
+
+    private Level(char saveSlot){
+        //read from the save file
+    }
+
+    public static Level constructFromSave(char saveSlot) {
+        if (getLevel() != null) throw new IllegalStateException("There is already a Level instance!");
+        currentLevel = new Level(saveSlot);
+        return currentLevel;
+    }
+
+    public static Level constructNew(int levelCount) {
+        if (getLevel() != null) throw new IllegalStateException("There is already a Level instance!");
+        currentLevel = new Level(levelCount);
+        return currentLevel;
+    }
+
+    public static Level getLevel() {
+        return currentLevel;
+    }
+
     private void divide() {
         int count = 1;
         while (count < numRooms) {

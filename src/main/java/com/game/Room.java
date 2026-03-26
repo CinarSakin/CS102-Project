@@ -20,12 +20,7 @@ public class Room {
     
 
     public Room(double x1, double y1, double x2, double y2){
-        type = (int)(Math.random()*2);
-        dim = new Dimension(x1, y1, x2-x1, y2-y1);
-        hNeighbors = new ArrayList<Room>();
-        vNeighbors = new ArrayList<Room>();
-        hHalls = new ArrayList<Hall>();
-        vHalls = new ArrayList<Hall>();
+        this(x1, y1, x2, y2, (int)(Math.random()*3));
     }
     public Room(double x1, double y1, double x2, double y2,int newType){
         type = newType;

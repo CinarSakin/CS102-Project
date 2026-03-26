@@ -32,7 +32,7 @@ public abstract class Entity {
         // TODO: remove from game.
     }
 
+    // updates and draws
     public abstract void update();
 
-    public abstract void draw();
 }

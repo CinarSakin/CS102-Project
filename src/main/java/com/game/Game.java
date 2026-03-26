@@ -9,15 +9,21 @@ import javafx.stage.Stage;
 
 public class Game extends Application{
 
+    private Level level;
+    private Hero hero;
+
     @Override
     public void start(Stage stage) throws Exception {
         Canvas canvas = new Canvas(800, 800);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         int i = 1;
+
+        level = Level.constructNew(i);
+
+        // ToDo: update loop with JavaFX AnimationTimer
         do{
-            Level map = new Level(i);
             
-            render(gc, map);
+            render(gc, level);
 
             StackPane root = new StackPane(canvas);
             stage.setScene(new Scene(root));
@@ -25,6 +31,15 @@ public class Game extends Application{
             stage.show();
         }while(true);
         
+    }
+
+    public void saveGame() {
+        // ToDo
+    }
+
+    private void loadGame(char saveSlot) {
+        // ToDo
+        Level.constructFromSave(saveSlot);        
     }
 
 

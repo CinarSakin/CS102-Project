@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
@@ -159,7 +160,9 @@ public class App extends Application {
 
             // skip
             btnsSlide.setOnFinished(e -> {
-                mainPane.setOnMousePressed(null);});
+                mainPane.setOnMousePressed(null);
+                mainPane.setOnKeyPressed(null);
+            });
 
             mainPane.setOnMousePressed(e -> {
                 btnsFade.stop();
@@ -176,6 +179,25 @@ public class App extends Application {
                 btnsSlide.play();
                 titleFade.play();
                 bgImage.setOpacity(1); 
+            });
+
+            mainPane.setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.SPACE){
+                    btnsFade.stop();
+                    btnsSlide.stop();
+                    titleFade.stop();
+                    bgFade.stop();
+                    btnsFade.setDelay(Duration.ZERO);
+                    btnsSlide.setDelay(Duration.ZERO);
+                    titleFade.setDelay(Duration.ZERO);
+                    btnsFade.setRate(2);
+                    btnsSlide.setRate(2);
+                    titleFade.setRate(2);
+                    btnsFade.play();
+                    btnsSlide.play();
+                    titleFade.play();
+                    bgImage.setOpacity(1); 
+                }
             });
 
             mainPane.getChildren().addAll(gamemodeMenu,saveMenu,settingsMenu);
