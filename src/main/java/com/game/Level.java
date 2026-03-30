@@ -7,9 +7,9 @@ public class Level {
     // class variables
     public static double gridSize = 20;
     private static Level currentLevel;
-
+    public static int levelNo;
+    
     // instance variables
-    public int levelNo;
     private ArrayList<Room> rooms;
     private ArrayList<Entity> entities;
     private Room root;
@@ -21,14 +21,14 @@ public class Level {
         generateLevel();
     }
 
-    private void generateLevel(){
-
-    }
+    
 
     private Level(char saveSlot){
         //read from the save file
     }
 
+
+    // SAVEING MECHANISMS
     public static Level constructFromSave(char saveSlot) {
         if (getLevel() != null) throw new IllegalStateException("There is already a Level instance!");
         currentLevel = new Level(saveSlot);
@@ -41,8 +41,14 @@ public class Level {
         return currentLevel;
     }
 
-    public static Level getLevel() {
-        return currentLevel;
+    public void save(){
+        //TODO
+    }
+
+    
+    //CONSTRUCTING METHODS
+    private void generateLevel(){
+
     }
 
     private void divide() {
@@ -63,11 +69,11 @@ public class Level {
     private void findNeighbors() {
         getLeaves(root);
         for (Room c : rooms) {
-        for (Room o : rooms) {
-            if (c == o) continue;
-            if (c.getX2() == o.getX1() && max(c.getY1(), o.getY1()) < min(c.getY2(), o.getY2())) c.hNeighbors.add(o);
-            if (c.getY2() == o.getY1() && max(c.getX1(), o.getX1()) < min(c.getX2(), o.getX2())) c.vNeighbors.add(o);
-        }
+            for (Room o : rooms) {
+                if (c == o) continue;
+                if (c.getX2() == o.getX1() && max(c.getY1(), o.getY1()) < min(c.getY2(), o.getY2())) c.hNeighbors.add(o);
+                if (c.getY2() == o.getY1() && max(c.getX1(), o.getX1()) < min(c.getX2(), o.getX2())) c.vNeighbors.add(o);
+            }
         }
     }
 
@@ -81,35 +87,33 @@ public class Level {
                 c.hHalls.add(new Hall(c.getX2(), y, n.getX1(), y + gridSize));
                 }
             }
-            
+
             // Repeat similar logic for vNeighbors/vHalls
             for (Room n : c.vNeighbors) {
                 double overlapTop = max(c.getY1(), n.getY1());
                 double overlapBot = min(c.getY2(), n.getY2());
                 if (overlapBot - overlapTop > gridSize) {
-                double y = random(overlapTop, overlapBot - gridSize);
-                c.vHalls.add(new Hall(c.getX2(), y, n.getX1(), y + gridSize));
+                    double y = random(overlapTop, overlapBot - gridSize);
+                    c.vHalls.add(new Hall(c.getX2(), y, n.getX1(), y + gridSize));
+                }
             }
         }
-        }
     }
-
-    public void save(){
-        //TODO
-    }
-
     public void shrink() { root.shrink(gridSize * 2); }
+    
+    //UPDATEING METHODS
     public void draw() { root.draw(); }
 
     public boolean isInBounds(Entity a){
         for(int i = 0 ; i< rooms.size() ;i++){
             Room b = rooms.get(i);
             Dimension roomDim = b.getDimension();
-            if(){return true;}
+            if(true){return true;}
         }
         return false;
     }
-
+    
+    //EXTRA METHODS
     private double random(double a, double b){
         return Math.random()*(b-a)+a;
     }
@@ -122,6 +126,11 @@ public class Level {
     private double min(double x, double a){
         if(x>a){return x;}
         return a;
+    }
+
+    //GETTER,SETTERS
+    public static Level getLevel() {
+        return currentLevel;
     }
 
 }
