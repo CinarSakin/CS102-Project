@@ -13,6 +13,10 @@ public class Enemy extends LivingEntity {
         super(LT, position, 1);
         this.targetEntity = targetEntity;
     }
+    // @Override // if you can implement like this it will be easier.
+    // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
+
+    // }
     
     @Override
     public void update() {

@@ -17,7 +17,7 @@ public class Game extends Application{
         Canvas canvas = new Canvas(800, 800);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         int i = 1;
-
+        hero = new Hero(null, null, i);
         level = Level.constructNew(i);
 
         // ToDo: update loop with JavaFX AnimationTimer

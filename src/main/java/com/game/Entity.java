@@ -34,6 +34,5 @@ public abstract class Entity {
 
     // updates and draws
     public abstract void update();
-    private void draw(){}//make a predefined drawer for all entities but you can change the sprite and size values from other classes.
-
+    
 }

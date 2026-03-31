@@ -11,6 +11,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -33,7 +35,7 @@ public class App extends Application {
     private static double UI_SCALE;
     private static double WIDTH, HEIGHT;
 
-    private StackPane mainPane; // used for transitioning between menus
+    private static StackPane mainPane; // used for transitioning between menus
     private StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
 
     private Image longBtnDefault, longBtnPressed, shortBtnDefault, shortBtnPressed, squareBtnDefault, squareBtnPressed;
@@ -335,7 +337,51 @@ public class App extends Application {
         );
     }
 
+    public static StackPane getsStage(){
+        return mainPane;
+    }
+
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public class Game extends Application{
+
+        private Level level;
+        private Hero hero;
+
+        @Override
+        public void start(Stage stage) throws Exception {
+            Canvas canvas = new Canvas(800, 800);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            int i = 1;
+            hero = new Hero(null, null, i);
+            level = Level.constructNew(i);
+
+            // ToDo: update loop with JavaFX AnimationTimer
+            do{
+                
+                render(gc, level);
+
+                StackPane root = new StackPane(canvas);
+                stage.setScene(new Scene(root));
+                stage.setTitle("BSP Dungeon Generator");
+                stage.show();
+            }while(true);
+            
+        }
+
+        public void saveGame() {
+            // ToDo
+        }
+
+        private void loadGame(char saveSlot) {
+            // ToDo
+            Level.constructFromSave(saveSlot);        
+        }
+
+        
+
+        
     }
 }
