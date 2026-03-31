@@ -50,6 +50,11 @@ public abstract class LivingEntity extends Entity {
             this.fear = fear;
             this.range = range;
         }
+        public static LivingType RandomType(){
+            //can you implement this for entity generation,
+            //  it needs to give a random enemy type for spawn entities class.
+            return null;
+        }
     }
 
     public LivingEntity(LivingType livingType, Point2D position, double diffMulti) {

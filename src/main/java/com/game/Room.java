@@ -29,17 +29,18 @@ public class Room {
         this(x1, y1, x2, y2, (int)(Math.random()*4));
     }
     public Room(double x1, double y1, double x2, double y2, int newType){
-        if(newType == 0)type = RoomType.TYPE_GATE;
-        if(newType == 1)type = RoomType.TYPE_NORMAL;
-        if(newType == 2)type = RoomType.TYPE_LOOT;
-        if(newType == 1)type = RoomType.TYPE_NORMAL;
-        if(newType == 1)type = RoomType.TYPE_NORMAL;
+        if(newType == 0)type = RoomType.PORTAL;
+        if(newType == 1)type = RoomType.NORMAL;
+        if(newType == 2)type = RoomType.LOOT;
+        if(newType == 1)type = RoomType.NORMAL;
+        if(newType == 1)type = RoomType.NORMAL;
         dim = new Dimension(x1, y1, x2-x1, y2-y1);
         hNeighbors = new ArrayList<Room>();
         vNeighbors = new ArrayList<Room>();
         hHalls = new ArrayList<Hall>();
         vHalls = new ArrayList<Hall>();
         dif = 1+ Level.levelNo/10;
+        spawnEntities();
     }
 
     public boolean divide(double minSize){
@@ -90,14 +91,37 @@ public class Room {
         }
     }
 
-    private void spawnEntities(int type){
+    private void spawnEntities(){
         //ToDo
-        if(type == 0) return;
-
-        double ENEMY_COUNT = min((int)(Math.random()*MAXIMUM_ENEMIES),5);
-        for(int i = 0; i < ENEMY_COUNT;i++){
-            entitys.add(new Enemy(null, randomPos(), this.Hero, MAXIMUM_ENEMIES));
+        switch (this.type) {
+            case PORTAL:
+                break;
+            case NORMAL:
+                double enemyCount = max(5,(int)(Math.random()*MAXIMUM_ENEMIES));
+                for(int i = 0; i < enemyCount; i++ ){
+                    entitys.add(new Enemy(null, randomPos(), Hero.getHero(), i));//add enemies in random points inside of the room
+                    //If needed an enemys array can be added for less confision while updateing
+                }
+                break;
+            case LOOT:
+                int lootCount = (int)(Math.random()*3);
+                for(int i = 0; i < lootCount; i++){
+                    entitys.add(e);// loots will be added inside a predefined(?) places in the room
+                }
+                break;
+            case PUZZLE:
+                //EREN KOZAN TODO:MAKE A PUZZLE GENERATION
+                
+                break;
+            case BOSS:
+                //Create a boss in the middle of the room which can or cannot move according to the move patern of its
+                
+                break;
+                
+            default:
+                throw new AssertionError();
         }
+        
 
     }
 
@@ -110,6 +134,9 @@ public class Room {
         } else {
             for (Hall h : hHalls) h.draw();
             for (Hall h : vHalls) h.draw();
+            //make a drawing principle for entities and room itself.(first room then entities.)
+            //roomdrawing
+            for(Entity e: entitys) e.update();
         }
     }
 
@@ -144,28 +171,28 @@ public class Room {
 
     //enumeration
     enum RoomType{
-        TYPE_GATE{
-            private void spawnEntities(int i){
+        PORTAL{
+            protected void spawnEntities(int i){
                 spawnEntities(0);
             }
         },
-        TYPE_NORMAL{
-            private void spawnEntities(int i){
+        NORMAL{
+            protected void spawnEntities(int i){
                 spawnEntities(1);
             }
         },
-        TYPE_LOOT{
-            private void spawnEntities(int i){
+        LOOT{
+            protected  void spawnEntities(int i){
                 spawnEntities(2);
             }
         },
-        TYPE_PUZZLE{
-            private void spawnEntities(int i){
+        PUZZLE{
+            protected void spawnEntities(int i){
                 spawnEntities(3);
             }
         },
-        TYPE_BOSS{
-            private void spawnEntities(int i){
+        BOSS{
+            protected void spawnEntities(int i){
                 spawnEntities(4);
             }
         } 

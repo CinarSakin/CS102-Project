@@ -3,6 +3,8 @@ package com.game;
 import javafx.geometry.Point2D;
 
 public class Hero extends LivingEntity {
+    //class variables
+    private static Hero CurrentHero;
 
     private Talisman[] talismans = new Talisman[3];
     private Consumable[] consumables = new Consumable[3];
@@ -24,5 +26,10 @@ public class Hero extends LivingEntity {
     @Override
     public void attack() {
         weapons[heldWeapon].use();
+    }
+
+    //incremented getHero()
+    public static Hero getHero() {
+        return CurrentHero;
     }
 }
