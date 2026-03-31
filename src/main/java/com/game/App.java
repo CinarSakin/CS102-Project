@@ -303,7 +303,7 @@ public class App extends Application {
         return slideTrans;
     }
 
-    private void changeMenu(StackPane menu) {     
+    private void changeMenu(StackPane menu) {
         mainPane.setMouseTransparent(true);
         for (javafx.scene.Node n : mainPane.getChildren()){
             if (n.isVisible()){

@@ -12,7 +12,7 @@ public class Effect {
                 ((Enemy)targetEntity).flee(); // could be nice if it was applicable to hero too
             }
         },
-        TIRE {
+        TIRE { // for cooldowns and stun
             @Override
             public void affectEntity(LivingEntity targetEntity) {
                 ((Enemy)targetEntity).setCanAttack(false);

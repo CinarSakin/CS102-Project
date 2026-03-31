@@ -20,9 +20,7 @@ public class Enemy extends LivingEntity {
     
     @Override
     public void update() {
-        Point2D position = new Point2D(dimension.getX(), dimension.getY());
-
-        if (range < position.distance(targetEntity.dimension.getPos())) {
+        if (!inRange()) {
             follow();
         }
         else {
@@ -34,7 +32,7 @@ public class Enemy extends LivingEntity {
     }
 
     public void follow() {
-        Point2D direction = findTargetDirection();
+        Point2D direction = findTargetDirection(targetEntity);
 
         dimension.moveBy(direction.multiply(walkSpeed));
     }
@@ -58,7 +56,7 @@ public class Enemy extends LivingEntity {
     }
 
     public void flee() {
-        Point2D direction = findTargetDirection().multiply(-1);
+        Point2D direction = findTargetDirection(targetEntity).multiply(-1);
 
         dimension.moveBy(direction.multiply(walkSpeed));
     }
@@ -66,17 +64,17 @@ public class Enemy extends LivingEntity {
     @Override
     public void getDamaged(double damage) {
         super.getDamaged(damage);
-        if (0.15 < Math.random()*fear) {
+        if (0.15 < Math.random()*fear && inRange()) {
             new Effect(EffectType.FEAR, (long)fear*100, this).startEffect();
         }
-    }
-
-    public Point2D findTargetDirection() { // direction from enemy to target
-        Point2D targetPosition = targetEntity.dimension.getPos();
-        return targetPosition.subtract(dimension.getPos()).normalize();
     }
     
     public void setCanAttack(boolean canAttack) {
         this.canAttack = canAttack;
+    }
+
+    public boolean inRange() {
+        Point2D position = new Point2D(dimension.getX(), dimension.getY());
+        return position.distance(targetEntity.dimension.getPos()) < range;
     }
 }

@@ -23,6 +23,8 @@ public class Projectile extends Entity {
             2, new Point2D(20, 20)
         );
 
+        
+
         private Image image;
         private double speed;
         private Point2D size;

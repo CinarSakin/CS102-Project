@@ -25,10 +25,8 @@ public abstract class LivingEntity extends Entity {
         BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30),
         SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10)
         ;
-
-        void attack(LivingEntity targetEntity) {}
-
         // add other enemy types
+        
         private Point2D size;
         private int maxHealth;
         private double health;
