@@ -99,14 +99,14 @@ public class Room {
             case NORMAL:
                 double enemyCount = max(5,(int)(Math.random()*MAXIMUM_ENEMIES));
                 for(int i = 0; i < enemyCount; i++ ){
-                    entitys.add(new Enemy(null, randomPos(), Hero.getHero(), i));//add enemies in random points inside of the room
+                    entitys.add(new Enemy(LivingEntity.LivingType.RandomType(), randomPos(), Hero.getHero(), i));//add enemies in random points inside of the room
                     //If needed an enemys array can be added for less confision while updateing
                 }
                 break;
             case LOOT:
                 int lootCount = (int)(Math.random()*3);
                 for(int i = 0; i < lootCount; i++){
-                    entitys.add(e);// loots will be added inside a predefined(?) places in the room
+                    entitys.add(new WorldEntity());// loots will be added inside a predefined(?) places in the room
                 }
                 break;
             case PUZZLE:
@@ -127,6 +127,7 @@ public class Room {
 
 
     //UPDATERS
+    public void update(){}
     public void draw(){
         if (left != null) {
         left.draw();
@@ -141,8 +142,10 @@ public class Room {
     }
 
     //EXTRA METHODS
-    private static Point2D randomPos(){
-        return null;
+    private Point2D randomPos(){
+        int x = (int)(this.dim.getX() + Math.random()*dim.getWidth()+1);
+        int y = (int)(this.dim.getY() + Math.random()*dim.getHeight()+1);
+        return new Point2D(x, y);
         //TODO: make a random dimension, convertes it to a point inside the room for enemy to spawn in that position
     }
     private static double random(double a, double b){

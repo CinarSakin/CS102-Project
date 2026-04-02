@@ -24,7 +24,7 @@ public class Level {
     
 
     private Level(char saveSlot){
-        //read from the save file
+        //read from the save file: EREN KOZAN
     }
 
 
@@ -102,13 +102,16 @@ public class Level {
     public void shrink() { root.shrink(gridSize * 2); }
     
     //UPDATEING METHODS
-    public void draw() { root.draw(); }
+    public void update(){
+
+    }
+    public void draw() { root.draw(); }//on wait
 
     public boolean isInBounds(Entity a){
         for(int i = 0 ; i< rooms.size() ;i++){
             Room b = rooms.get(i);
             Dimension roomDim = b.getDimension();
-            if(true){return true;}
+            if(a.getDimension().insideOf(roomDim) > 1){return true;}
         }
         return false;
     }

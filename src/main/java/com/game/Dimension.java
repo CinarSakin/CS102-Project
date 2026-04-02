@@ -90,6 +90,12 @@ public class Dimension {
         return this.getBoundingBox().intersects(other.getBoundingBox());
     }
 
+    public int insideOf(Dimension other){
+        if(other.getX()< this.getX() && this.getX()+this.getWidth()<other.getX()+other.getWidth()
+        && other.getY()<this.getY() && this.getY()+this.getHeight()<other.getY()+other.getHeight())return 0;
+        else return -1;
+    }
+
     @Override
     public String toString() {
         return "Dimension{" +
