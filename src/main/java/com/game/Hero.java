@@ -43,6 +43,8 @@ public class Hero extends LivingEntity {
 
     //incremented getHero()
     public static Hero getHero() {
+        if(CurrentHero != null)return CurrentHero;
         return CurrentHero = new Hero(null, null, 0);
+       
     }
 }
