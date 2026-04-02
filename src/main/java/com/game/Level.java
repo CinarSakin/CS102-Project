@@ -107,14 +107,7 @@ public class Level {
     }
     public void draw() { root.draw(); }//on wait
 
-    public boolean isInBounds(Entity a){
-        for(int i = 0 ; i< rooms.size() ;i++){
-            Room b = rooms.get(i);
-            Dimension roomDim = b.getDimension();
-            if(a.getDimension().insideOf(roomDim) > 1){return true;}
-        }
-        return false;
-    }
+    
     
     //EXTRA METHODS
     private double random(double a, double b){

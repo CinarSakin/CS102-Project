@@ -1,5 +1,7 @@
 package com.game;
 
+import java.util.ArrayList;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -345,42 +347,35 @@ public class App extends Application {
         launch(args);
     }
 
-    public class Game extends Application{
+    public class Game{
 
         private Level level;
         private Hero hero;
 
-        @Override
-        public void start(Stage stage) throws Exception {
-            Canvas canvas = new Canvas(800, 800);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            int i = 1;
-            hero = new Hero(null, null, i);
-            level = Level.constructNew(i);
-
-            // ToDo: update loop with JavaFX AnimationTimer
-            do{
-                
-                render(gc, level);
-
-                StackPane root = new StackPane(canvas);
-                stage.setScene(new Scene(root));
-                stage.setTitle("BSP Dungeon Generator");
-                stage.show();
-            }while(true);
-            
-        }
-
+        
         public void saveGame() {
             // ToDo
+            Level.save(this.level);
         }
 
         private void loadGame(char saveSlot) {
             // ToDo
             Level.constructFromSave(saveSlot);        
         }
+        private void newGame(int levelCount){
+            //TODO
+            Level.constructNew(levelCount);
+        }
 
-        
+        public static boolean isInBounds(Entity a){
+            ArrayList<Room> rooms = Level.getRooms();
+            for(int i = 0 ; i< rooms.size() ;i++){
+                Room b = rooms.get(i);
+                Dimension roomDim = b.getDimension();
+                if(a.getDimension().insideOf(roomDim)){return true;}
+            }
+            return false;
+        }        
 
         
     }

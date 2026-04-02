@@ -99,7 +99,7 @@ public class Room {
             case NORMAL:
                 double enemyCount = max(5,(int)(Math.random()*MAXIMUM_ENEMIES));
                 for(int i = 0; i < enemyCount; i++ ){
-                    entitys.add(new Enemy(LivingEntity.LivingType.RandomType(), randomPos(), Hero.getHero(), i));//add enemies in random points inside of the room
+                    entitys.add(new Enemy(LivingEntity.RandomType(), randomPos(), Hero.getHero(), i));//add enemies in random points inside of the room
                     //If needed an enemys array can be added for less confision while updateing
                 }
                 break;

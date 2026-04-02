@@ -90,10 +90,10 @@ public class Dimension {
         return this.getBoundingBox().intersects(other.getBoundingBox());
     }
 
-    public int insideOf(Dimension other){
+    public boolean insideOf(Dimension other){
         if(other.getX()< this.getX() && this.getX()+this.getWidth()<other.getX()+other.getWidth()
-        && other.getY()<this.getY() && this.getY()+this.getHeight()<other.getY()+other.getHeight())return 0;
-        else return -1;
+        && other.getY()<this.getY() && this.getY()+this.getHeight()<other.getY()+other.getHeight())return true;
+        else return false;
     }
 
     @Override
