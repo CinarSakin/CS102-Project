@@ -9,8 +9,8 @@ public class Enemy extends LivingEntity {
     private LivingEntity targetEntity;
     private boolean canAttack = true;
 
-    public Enemy(LivingType LT, Point2D position, LivingEntity targetEntity, double diffMulti) {
-        super(LT, position, 1);
+    public Enemy(LivingType LT, Point2D position, LivingEntity targetEntity, Room currentRoom, double diffMulti) {
+        super(LT, position, currentRoom, diffMulti);
         this.targetEntity = targetEntity;
     }
     // @Override // if you can implement like this it will be easier.
@@ -20,8 +20,9 @@ public class Enemy extends LivingEntity {
     
     @Override
     public void update() {
+        super.update();
         if (!inRange()) {
-            follow();
+            super.follow(targetEntity);
         }
         else {
             if (canAttack) {
@@ -31,22 +32,16 @@ public class Enemy extends LivingEntity {
         }
     }
 
-    public void follow() {
-        Point2D direction = findTargetDirection(targetEntity);
-
-        dimension.moveBy(direction.multiply(walkSpeed));
-    }
-
     @Override
     public void attack() {
         Point2D direction = targetEntity.dimension.getPos().subtract(this.dimension.getPos());
         
         switch(livingType) {
             case BOMBER:
-                new Projectile(ProjectileType.BOMB, dimension.getPos(), direction, 1);
+                new Projectile(ProjectileType.BOMB, dimension.getPos(), direction, 1, currentRoom);
                 break;
             case SKELETON:
-                new Projectile(ProjectileType.ARROW, dimension.getPos(), direction, 1);
+                new Projectile(ProjectileType.ARROW, dimension.getPos(), direction, 1, currentRoom);
                 break;
             // more enemies
             

@@ -8,13 +8,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Animation {
-    /*
-        1 | 1 | 1 | 1
-        1 | 1 | 1 | 1
-        1 | 1 | 1 | 1
-        cols = 4
-        rows = 3
-    */
     public static final Image PLACEHOLDER_IMAGE = new Image("/sprites/ui/longBtnDefault.png");
 
     private final long ANIM_DELAY = 5000;
@@ -60,9 +53,9 @@ public class Animation {
     private void makeTimer() {
         animTimer = new AnimationTimer(){
         long lastTime = 0;
+        int x = 0; int y = 0;
         int frameWidth = (int) spriteSheet.getWidth()/noFrames;
         int frameHeight = (int) spriteSheet.getHeight();
-        int x = 0; int y = 0;
 
         @Override
         public void handle(long now) {
@@ -73,7 +66,7 @@ public class Animation {
                     throw new NoSuchElementException("x and y out of spriteSheet bounds.");
                 }
 
-                sheetViewer.setViewport(new Rectangle2D(x, y, now, frameHeight));
+                sheetViewer.setViewport(new Rectangle2D(x, y, frameWidth, frameHeight));
                 x += frameWidth;
                 y += frameHeight;
             }

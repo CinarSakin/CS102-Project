@@ -77,8 +77,8 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-    public LivingEntity(LivingType livingType, Point2D position, double diffMulti) {
-        super(new Dimension(position.getX(), position.getY(), livingType.size.getX(), livingType.size.getY()));
+    public LivingEntity(LivingType livingType, Point2D position, Room currentRoom, double diffMulti) {
+        super(new Dimension(position.getX(), position.getY(), livingType.size.getX(), livingType.size.getY()), currentRoom);
 
         this.maxHealth = (int)(livingType.maxHealth * diffMulti);
         this.health = this.maxHealth;
@@ -105,11 +105,11 @@ public abstract class LivingEntity extends Entity {
             effe.affectEntity();
         }
 
-        if (livingType.equals(LivingType.HERO)) {
-            ((Hero)this).update();
-        }
-        else {
-            ((Enemy)this).update();
+        if (!App.Game.isInBounds(this)) {
+            Point2D direction = new Point2D(currentRoom.getDimension().getWidth()/2+currentRoom.getX1(), 
+            currentRoom.getDimension().getHeight()/2+currentRoom.getY1()).subtract(dimension.getPos()).normalize();
+
+            this.dimension.moveBy(direction);
         }
         draw();
     }
