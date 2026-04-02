@@ -6,16 +6,43 @@ public abstract class Item {
     public Image image; 
     public String name;
     public String description;
+    public double cooldownDuration;
+    private double cooldownTimer;
+    private boolean isOnCooldown;
 
-    public Item(Image image, String name, String description) {
+    public Item(Image image, String name, String description, double cooldownDuration) {
         this.image = image;
         this.name = name;
         this.description = description;
+        this.cooldownDuration = cooldownDuration;
     }
 
-    public Effect applyEffect(LivingEntity target){
+    public void updateCooldown(double time) {
+        if (isOnCooldown) {
+            cooldownTimer -= time;
+            if (cooldownTimer <= 0) {
+                cooldownTimer = 0;
+                isOnCooldown = false;
+            }
+        }
+    }
+
+    private void startCooldown() {
+        isOnCooldown = true;
+        cooldownTimer = cooldownDuration;
+    }
+
+    public Effect applyEffect(LivingEntity target) {
         // ToDo
         return new Effect(Effect.EffectType.BURN, 0, target); // to silence the compiler
+    }
+
+    public double getCooldownTimer() {
+        return cooldownTimer;
+    }
+
+    public boolean getIsOnCooldown() {
+        return isOnCooldown;
     }
 
     public abstract void draw();
