@@ -41,8 +41,8 @@ public class Projectile extends Entity {
     private double speed;
     private int tick = 0;
 
-    public Projectile(ProjectileType projType, Point2D position, Point2D velocity, double speed) {
-        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()));
+    public Projectile(ProjectileType projType, Point2D position, Point2D velocity, double speed, Room currentRoom) {
+        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()), currentRoom);
         this.projType = projType;
         this.velocity = velocity.normalize();
         this.speed = projType.speed * speed;

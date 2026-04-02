@@ -11,11 +11,24 @@ public class Hero extends LivingEntity {
     private Weapon[] weapons = new Weapon[2];
     private int heldWeapon;
 
-    public Hero(Point2D position, Sword starterSword, double diffMulti) {
-        super(LivingType.HERO, position, diffMulti);
+    public Hero(Point2D position, Sword starterSword, double diffMulti, Room currentRoom) {
+        super(LivingType.HERO, position, currentRoom, diffMulti);
 
         weapons[0] = starterSword;
         this.heldWeapon = 0;
+    }
+
+    public void move(int dir) {
+        switch (dir) {
+            case 1: // up
+                dimension.moveBy(new Point2D(0, -walkSpeed));
+            case 2: // right
+                dimension.moveBy(new Point2D(walkSpeed, 0));
+            case 3: // down
+                dimension.moveBy(new Point2D(0, walkSpeed));
+            case 4: // left
+                dimension.moveBy(new Point2D(-walkSpeed, 0));
+        }
     }
 
     @Override

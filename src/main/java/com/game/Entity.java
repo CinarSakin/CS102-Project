@@ -3,14 +3,15 @@ package com.game;
 import javafx.geometry.Point2D;
 
 public abstract class Entity {
-
+    protected Room currentRoom;
     protected Dimension dimension;
 
-    public Entity(Dimension dimension) {
+    public Entity(Dimension dimension, Room currentRoom) {
         if (dimension == null) {
             throw new IllegalArgumentException("Dimension cannot be null.");
         }
         this.dimension = dimension;
+        this.currentRoom = currentRoom;
     }
 
     public Dimension getDimension() {
