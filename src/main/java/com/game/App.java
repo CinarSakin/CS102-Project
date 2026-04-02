@@ -1,32 +1,23 @@
 package com.game;
 
-import java.util.ArrayList;
-
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.beans.binding.*;
+import javafx.beans.property.*;
+import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -34,72 +25,114 @@ import javafx.util.Duration;
 
 public class App extends Application {
 
-    private static double UI_SCALE;
-    private static double WIDTH, HEIGHT;
+    private static Scene scene;
+    private static StackPane menuPane, gamePane; // holders of menus/layers
+    private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
 
-    private static StackPane mainPane; // used for transitioning between menus
-    private StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
+    private final DoubleProperty UI_SCALE = new SimpleDoubleProperty(1.0); // load from save
+    private final DoubleProperty uiSizeProp = new SimpleDoubleProperty(1.0);
 
-    private Image longBtnDefault, longBtnPressed, shortBtnDefault, shortBtnPressed, squareBtnDefault, squareBtnPressed;
-    private Image bgImageRaw, bgTexture;
-    private Font customFont, titleFont;
+    private final ObjectProperty<Image> longBtnDefaultProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> longBtnPressedProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> shortBtnDefaultProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> shortBtnPressedProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> squareBtnDefaultProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> squareBtnPressedProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> bgImageProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> bgTextureProp = new SimpleObjectProperty<>();
+
+    private final ObjectProperty<Font> customFontProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Font> titleFontProp = new SimpleObjectProperty<>();
+
+    private void reloadUI() {
+        if (scene == null) return;
+
+        longBtnDefaultProp.set(loadImage("/sprites/ui/longBtnDefault.png", uiSize(48)));
+        longBtnPressedProp.set(loadImage("/sprites/ui/longBtnPressed.png", uiSize(48)));
+        shortBtnDefaultProp.set(loadImage("/sprites/ui/shortBtnDefault.png", uiSize(48)));
+        shortBtnPressedProp.set(loadImage("/sprites/ui/shortBtnPressed.png", uiSize(48)));
+        squareBtnDefaultProp.set(loadImage("/sprites/ui/squareBtnDefault.png", uiSize(48)));
+        squareBtnPressedProp.set(loadImage("/sprites/ui/squareBtnPressed.png", uiSize(48)));
+        bgImageProp.set(loadImage("/sprites/ui/mainMenuBackground.png", scene.getHeight()));
+        bgTextureProp.set(loadImage("/sprites/ui/backgroundTexture.png", scene.getHeight()));
+
+        customFontProp.set(Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiSize(40)));
+        titleFontProp.set(Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiSize(84)));
+    }
 
     @Override
     public void start(Stage primaryStage) {
-        try {
+        try {            
+            Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
+            
+            StackPane root = new StackPane();
+            root.setBackground(bgFill);
+ 
+            menuPane = new StackPane();
+            menuPane.setBackground(bgFill);
+            gamePane = new StackPane();
+            gamePane.setVisible(false);
+            gamePane.getChildren().addAll(
+                new StackPane(),new StackPane(),new StackPane(),new StackPane()
+            );
+ 
+            root.getChildren().addAll(gamePane, menuPane);
 
-            // calculating screen size
-            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
-            WIDTH = screenBounds.getWidth() * .75;
-            HEIGHT = screenBounds.getHeight() * .75;
-            UI_SCALE = 1.0; // will load from settings file
+            Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            scene = new Scene(root, screenBounds.getWidth() * .75, screenBounds.getHeight() * .75);
 
-            // loading assets
-            longBtnDefault = loadImage("/sprites/ui/longBtnDefault.png", uiScale(48));
-            longBtnPressed = loadImage("/sprites/ui/longBtnPressed.png", uiScale(48));   
-            shortBtnDefault = loadImage("/sprites/ui/shortBtnDefault.png", uiScale(48));
-            shortBtnPressed = loadImage("/sprites/ui/shortBtnPressed.png", uiScale(48));   
-            squareBtnDefault = loadImage("/sprites/ui/squareBtnDefault.png", uiScale(48));
-            squareBtnPressed = loadImage("/sprites/ui/squareBtnPressed.png", uiScale(48));   
-            bgImageRaw = loadImage("/sprites/ui/mainMenuBackground.png", HEIGHT);
-            bgTexture  = loadImage("/sprites/ui/backgroundTexture.png", HEIGHT);
-            customFont = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiScale(40));
-            titleFont =  Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiScale(84));
+            uiSizeProp.bind(Bindings.createDoubleBinding(
+                () -> Math.min(scene.getWidth() / 960.0, scene.getHeight() / 720.0) * UI_SCALE.get(),
+                scene.widthProperty(), scene.heightProperty(), UI_SCALE
+            ));
+
+            reloadUI();
+            scene.widthProperty().addListener((obs, oldVal, newVal) -> {reloadUI();});
+            scene.heightProperty().addListener((obs, oldVal, newVal) -> {reloadUI();});
 
             // main menu title
             Text titleText = new Text("DUNGEONFALL");
-            titleText.setFont(titleFont);
+            titleText.fontProperty().bind(titleFontProp);
             titleText.setFill(Color.WHITE);
             titleText.setScaleX(.85);
             titleText.setBoundsType(javafx.scene.text.TextBoundsType.VISUAL);
 
-            javafx.scene.effect.DropShadow outerStroke = new javafx.scene.effect.DropShadow();
+            DropShadow outerStroke = new DropShadow();
             outerStroke.setColor(Color.rgb(103, 15, 255));
             outerStroke.setRadius(12.0);
             outerStroke.setSpread(0.5);
-            titleText.setEffect(outerStroke);   
+            titleText.setEffect(outerStroke);
 
-            // main menu title container
-            VBox mainMenuTitleContainer = new VBox(titleText);
-            mainMenuTitleContainer.setAlignment(Pos.TOP_CENTER);
-            mainMenuTitleContainer.setPadding(new Insets(HEIGHT*.13, 0, 0, 0));
+            StackPane.setAlignment(titleText, Pos.TOP_CENTER);
+            uiSizeProp.addListener((obs, old, val) -> 
+                StackPane.setMargin(titleText, new Insets(scene.getHeight() * .13, 0, 0, 0)));
+            StackPane.setMargin(titleText, new Insets(scene.getHeight() * .13, 0, 0, 0));
 
             // main menu buttons
             Button playBtn = createStyledButton("PLAY", 0);
             Button settingsBtn = createStyledButton("SETTINGS", 0);
-            Button exitBtn = createStyledButton("EXIT", 0);
             Button leaderboardBtn = createStyledButton("LEADERBOARD", 0);
-            
-            VBox mainMenuButtonContainer = new VBox(uiScale(15), playBtn, settingsBtn, leaderboardBtn, exitBtn);
+            Button exitBtn = createStyledButton("EXIT", 0);
+
+            VBox mainMenuButtonContainer = new VBox(playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
+            mainMenuButtonContainer.spacingProperty().bind(uiSizeBinding(15));
 
-            ImageView bgImage = new ImageView(bgImageRaw);
-            Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
-            mainMenu = new StackPane(bgImage, mainMenuTitleContainer, mainMenuButtonContainer );
+            ObjectBinding<Background> background = Bindings.createObjectBinding(() -> {
+                Image img = bgImageProp.get();
+                BackgroundImage bgImg = new BackgroundImage(
+                    img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.CENTER, BackgroundSize.DEFAULT
+                );
+                return new Background(bgImg);
+            }, bgImageProp);
+
+            Region bgRegion = new Region();
+            bgRegion.backgroundProperty().bind(background);
+
+            mainMenu = new StackPane(bgRegion, titleText, mainMenuButtonContainer);
             mainMenu.setBackground(bgFill);
-
-            mainPane = new StackPane(mainMenu);
-            mainPane.setBackground(bgFill);
+            menuPane.getChildren().add(mainMenu);
 
             // settings menu
             Button resetSettingsBtn = createStyledButton("RESET SETTINGS", 0);
@@ -108,38 +141,52 @@ public class App extends Application {
 
             Button exitSettingsBtn = createStyledButton("CLOSE", 0);
             Label settingsTitle = new Label("SETTINGS");
-            settingsTitle.setFont(customFont);
+            settingsTitle.fontProperty().bind(customFontProp);
             settingsTitle.setAlignment(Pos.TOP_CENTER);
 
-            VBox settingsMenuContainer = new VBox(uiScale(15), settingsTitle, resetSettingsBtn, exitSettingsBtn);
+            VBox settingsMenuContainer = new VBox(settingsTitle, resetSettingsBtn, exitSettingsBtn);
             settingsMenuContainer.setAlignment(Pos.CENTER);
+            settingsMenuContainer.spacingProperty().bind(uiSizeBinding(15));
+
+            ObjectBinding<Background> textureBackground = Bindings.createObjectBinding(() -> {
+                Image img = bgTextureProp.get();
+                BackgroundImage bgImg = new BackgroundImage(
+                    img, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.CENTER, BackgroundSize.DEFAULT
+                );
+                return new Background(bgImg);
+            }, bgTextureProp);
+
+            Region settingsBgRegion = new Region();
+            settingsBgRegion.backgroundProperty().bind(textureBackground);
             
-            Rectangle settingsBG = new Rectangle(WIDTH, HEIGHT);
-            settingsBG.setFill(new ImagePattern(bgTexture, 0, 0, bgTexture.getWidth(), HEIGHT, false));
-            settingsMenu = new StackPane(settingsBG, settingsMenuContainer);
+            settingsMenu = new StackPane(settingsBgRegion, settingsMenuContainer);
 
             // gamemode menu
             Button standardBtn = createStyledButton("STANDARD", 0);
             Button infiniteBtn = createStyledButton("INFINITE", 0);
-            Button exitGamemodeBtn = createStyledButton("GO BACK", 1);
-            exitGamemodeBtn.setScaleX(.8);
-            exitGamemodeBtn.setScaleY(.8);
+            Button exitGamemodeBtn = createStyledButton("GO BACK", 1, .8);
 
-            VBox gamemodeButtonContainer = new VBox(uiScale(15), standardBtn, infiniteBtn);
+            VBox gamemodeButtonContainer = new VBox(standardBtn, infiniteBtn);
             gamemodeButtonContainer.setAlignment(Pos.CENTER);
+            gamemodeButtonContainer.spacingProperty().bind(uiSizeBinding(15));
 
             StackPane.setAlignment(exitGamemodeBtn, Pos.BOTTOM_RIGHT);
-            StackPane.setMargin(exitGamemodeBtn, new Insets(0, uiScale(20), uiScale(25), 0));
+            uiSizeProp.addListener((obs, old, val) -> {
+                StackPane.setMargin(exitGamemodeBtn, new Insets(0, uiSize(20), uiSize(25), 0));});
+            StackPane.setMargin(exitGamemodeBtn, new Insets(0, uiSize(20), uiSize(25), 0));
 
-            gamemodeMenu = new StackPane(new ImageView(bgImageRaw), gamemodeButtonContainer, exitGamemodeBtn);
+            Region gmBgRegion = new Region();
+            gmBgRegion.backgroundProperty().bind(background);
+            gamemodeMenu = new StackPane(gmBgRegion, gamemodeButtonContainer, exitGamemodeBtn);
 
             // save file menu
             Button exitSavesBtn = createStyledButton("GO BACK", 1);
-        //    StackPane.setAlignment(exitSavesBtn, Pos.BOTTOM_CENTER);
-
-            Rectangle saveBG = new Rectangle(WIDTH, HEIGHT);
-            saveBG.setFill(new ImagePattern(bgTexture, 0, 0, bgTexture.getWidth(), HEIGHT, false));
-            saveMenu = new StackPane(saveBG, exitSavesBtn);
+            
+            Region saveBgRegion = new Region();
+            saveBgRegion.backgroundProperty().bind(textureBackground);
+            
+            saveMenu = new StackPane(saveBgRegion, exitSavesBtn);
 
             // button functions
             playBtn.setOnAction(e -> changeMenu(gamemodeMenu));
@@ -154,21 +201,16 @@ public class App extends Application {
             exitGamemodeBtn.setOnAction(e -> changeMenu(mainMenu));
 
             exitSavesBtn.setOnAction(e -> changeMenu(gamemodeMenu));
-            
+
             // beginning transitions 
-            mainMenuButtonContainer.setTranslateY(HEIGHT/5);
-            TranslateTransition btnsSlide = slideInTransition(mainMenuButtonContainer, HEIGHT/40, 1, 1.5);
+            mainMenuButtonContainer.setTranslateY(scene.getHeight() / 5);
+            TranslateTransition btnsSlide = slideInTransition(mainMenuButtonContainer, scene.getHeight()/40, 1, 1.5);
             FadeTransition btnsFade = fadeInTransition(mainMenuButtonContainer, 1, 1.5);
-            FadeTransition titleFade = fadeInTransition(mainMenuTitleContainer, 1.3, 1.5);
-            FadeTransition bgFade = fadeInTransition(bgImage, 2.2, .2);
+            FadeTransition titleFade = fadeInTransition(titleText, 1.3, 1.5);
+            FadeTransition bgFade = fadeInTransition(bgRegion, 2.2, .2);
 
             // skip
-            btnsSlide.setOnFinished(e -> {
-                mainPane.setOnMousePressed(null);
-                mainPane.setOnKeyPressed(null);
-            });
-
-            mainPane.setOnMousePressed(e -> {
+            Runnable skipIntro = () -> {
                 btnsFade.stop();
                 btnsSlide.stop();
                 titleFade.stop();
@@ -182,40 +224,45 @@ public class App extends Application {
                 btnsFade.play();
                 btnsSlide.play();
                 titleFade.play();
-                bgImage.setOpacity(1); 
+                bgRegion.setOpacity(1);
+            };
+
+            btnsSlide.setOnFinished(e -> {
+                menuPane.setOnMousePressed(null);
+                menuPane.setOnKeyPressed(null);
             });
 
-            mainPane.setOnKeyPressed(e -> {
-                if (e.getCode() == KeyCode.SPACE){
-                    btnsFade.stop();
-                    btnsSlide.stop();
-                    titleFade.stop();
-                    bgFade.stop();
-                    btnsFade.setDelay(Duration.ZERO);
-                    btnsSlide.setDelay(Duration.ZERO);
-                    titleFade.setDelay(Duration.ZERO);
-                    btnsFade.setRate(2);
-                    btnsSlide.setRate(2);
-                    titleFade.setRate(2);
-                    btnsFade.play();
-                    btnsSlide.play();
-                    titleFade.play();
-                    bgImage.setOpacity(1); 
+            menuPane.setOnMousePressed(e -> skipIntro.run());
+            menuPane.setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.SPACE) {
+                    skipIntro.run();
                 }
             });
 
-            mainPane.getChildren().addAll(gamemodeMenu,saveMenu,settingsMenu);
-            for (javafx.scene.Node n : mainPane.getChildren()){
-                if (n != mainMenu){
+            // adding menus to the menuPane
+            menuPane.getChildren().addAll(gamemodeMenu, saveMenu, settingsMenu);
+            for (Node n : menuPane.getChildren()) {
+                if (n != mainMenu) {
                     n.setVisible(false);
                     n.setOpacity(0);
                 }
             }
 
+            // setting up the stage
             primaryStage.setTitle("Dungeonfall");
-            primaryStage.setScene(new Scene(mainPane, WIDTH, HEIGHT));
-            primaryStage.setResizable(false);
+            primaryStage.setScene(scene);
+            primaryStage.setMinWidth(480);
+            primaryStage.setMinHeight(360);
             primaryStage.show();
+
+            primaryStage.setFullScreenExitHint("");
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.F11) {
+                    primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                }
+            });
+
+            UI_SCALE.set(1);
 
         } catch (Exception e) {
             System.err.println("error: " + e.getMessage());
@@ -223,33 +270,48 @@ public class App extends Application {
     }
 
     private void headShake(Node node) {
-        javafx.animation.Timeline timeline = new javafx.animation.Timeline(
+        Timeline timeline = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(node.translateXProperty(), 0)),
-            new KeyFrame(Duration.millis(30), new KeyValue(node.translateXProperty(), uiScale(-7))),
-            new KeyFrame(Duration.millis(90), new KeyValue(node.translateXProperty(), uiScale(7))),
-            new KeyFrame(Duration.millis(150), new KeyValue(node.translateXProperty(), uiScale(-7))),
-            new KeyFrame(Duration.millis(210), new KeyValue(node.translateXProperty(), uiScale(7))),
-            new KeyFrame(Duration.millis(270), new KeyValue(node.translateXProperty(), uiScale(-7))),
+            new KeyFrame(Duration.millis(30), new KeyValue(node.translateXProperty(), uiSize(-7))),
+            new KeyFrame(Duration.millis(90), new KeyValue(node.translateXProperty(), uiSize(7))),
+            new KeyFrame(Duration.millis(150), new KeyValue(node.translateXProperty(), uiSize(-7))),
+            new KeyFrame(Duration.millis(210), new KeyValue(node.translateXProperty(), uiSize(7))),
+            new KeyFrame(Duration.millis(270), new KeyValue(node.translateXProperty(), uiSize(-7))),
             new KeyFrame(Duration.millis(300), new KeyValue(node.translateXProperty(), 0))
         );
         timeline.play();
     }
 
-    private Button createStyledButton(String label, int type)
-    { // type 0: long, 1: short, 2: square
-        Image def = type == 0 ? longBtnDefault : (type == 1 ? shortBtnDefault : squareBtnDefault);
-        Image press = type == 0 ? longBtnPressed : (type == 1 ? shortBtnPressed : squareBtnPressed);
+    // type 0: long, 1: short, 2: square
+    private Button createStyledButton(String label, int type) {return createStyledButton(label, type, 1.0);}
+
+    private Button createStyledButton(String label, int type, double baseScale){
+        ObjectProperty<Image> defProp = type == 0 ? longBtnDefaultProp : type == 1 ? shortBtnDefaultProp : squareBtnDefaultProp;
+        ObjectProperty<Image> pressProp = type == 0 ? longBtnPressedProp : type == 1 ? shortBtnPressedProp : squareBtnPressedProp;
 
         Button btn = new Button();
-        
-        ImageView btnView = new ImageView(def);
-        btnView.setSmooth(false); 
+        btn.setScaleX(baseScale);
+        btn.setScaleY(baseScale);
+
+        ImageView btnView = new ImageView();
+        btnView.setSmooth(false);
+
+        // press effect
+        BooleanProperty isPressed = new SimpleBooleanProperty(false);
+        btnView.imageProperty().bind(Bindings.createObjectBinding(
+            () -> isPressed.get() ? pressProp.get() : defProp.get(),
+            isPressed, defProp, pressProp
+        ));
 
         Text btnText = new Text(label);
-        btnText.setFont(customFont);
+        btnText.fontProperty().bind(customFontProp);
         btnText.setFill(Color.WHITE);
-        btnText.setTranslateY(uiScale(-4)); 
         btnText.setScaleX(.8);
+
+        btnText.translateYProperty().bind(Bindings.createDoubleBinding(
+            () -> isPressed.get() ? uiSize(2) : uiSize(-4),
+            isPressed, uiSizeProp
+        ));
 
         StackPane btnContent = new StackPane(btnView, btnText);
         btn.setGraphic(btnContent);
@@ -258,32 +320,22 @@ public class App extends Application {
 
         // hover effect
         btn.setOnMouseEntered(e -> {
-        //    btn.setRotate((6*Math.pow(Math.random()-0.5,2) + .8) * (Math.random()<.5 ? 1 : -1));
-            btn.setScaleX(btn.getScaleX() * 1.05);
-            btn.setScaleY(btn.getScaleY() * 1.05);
+            btn.setScaleX(baseScale * 1.05);
+            btn.setScaleY(baseScale * 1.05);
             btnText.setFill(Color.rgb(246, 244, 255));
-            btnView.setEffect(new javafx.scene.effect.ColorAdjust(0.05, .2, 0.05, 0));
+            btnView.setEffect(new ColorAdjust(0.05, .2, 0.05, 0));
         });
         
         btn.setOnMouseExited(e -> {
-        //    btn.setRotate(0);
-            btn.setScaleX(btn.getScaleX() / 1.05);
-            btn.setScaleY(btn.getScaleY() / 1.05);
+            btn.setScaleX(baseScale);
+            btn.setScaleY(baseScale);
             btnText.setFill(Color.WHITE);
             btnView.setEffect(null);
         });
+        
+        btn.setOnMousePressed(e -> isPressed.set(true));
+        btn.setOnMouseReleased(e -> isPressed.set(false));
 
-        // press effect
-        btn.setOnMousePressed(e -> {
-            btnView.setImage(press);
-            btnText.setTranslateY(uiScale(2.5)); 
-        });
-        
-        btn.setOnMouseReleased(e -> {
-            btnView.setImage(def);
-            btnText.setTranslateY(uiScale(-4)); 
-        });
-        
         return btn;
     }
 
@@ -296,7 +348,7 @@ public class App extends Application {
         return fadeTrans;
     }
 
-    private TranslateTransition slideInTransition(Node box, double toY, double duration, double delay){
+    private TranslateTransition slideInTransition(Node box, double toY, double duration, double delay) {
         TranslateTransition slideTrans = new TranslateTransition(Duration.seconds(duration), box);
         slideTrans.setInterpolator(Interpolator.EASE_OUT);
         slideTrans.setToY(toY);
@@ -306,77 +358,46 @@ public class App extends Application {
     }
 
     private void changeMenu(StackPane menu) {
-        mainPane.setMouseTransparent(true);
-        for (javafx.scene.Node n : mainPane.getChildren()){
-            if (n.isVisible()){
-                FadeTransition fadeOut = new FadeTransition(Duration.seconds(.5),n);
+        menuPane.setMouseTransparent(true);
+        for (Node n : menuPane.getChildren()) {
+            if (n.isVisible()) {
+                FadeTransition fadeOut = new FadeTransition(Duration.seconds(.5), n);
                 fadeOut.setToValue(0);
                 fadeOut.setInterpolator(Interpolator.EASE_OUT);
-                fadeOut.setOnFinished(e -> {
-                    n.setVisible(false);
-                });
+                fadeOut.setOnFinished(e -> n.setVisible(false));
                 fadeOut.play();
             }
         }
         menu.setVisible(true);
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(.5),menu);
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(.5), menu);
         fadeIn.setInterpolator(Interpolator.EASE_IN);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
         fadeIn.setDelay(Duration.seconds(.5));
-        fadeIn.setOnFinished(e -> mainPane.setMouseTransparent(false));
+        fadeIn.setOnFinished(e -> menuPane.setMouseTransparent(false));
         fadeIn.play();
     }
 
-    public static double uiScale(double s) {
-        return Math.min(WIDTH/1280.0, HEIGHT/720.0) * UI_SCALE * s;
+    public double uiSize(double s) {
+        return uiSizeProp.get() * s;
     }
 
-    public static Image loadImage(String name, double height){
-        return new Image(
-            App.class.getResourceAsStream(name), 0,
-            height, true, false
-        );
+    public DoubleBinding uiSizeBinding(double s) {
+        return Bindings.createDoubleBinding(() -> uiSizeProp.get() * s, uiSizeProp);
     }
 
-    public static StackPane getsStage(){
-        return mainPane;
+    public Image loadImage(String name, double height) {
+        return new Image(getClass().getResourceAsStream(name), 0, height, true, false);
+    }
+
+    public static StackPane getStage() {return menuPane;}
+
+    public enum GameLayer {GROUND, ENTITIES, VFX, HUD}
+    public static StackPane getGameLayer(GameLayer layer) {
+        return (StackPane) gamePane.getChildren().get(layer.ordinal());
     }
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    public class Game{
-
-        private Level level;
-        private Hero hero;
-
-        
-        public void saveGame() {
-            // ToDo
-            Level.save(this.level);
-        }
-
-        private void loadGame(char saveSlot) {
-            // ToDo
-            Level.constructFromSave(saveSlot);        
-        }
-        private void newGame(int levelCount){
-            //TODO
-            Level.constructNew(levelCount);
-        }
-
-        public static boolean isInBounds(Entity a){
-            ArrayList<Room> rooms = Level.getRooms();
-            for(int i = 0 ; i< rooms.size() ;i++){
-                Room b = rooms.get(i);
-                Dimension roomDim = b.getDimension();
-                if(a.getDimension().insideOf(roomDim)){return true;}
-            }
-            return false;
-        }        
-
-        
     }
 }
