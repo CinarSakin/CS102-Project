@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.geometry.*;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -114,6 +115,11 @@ public class App extends Application {
             Button leaderboardBtn = createStyledButton("LEADERBOARD", 0);
             Button exitBtn = createStyledButton("EXIT", 0);
 
+            playBtn.setCursor(Cursor.HAND);
+            settingsBtn.setCursor(Cursor.HAND);
+            leaderboardBtn.setCursor(Cursor.HAND);
+            exitBtn.setCursor(Cursor.HAND);
+            
             VBox mainMenuButtonContainer = new VBox(playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
             mainMenuButtonContainer.spacingProperty().bind(uiSizeBinding(15));
@@ -182,11 +188,91 @@ public class App extends Application {
 
             // save file menu
             Button exitSavesBtn = createStyledButton("GO BACK", 1);
-            
+
+            Label saveTitle = new Label("SELECT SAVE");
+            saveTitle.fontProperty().bind(titleFontProp);
+            saveTitle.setTextFill(Color.WHITE);
+
+            GridPane slotGrid = new GridPane();
+            slotGrid.setAlignment(Pos.CENTER);
+            slotGrid.setHgap(50);
+            slotGrid.setVgap(50);
+
+            for(int i = 0; i < 6; i++) {
+                int slotIndex = i + 1;
+                boolean isEmpty = true;
+                Button slotBtn = new Button();
+                slotBtn.setBackground(Background.EMPTY);
+                slotBtn.setPadding(Insets.EMPTY);
+
+                Label slotLabel = new Label("SLOT " + slotIndex);
+                slotLabel.fontProperty().bind(customFontProp);
+                slotLabel.setTextFill(Color.rgb(187, 174, 232, 1));
+
+                Label slotInfo = new Label(isEmpty ? "* EMPTY *" : "* CONTINUE *");
+                slotInfo.fontProperty().bind(customFontProp);
+                slotInfo.setTextFill(Color.rgb(219, 218, 220, 1));
+
+                VBox slotTextBox = new VBox(slotLabel, slotInfo);
+                slotTextBox.setAlignment(Pos.CENTER);
+
+                Button deleteBtn = createStyledButton("X", 2, 0.5);
+                deleteBtn.setVisible(!isEmpty);
+
+                StackPane slotPane = new StackPane(slotTextBox);
+                slotPane.setCursor(Cursor.HAND);
+
+                slotPane.minWidthProperty().bind(uiSizeBinding(240)); 
+                slotPane.minHeightProperty().bind(uiSizeBinding(180));
+
+                if (!isEmpty) {
+                    StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
+                    slotPane.getChildren().add(deleteBtn);
+                }
+
+                slotPane.backgroundProperty().bind(Bindings.createObjectBinding(() ->
+                    new Background(new BackgroundFill(
+                        Color.rgb(30, 20, 60, 0.75), new CornerRadii(5), Insets.EMPTY
+                    )), uiSizeProp));
+
+                slotPane.setOnMouseEntered(e -> {
+                    slotPane.setScaleX(1.02);
+                    slotPane.setScaleY(1.02);
+                });
+
+                slotPane.setOnMouseExited(e -> {
+                    slotPane.setScaleX(1.0);
+                    slotPane.setScaleY(1.0);
+                });
+
+                slotPane.setOnMousePressed(e -> {
+                    slotPane.setScaleX(0.98);
+                    slotPane.setScaleY(0.98);
+                });
+
+                slotPane.setOnMouseReleased(e -> {
+                    slotPane.setScaleX(1.0);
+                    slotPane.setScaleY(1.0);
+                    // ToDo (Start the game)
+                });
+
+                deleteBtn.setOnAction(e -> {
+                    // ToDo (Delete Button)
+                });
+                slotGrid.add(slotPane, i % 3, i / 3);
+            }
+            VBox saveLayout = new VBox(40);
+            saveLayout.setAlignment(Pos.CENTER);
+            saveLayout.getChildren().addAll(saveTitle, slotGrid);
+
             Region saveBgRegion = new Region();
             saveBgRegion.backgroundProperty().bind(textureBackground);
-            
-            saveMenu = new StackPane(saveBgRegion, exitSavesBtn);
+
+            StackPane.setAlignment(exitSavesBtn, Pos.BOTTOM_RIGHT);
+            uiSizeProp.addListener((obs, old, val) -> 
+                StackPane.setMargin(exitSavesBtn, new Insets(0, uiSize(20), uiSize(25), 0)));
+            StackPane.setMargin(exitSavesBtn, new Insets(0, uiSize(20), uiSize(25), 0));
+            saveMenu = new StackPane(saveBgRegion, saveLayout, exitSavesBtn);
 
             // button functions
             playBtn.setOnAction(e -> changeMenu(gamemodeMenu));
