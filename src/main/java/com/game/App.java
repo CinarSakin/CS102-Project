@@ -114,11 +114,6 @@ public class App extends Application {
             Button settingsBtn = createStyledButton("SETTINGS", 0);
             Button leaderboardBtn = createStyledButton("LEADERBOARD", 0);
             Button exitBtn = createStyledButton("EXIT", 0);
-
-            playBtn.setCursor(Cursor.HAND);
-            settingsBtn.setCursor(Cursor.HAND);
-            leaderboardBtn.setCursor(Cursor.HAND);
-            exitBtn.setCursor(Cursor.HAND);
             
             VBox mainMenuButtonContainer = new VBox(playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
@@ -195,17 +190,18 @@ public class App extends Application {
 
             GridPane slotGrid = new GridPane();
             slotGrid.setAlignment(Pos.CENTER);
-            slotGrid.setHgap(50);
-            slotGrid.setVgap(50);
+            slotGrid.vgapProperty().bind(uiSizeBinding(40));
+            slotGrid.hgapProperty().bind(uiSizeBinding(40));
 
-            for(int i = 0; i < 6; i++) {
-                int slotIndex = i + 1;
+            for (int i = 0; i < 6; i++) {
+
+                char slotChar = (char)(i + 97);
                 boolean isEmpty = true;
                 Button slotBtn = new Button();
                 slotBtn.setBackground(Background.EMPTY);
                 slotBtn.setPadding(Insets.EMPTY);
 
-                Label slotLabel = new Label("SLOT " + slotIndex);
+                Label slotLabel = new Label(("SLOT " + slotChar).toUpperCase());
                 slotLabel.fontProperty().bind(customFontProp);
                 slotLabel.setTextFill(Color.rgb(187, 174, 232, 1));
 
@@ -222,22 +218,21 @@ public class App extends Application {
                 StackPane slotPane = new StackPane(slotTextBox);
                 slotPane.setCursor(Cursor.HAND);
 
-                slotPane.minWidthProperty().bind(uiSizeBinding(240)); 
-                slotPane.minHeightProperty().bind(uiSizeBinding(180));
+                slotPane.prefWidthProperty().bind(uiSizeBinding(240));
+                slotPane.prefHeightProperty().bind(uiSizeBinding(180));
 
                 if (!isEmpty) {
                     StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
                     slotPane.getChildren().add(deleteBtn);
                 }
 
-                slotPane.backgroundProperty().bind(Bindings.createObjectBinding(() ->
-                    new Background(new BackgroundFill(
-                        Color.rgb(30, 20, 60, 0.75), new CornerRadii(5), Insets.EMPTY
-                    )), uiSizeProp));
+                slotPane.setBackground(new Background(new BackgroundFill(
+                    Color.rgb(30, 20, 60, 0.95), new CornerRadii(15), Insets.EMPTY
+                )));
 
                 slotPane.setOnMouseEntered(e -> {
-                    slotPane.setScaleX(1.02);
-                    slotPane.setScaleY(1.02);
+                    slotPane.setScaleX(1.03);
+                    slotPane.setScaleY(1.03);
                 });
 
                 slotPane.setOnMouseExited(e -> {
@@ -246,14 +241,14 @@ public class App extends Application {
                 });
 
                 slotPane.setOnMousePressed(e -> {
-                    slotPane.setScaleX(0.98);
-                    slotPane.setScaleY(0.98);
+                    slotPane.setScaleX(0.97);
+                    slotPane.setScaleY(0.97);
                 });
 
                 slotPane.setOnMouseReleased(e -> {
                     slotPane.setScaleX(1.0);
                     slotPane.setScaleY(1.0);
-                    // ToDo (Start the game)
+                    onSlotClicked(slotChar); // converts slot index to abcdef
                 });
 
                 deleteBtn.setOnAction(e -> {
@@ -261,7 +256,8 @@ public class App extends Application {
                 });
                 slotGrid.add(slotPane, i % 3, i / 3);
             }
-            VBox saveLayout = new VBox(40);
+            VBox saveLayout = new VBox();
+            saveLayout.spacingProperty().bind(uiSizeBinding(25));
             saveLayout.setAlignment(Pos.CENTER);
             saveLayout.getChildren().addAll(saveTitle, slotGrid);
 
@@ -355,6 +351,21 @@ public class App extends Application {
         }
     }
 
+    // ---- MAIN METHODS ---- //
+
+    private void onSlotClicked(char saveSlot) {
+        menuPane.setVisible(false);
+        // TODO: load game
+        gamePane.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+
+    // ---- METHODS FOR UI ---- //
+
     private void headShake(Node node) {
         Timeline timeline = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(node.translateXProperty(), 0)),
@@ -378,6 +389,8 @@ public class App extends Application {
         Button btn = new Button();
         btn.setScaleX(baseScale);
         btn.setScaleY(baseScale);
+
+        btn.setCursor(Cursor.HAND);
 
         ImageView btnView = new ImageView();
         btnView.setSmooth(false);
@@ -476,14 +489,13 @@ public class App extends Application {
         return new Image(getClass().getResourceAsStream(name), 0, height, true, false);
     }
 
-    public static StackPane getStage() {return menuPane;}
+
+    // ---- GETTER METHODS FOR OUTSIDE APP.JAVA ---- //
+
+    public static Scene getScene() {return scene;}
 
     public enum GameLayer {GROUND, ENTITIES, VFX, HUD}
     public static StackPane getGameLayer(GameLayer layer) {
         return (StackPane) gamePane.getChildren().get(layer.ordinal());
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
