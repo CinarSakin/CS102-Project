@@ -1,10 +1,12 @@
 package com.game;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 public class Hero extends LivingEntity {
     //class variables
     private static Hero CurrentHero;
+    private static 
 
     private Talisman[] talismans = new Talisman[3];
     private Consumable[] consumables = new Consumable[3];
@@ -44,7 +46,10 @@ public class Hero extends LivingEntity {
     //incremented getHero()
     public static Hero getHero() {
         if(CurrentHero != null)return CurrentHero;
-        return CurrentHero = new Hero(null, null, 0);
+        return CurrentHero = new Hero(null, null, 0,null);
        
+    }
+    public void setImage(){
+        //seting image iplementation...
     }
 }

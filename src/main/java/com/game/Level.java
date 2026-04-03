@@ -8,6 +8,7 @@ public class Level {
     public static double gridSize = 20;
     private static Level currentLevel;
     public static int levelNo;
+    public static Hero hero;
     
     // instance variables
     private ArrayList<Room> rooms;
@@ -21,12 +22,9 @@ public class Level {
         generateLevel();
     }
 
-    
-
     private Level(char saveSlot){
         //read from the save file: EREN KOZAN
     }
-
 
     // SAVEING MECHANISMS
     public static Level constructFromSave(char saveSlot) {
@@ -128,5 +126,10 @@ public class Level {
     public static Level getLevel() {
         return currentLevel;
     }
+    public static ArrayList<Room> getRooms(){
+        return Level.getLevel().rooms;
+    }
+    public static void setHero(Hero aHero){hero = aHero;}
+    
 
 }

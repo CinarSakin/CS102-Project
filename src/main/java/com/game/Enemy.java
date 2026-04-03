@@ -72,4 +72,8 @@ public class Enemy extends LivingEntity {
         Point2D position = new Point2D(dimension.getX(), dimension.getY());
         return position.distance(targetEntity.dimension.getPos()) < range;
     }
+
+    public void setImage(){
+        //seting image iplementation...
+    }
 }

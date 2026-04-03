@@ -1,10 +1,12 @@
 package com.game;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 public abstract class Entity {
     protected Room currentRoom;
     protected Dimension dimension;
+    protected Image entityImage;
 
     public Entity(Dimension dimension, Room currentRoom) {
         if (dimension == null) {
@@ -43,4 +45,7 @@ public abstract class Entity {
     public abstract void update();
 
     public abstract void draw();
+
+    public Image getImage(){return this.entityImage;}
+    public abstract void setImage();
 }
