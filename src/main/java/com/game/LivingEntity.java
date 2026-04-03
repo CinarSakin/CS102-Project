@@ -1,46 +1,27 @@
 package com.game;
 
 import java.util.ArrayList;
+
 import javafx.geometry.Point2D;
 
 public abstract class LivingEntity extends Entity {
-    // to suppress the compiler
     public int maxHealth;
     public double health;
     public double armor;
     public double damage;
     public double walkSpeed;
+    public boolean isLookingRight = true;
     public double attackSpeed;
-    public double range; // distance enemies can attack
-    public double fear; // chance of enemies running away in range when they get hit.
-    public LivingType livingType;
+    public double range;
+    public double fear;
+    public LivingType lType;
     public ArrayList<Effect> effects = new ArrayList<>();
-    public ArrayList<LivingAnimStates> animStates = new ArrayList<>();
+    private AnimationManager animManager;
+
     public static LivingType[] livingTypes = new LivingType[]{LivingType.WALKER, LivingType.BOMBER, LivingType.SKELETON};
 
-    enum LivingAnimStates {
-        DIE(3),
-        ATTACK(2),
-        GET_BUFFED(2), // might be transparent
-        WALKING_UP(1),
-        WALKING_DOWN(1),
-        WALKING_RIGHT(1),
-        WALKING_LEFT(1),
-        IDLE(1),
-        TAKE_DAMAGE(0), // might be transparent
-        ;
-        /*
-        DIE > ATTACK > WALKING and IDLE > TAKE_DAMAGE
-
-        anims with lower priority can't play over anims above them.
-        ATTACK can't play while DIE         because DIE > ATTACK
-        IDLE   can play   while TAKE_DAMAGE because IDLE > TAKE_DAMAGE
-        */
-
-        private int priority;
-        private LivingAnimStates(int priority) {
-            this.priority = priority;
-        }
+    enum LivingStates {
+        ATTACK, GET_BUFFED, HEAL, TAKE_DAMAGE, DIE; 
     }
 
     enum LivingType {
@@ -51,9 +32,8 @@ public abstract class LivingEntity extends Entity {
         ;
 
         void attack(LivingEntity targetEntity) {}
+        // TODO boolean isLookingRight in Drawer for knowing if walking animation will be reversed or not.
 
-        // add other enemy types
-        
         private Point2D size;
         private int maxHealth;
         private double health;
@@ -77,18 +57,18 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-    public LivingEntity(LivingType livingType, Point2D position, Room currentRoom, double diffMulti) {
-        super(new Dimension(position.getX(), position.getY(), livingType.size.getX(), livingType.size.getY()), currentRoom);
+    public LivingEntity(LivingType lType, Point2D position, Room currentRoom, double diffMulti) {
+        super(new Dimension(position.getX(), position.getY(), lType.size.getX(), lType.size.getY()), currentRoom);
 
-        this.maxHealth = (int)(livingType.maxHealth * diffMulti);
+        this.maxHealth = (int)(lType.maxHealth * diffMulti);
         this.health = this.maxHealth;
-        this.armor = livingType.armor * diffMulti;
-        this.damage = livingType.damage * diffMulti;
-        this.walkSpeed = livingType.walkSpeed;
-        this.attackSpeed = livingType.attackSpeed;
-        this.fear = livingType.fear;
-        
-        animStates.add(LivingAnimStates.IDLE);
+        this.armor = lType.armor * diffMulti;
+        this.damage = lType.damage * diffMulti;
+        this.walkSpeed = lType.walkSpeed;
+        this.attackSpeed = lType.attackSpeed;
+        this.fear = lType.fear;
+
+        this.animManager = new AnimationManager(lType);
         LivingEntityManager.register(this);
     }
     public static LivingType RandomType() {
@@ -101,41 +81,36 @@ public abstract class LivingEntity extends Entity {
             if (effe.getRemainingDuration() < 0) {
                 effects.remove(effe);
             }
-
             effe.affectEntity();
+            animManager.playAnim(effe.getEffectType());
         }
-
-        if (!App.Game.isInBounds(this)) {
-            Point2D direction = new Point2D(currentRoom.getDimension().getWidth()/2+currentRoom.getX1(), 
-            currentRoom.getDimension().getHeight()/2+currentRoom.getY1()).subtract(dimension.getPos()).normalize();
-
-            this.dimension.moveBy(direction);
-        }
+        
         draw();
+    }
+
+    public void move(double dx, double dy) {
+        if (dimension.insideOf(currentRoom.getDimension())) {
+            dimension.moveBy(dx, dy);
+        }
+    }
+
+    public void move(Point2D velocity) {
+        if (dimension.insideOf(currentRoom.getDimension())) {
+            dimension.moveBy(velocity);
+        }
     }
 
     public void follow(LivingEntity targetEntity) {
         Point2D direction = findTargetDirection(targetEntity);
 
-        dimension.moveBy(direction.multiply(walkSpeed));
+        move(direction.multiply(walkSpeed));
     }
 
     public void attack() {}
 
     @Override
     public void draw() {
-        // selecting animation to play
-        LivingAnimStates animToPlay = animStates.get(0); // IDLE
-
-        // finding largest priority
-        // TODO only one anim can play at a time. maybe a arraylist in anim for that
-        for (LivingAnimStates anim : animStates) {
-            if (animToPlay.priority < anim.priority) {
-                animToPlay = anim;
-            }
-        }
-
-        Animation.playAnim(animToPlay.name());
+        animManager.draw();
     }
 
     @Override
@@ -151,14 +126,15 @@ public abstract class LivingEntity extends Entity {
 
     public void getDamaged(double damage){
         this.health = Math.max(this.health+damage, 0);
-        animStates.add(LivingAnimStates.TAKE_DAMAGE);
+        animManager.playAnim(LivingStates.TAKE_DAMAGE);
 
         if (this.health == 0){
-            animStates.clear();
-            animStates.add(LivingAnimStates.DIE);
-
+            animManager.playAnim(LivingStates.DIE);
             // if hero > lose the game
             // if enemy > despawn
+            if (this.lType != LivingType.HERO) {
+                despawn();
+            }
         }
     }
 }

@@ -7,44 +7,16 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class Animation {
-    public static final Image PLACEHOLDER_IMAGE = new Image("/sprites/ui/longBtnDefault.png");
-
+public class Animated {
     private final long ANIM_DELAY = 5000;
 
     private int noFrames;
     private Image spriteSheet;
     private ImageView sheetViewer;
     private AnimationTimer animTimer;
-
-    enum AnimSpritesheets {
-        // images are placeholders
-        
-        DIE(3, PLACEHOLDER_IMAGE),
-        ATTACK(2, PLACEHOLDER_IMAGE),
-        GET_BUFFED(2, PLACEHOLDER_IMAGE), // might be transparent
-        WALKING_UP(1, PLACEHOLDER_IMAGE),
-        WALKING_DOWN(1, PLACEHOLDER_IMAGE),
-        WALKING_RIGHT(1, PLACEHOLDER_IMAGE),
-        WALKING_LEFT(1, PLACEHOLDER_IMAGE),
-        IDLE(1, PLACEHOLDER_IMAGE),
-        TAKE_DAMAGE(0, PLACEHOLDER_IMAGE), // might be transparent
-        ;
-
-        private int noFrames;
-        private Image spriteSheet;
-        private AnimSpritesheets(int noFrames, Image spriteSheet) {
-            this.noFrames = noFrames;
-            this.spriteSheet = spriteSheet;
-        }
-    }
-
-    public Animation(String LivingAnimStateName) {
-        this(AnimSpritesheets.valueOf(LivingAnimStateName));
-    }
-    private Animation(AnimSpritesheets animSheets) { // spriteSheet will have 1 column
-        this.noFrames = animSheets.noFrames;
-        this.spriteSheet = animSheets.spriteSheet;
+    
+    Animated(Image spriteSheet) { // spriteSheet will have 1 column
+        this.spriteSheet = spriteSheet;
         this.sheetViewer = new ImageView(spriteSheet);
 
         makeTimer();
@@ -74,9 +46,16 @@ public class Animation {
     };
     }
 
-    public static void playAnim(String LivingAnimStateName) {
-        Animation anim = new Animation(LivingAnimStateName);
+    public static void startAnim(Animated anim) {
         anim.animTimer.start();
+    }
+
+    public void playAnim() {
+        this.animTimer.start();
+    }
+    
+    public void pauseAnim() {
+        this.animTimer.stop();
     }
 
     public AnimationTimer getPlayer() {

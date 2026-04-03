@@ -13,7 +13,7 @@ public class Room {
     
     public double dif;
     private final int MAXIMUM_ENEMIES = (int)(10 * dif);
-    public ArrayList<Entity> entitys;
+    public ArrayList<Entity> entities;
     public Dimension dim;
     public Room right;
     public Room left;
@@ -99,14 +99,15 @@ public class Room {
             case NORMAL:
                 double enemyCount = max(5,(int)(Math.random()*MAXIMUM_ENEMIES));
                 for(int i = 0; i < enemyCount; i++ ){
-                    entitys.add(new Enemy(LivingEntity.RandomType(), randomPos(), Hero.getHero(), i));//add enemies in random points inside of the room
+                    new Enemy(LivingEntity.RandomType(), randomPos(), Hero.getHero(), this, dif);
+                    //add enemies in random points inside of the room
                     //If needed an enemys array can be added for less confision while updateing
                 }
                 break;
             case LOOT:
                 int lootCount = (int)(Math.random()*3);
                 for(int i = 0; i < lootCount; i++){
-                    entitys.add(new WorldEntity());// loots will be added inside a predefined(?) places in the room
+                    entities.add(new WorldEntity());// loots will be added inside a predefined(?) places in the room
                 }
                 break;
             case PUZZLE:
@@ -128,6 +129,7 @@ public class Room {
 
     //UPDATERS
     public void update(){}
+
     public void draw(){
         if (left != null) {
         left.draw();
@@ -137,7 +139,7 @@ public class Room {
             for (Hall h : vHalls) h.draw();
             //make a drawing principle for entities and room itself.(first room then entities.)
             //roomdrawing
-            for(Entity e: entitys) e.update();
+            for(Entity e: entities) e.update();
         }
     }
 
@@ -171,6 +173,7 @@ public class Room {
     public double getWidth(){return dim.getWidth();}
     public RoomType getType(){return this.type;}
     public Dimension getDimension(){return this.dim;}
+    public ArrayList<Entity> getEntities() {return this.entities;}
 
     //enumeration
     enum RoomType{

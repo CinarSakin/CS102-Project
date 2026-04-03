@@ -9,9 +9,10 @@ public class Enemy extends LivingEntity {
     private LivingEntity targetEntity;
     private boolean canAttack = true;
 
-    public Enemy(LivingType LT, Point2D position, LivingEntity targetEntity, Room currentRoom, double diffMulti) {
-        super(LT, position, currentRoom, diffMulti);
+    public Enemy(LivingType lType, Point2D position, LivingEntity targetEntity, Room currentRoom, double diffMulti) {
+        super(lType, position, currentRoom, diffMulti);
         this.targetEntity = targetEntity;
+        currentRoom.entities.add(this);
     }
     // @Override // if you can implement like this it will be easier.
     // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
@@ -36,12 +37,15 @@ public class Enemy extends LivingEntity {
     public void attack() {
         Point2D direction = targetEntity.dimension.getPos().subtract(this.dimension.getPos());
         
-        switch(livingType) {
+        switch(lType) {
             case BOMBER:
                 new Projectile(ProjectileType.BOMB, dimension.getPos(), direction, 1, currentRoom);
                 break;
             case SKELETON:
                 new Projectile(ProjectileType.ARROW, dimension.getPos(), direction, 1, currentRoom);
+                break;
+            case WALKER:
+                new Projectile(ProjectileType.MELEE, dimension.getPos(), direction, 1, currentRoom);
                 break;
             // more enemies
             
@@ -53,7 +57,7 @@ public class Enemy extends LivingEntity {
     public void flee() {
         Point2D direction = findTargetDirection(targetEntity).multiply(-1);
 
-        dimension.moveBy(direction.multiply(walkSpeed));
+        move(direction.multiply(walkSpeed));
     }
 
     @Override

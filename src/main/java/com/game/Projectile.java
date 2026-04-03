@@ -6,6 +6,10 @@ import javafx.scene.image.Image;
 public class Projectile extends Entity {
 
     enum ProjectileType {
+        MELEE(
+            new Image("slash.png"),
+            3, new Point2D(8, 8)
+        ),
         BOMB(
             new Image("bomb.png"),
             3, new Point2D(16, 16)

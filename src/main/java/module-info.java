@@ -1,6 +1,10 @@
 module com.game {
     requires javafx.controls;
+    requires javafx.fxml;
     requires transitive javafx.graphics;
-    opens com.game to javafx.graphics, javafx.fxml, javafx.controls;
+
+    requires com.almasb.fxgl.all;
+
+    opens com.game to javafx.graphics, javafx.fxgl.all, javafx.controls;
     exports com.game;
 }

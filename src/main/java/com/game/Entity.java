@@ -25,19 +25,32 @@ public abstract class Entity {
         this.dimension = dimension;
     }
 
-    // COLLISION
-    public boolean intersects(Entity other) {
-        return other != null &&
-               this.dimension.intersects(other.dimension);
+    // MOVEMENT
+    public void move(double dx, double dy) {
+        if (dimension.insideOf(currentRoom.getDimension())) {
+            dimension.moveBy(dx, dy);
+        }
     }
-    
+
+    public void move(Point2D velocity) {
+        if (dimension.insideOf(currentRoom.getDimension())) {
+            dimension.moveBy(velocity);
+        }
+    }
+
     public Point2D findTargetDirection(Entity targetEntity) { // direction from this to targetEntity
         Point2D targetPosition = targetEntity.dimension.getPos();
         return targetPosition.subtract( this.dimension.getPos()).normalize();
     }
 
+    // COLLISION
+    public boolean intersects(Entity other) {
+        return other != null &&
+               this.dimension.intersects(other.dimension);
+    }
+
     public void despawn() {
-        // TODO: remove from game.
+        currentRoom.getEntities().remove(this); // done
     }
 
     public abstract void update();
