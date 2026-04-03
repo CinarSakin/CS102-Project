@@ -6,9 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.geometry.*;
-import javafx.scene.Cursor;
-import javafx.scene.Node;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
@@ -19,8 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -42,8 +39,10 @@ public class App extends Application {
     private final ObjectProperty<Image> bgImageProp = new SimpleObjectProperty<>();
     private final ObjectProperty<Image> bgTextureProp = new SimpleObjectProperty<>();
 
-    private final ObjectProperty<Font> customFontProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Font> titleFontProp = new SimpleObjectProperty<>();
+    private final ObjectProperty<Font> fontPropSmall = new SimpleObjectProperty<>();
+    private final ObjectProperty<Font> fontPropMedium = new SimpleObjectProperty<>();
+    private final ObjectProperty<Font> fontPropBig = new SimpleObjectProperty<>();
+    private String bytebounceFontFamily;
 
     private void reloadUI() {
         if (scene == null) return;
@@ -57,8 +56,10 @@ public class App extends Application {
         bgImageProp.set(loadImage("/sprites/ui/mainMenuBackground.png", scene.getHeight()));
         bgTextureProp.set(loadImage("/sprites/ui/backgroundTexture.png", scene.getHeight()));
 
-        customFontProp.set(Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiSize(40)));
-        titleFontProp.set(Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), uiSize(84)));
+        fontPropSmall.set(Font.font(bytebounceFontFamily, uiSize(40)));
+        fontPropMedium.set(Font.font(bytebounceFontFamily, uiSize(72)));
+        fontPropBig.set(Font.font(bytebounceFontFamily, uiSize(84)));
+
     }
 
     @Override
@@ -82,21 +83,26 @@ public class App extends Application {
             Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
             scene = new Scene(root, screenBounds.getWidth() * .75, screenBounds.getHeight() * .75);
 
+            bytebounceFontFamily = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 1).getFamily();
+
             uiSizeProp.bind(Bindings.createDoubleBinding(
                 () -> Math.min(scene.getWidth() / 960.0, scene.getHeight() / 720.0) * UI_SCALE.get(),
                 scene.widthProperty(), scene.heightProperty(), UI_SCALE
             ));
 
             reloadUI();
-            scene.widthProperty().addListener((obs, oldVal, newVal) -> {reloadUI();});
-            scene.heightProperty().addListener((obs, oldVal, newVal) -> {reloadUI();});
+            PauseTransition resizeDelay = new PauseTransition(Duration.millis(50));
+            resizeDelay.setOnFinished(e -> reloadUI());
+            scene.widthProperty().addListener((obs, oldVal, newVal) -> {resizeDelay.playFromStart();});
+            scene.heightProperty().addListener((obs, oldVal, newVal) -> {resizeDelay.playFromStart();});
+            UI_SCALE.addListener((obs, oldVal, newVal) -> {resizeDelay.playFromStart();});
 
             // main menu title
             Text titleText = new Text("DUNGEONFALL");
-            titleText.fontProperty().bind(titleFontProp);
+            titleText.fontProperty().bind(fontPropBig);
             titleText.setFill(Color.WHITE);
             titleText.setScaleX(.85);
-            titleText.setBoundsType(javafx.scene.text.TextBoundsType.VISUAL);
+            titleText.setBoundsType(TextBoundsType.VISUAL);
 
             DropShadow outerStroke = new DropShadow();
             outerStroke.setColor(Color.rgb(103, 15, 255));
@@ -105,7 +111,7 @@ public class App extends Application {
             titleText.setEffect(outerStroke);
 
             StackPane.setAlignment(titleText, Pos.TOP_CENTER);
-            uiSizeProp.addListener((obs, old, val) -> 
+            scene.heightProperty().addListener((obs, old, val) -> 
                 StackPane.setMargin(titleText, new Insets(scene.getHeight() * .13, 0, 0, 0)));
             StackPane.setMargin(titleText, new Insets(scene.getHeight() * .13, 0, 0, 0));
 
@@ -117,7 +123,7 @@ public class App extends Application {
             
             VBox mainMenuButtonContainer = new VBox(playBtn, settingsBtn, leaderboardBtn, exitBtn);
             mainMenuButtonContainer.setAlignment(Pos.CENTER);
-            mainMenuButtonContainer.spacingProperty().bind(uiSizeBinding(15));
+            mainMenuButtonContainer.spacingProperty().bind(uiSizeBinding(12));
 
             ObjectBinding<Background> background = Bindings.createObjectBinding(() -> {
                 Image img = bgImageProp.get();
@@ -142,7 +148,7 @@ public class App extends Application {
 
             Button exitSettingsBtn = createStyledButton("CLOSE", 0);
             Label settingsTitle = new Label("SETTINGS");
-            settingsTitle.fontProperty().bind(customFontProp);
+            settingsTitle.fontProperty().bind(fontPropSmall);
             settingsTitle.setAlignment(Pos.TOP_CENTER);
 
             VBox settingsMenuContainer = new VBox(settingsTitle, resetSettingsBtn, exitSettingsBtn);
@@ -185,16 +191,15 @@ public class App extends Application {
             Button exitSavesBtn = createStyledButton("GO BACK", 1);
 
             Label saveTitle = new Label("SELECT SAVE");
-            saveTitle.fontProperty().bind(titleFontProp);
+            saveTitle.fontProperty().bind(fontPropMedium);
             saveTitle.setTextFill(Color.WHITE);
 
             GridPane slotGrid = new GridPane();
             slotGrid.setAlignment(Pos.CENTER);
-            slotGrid.vgapProperty().bind(uiSizeBinding(40));
-            slotGrid.hgapProperty().bind(uiSizeBinding(40));
+            slotGrid.vgapProperty().bind(uiSizeBinding(30));
+            slotGrid.hgapProperty().bind(uiSizeBinding(30));
 
             for (int i = 0; i < 6; i++) {
-
                 char slotChar = (char)(i + 97);
                 boolean isEmpty = true;
                 Button slotBtn = new Button();
@@ -202,11 +207,11 @@ public class App extends Application {
                 slotBtn.setPadding(Insets.EMPTY);
 
                 Label slotLabel = new Label(("SLOT " + slotChar).toUpperCase());
-                slotLabel.fontProperty().bind(customFontProp);
+                slotLabel.fontProperty().bind(fontPropSmall);
                 slotLabel.setTextFill(Color.rgb(187, 174, 232, 1));
 
                 Label slotInfo = new Label(isEmpty ? "* EMPTY *" : "* CONTINUE *");
-                slotInfo.fontProperty().bind(customFontProp);
+                slotInfo.fontProperty().bind(fontPropSmall);
                 slotInfo.setTextFill(Color.rgb(219, 218, 220, 1));
 
                 VBox slotTextBox = new VBox(slotLabel, slotInfo);
@@ -218,8 +223,8 @@ public class App extends Application {
                 StackPane slotPane = new StackPane(slotTextBox);
                 slotPane.setCursor(Cursor.HAND);
 
-                slotPane.prefWidthProperty().bind(uiSizeBinding(240));
-                slotPane.prefHeightProperty().bind(uiSizeBinding(180));
+                slotPane.prefWidthProperty().bind(uiSizeBinding(220));
+                slotPane.prefHeightProperty().bind(uiSizeBinding(160));
 
                 if (!isEmpty) {
                     StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
@@ -256,10 +261,15 @@ public class App extends Application {
                 });
                 slotGrid.add(slotPane, i % 3, i / 3);
             }
+            
             VBox saveLayout = new VBox();
-            saveLayout.spacingProperty().bind(uiSizeBinding(25));
+            saveLayout.spacingProperty().bind(uiSizeBinding(35));
             saveLayout.setAlignment(Pos.CENTER);
             saveLayout.getChildren().addAll(saveTitle, slotGrid);
+
+            uiSizeProp.addListener((obs, old, val) -> {
+                StackPane.setMargin(saveLayout, new Insets(0, 0, uiSize(30), 0));});
+            StackPane.setMargin(saveLayout, new Insets(0, 0, uiSize(30), 0));
 
             Region saveBgRegion = new Region();
             saveBgRegion.backgroundProperty().bind(textureBackground);
@@ -403,9 +413,10 @@ public class App extends Application {
         ));
 
         Text btnText = new Text(label);
-        btnText.fontProperty().bind(customFontProp);
+        btnText.fontProperty().bind(fontPropSmall);
         btnText.setFill(Color.WHITE);
         btnText.setScaleX(.8);
+        btnText.setBoundsType(TextBoundsType.VISUAL);
 
         btnText.translateYProperty().bind(Bindings.createDoubleBinding(
             () -> isPressed.get() ? uiSize(2) : uiSize(-4),
