@@ -3,15 +3,17 @@ package com.game;
 import javafx.geometry.Point2D;
 
 public abstract class Entity {
-    protected Room currentRoom;
+    protected Area currentArea;
     protected Dimension dimension;
 
-    public Entity(Dimension dimension, Room currentRoom) {
+    public Entity(Dimension dimension, Area currentArea) {
         if (dimension == null) {
             throw new IllegalArgumentException("Dimension cannot be null.");
         }
         this.dimension = dimension;
-        this.currentRoom = currentRoom;
+        this.currentArea = currentArea;
+
+        currentArea.register(this);
     }
 
     public Dimension getDimension() {
@@ -27,13 +29,13 @@ public abstract class Entity {
 
     // MOVEMENT
     public void move(double dx, double dy) {
-        if (dimension.insideOf(currentRoom.getDimension())) {
+        if (dimension.insideOf(currentArea.getDimension())) {
             dimension.moveBy(dx, dy);
         }
     }
 
     public void move(Point2D velocity) {
-        if (dimension.insideOf(currentRoom.getDimension())) {
+        if (dimension.insideOf(currentArea.getDimension())) {
             dimension.moveBy(velocity);
         }
     }
@@ -50,7 +52,7 @@ public abstract class Entity {
     }
 
     public void despawn() {
-        currentRoom.getEntities().remove(this); // done
+        currentArea.unregister(this);
     }
 
     public abstract void update();

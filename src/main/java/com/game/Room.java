@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
 
-public class Room {
+public class Room extends Area {
     //class variables
     public static final int MINIMUM_SIZE = 80;//1 tile is 4 units for measurement
 
@@ -13,7 +13,6 @@ public class Room {
     
     public double dif;
     private final int MAXIMUM_ENEMIES = (int)(10 * dif);
-    public ArrayList<Entity> entities;
     public Dimension dim;
     public Room right;
     public Room left;
@@ -29,12 +28,12 @@ public class Room {
         this(x1, y1, x2, y2, (int)(Math.random()*4));
     }
     public Room(double x1, double y1, double x2, double y2, int newType){
+        super(new Dimension(x1, y1, x2-x1, y2-y1));
         if(newType == 0)type = RoomType.PORTAL;
         if(newType == 1)type = RoomType.NORMAL;
         if(newType == 2)type = RoomType.LOOT;
         if(newType == 1)type = RoomType.NORMAL;
         if(newType == 1)type = RoomType.NORMAL;
-        dim = new Dimension(x1, y1, x2-x1, y2-y1);
         hNeighbors = new ArrayList<Room>();
         vNeighbors = new ArrayList<Room>();
         hHalls = new ArrayList<Hall>();
@@ -107,7 +106,7 @@ public class Room {
             case LOOT:
                 int lootCount = (int)(Math.random()*3);
                 for(int i = 0; i < lootCount; i++){
-                    entities.add(new WorldEntity());// loots will be added inside a predefined(?) places in the room
+                    new WorldEntity();// loots will be added inside a predefined(?) places in the room
                 }
                 break;
             case PUZZLE:
@@ -165,15 +164,8 @@ public class Room {
     }
 
     //GETTER SETTERS
-    public double getX1(){return dim.getX();}
-    public double getY1(){return dim.getY();}
-    public double getX2(){return dim.getWidth() + dim.getX();}
-    public double getY2(){return getHeight() + dim.getY();}
-    public double getHeight(){return dim.getHeight();}
-    public double getWidth(){return dim.getWidth();}
     public RoomType getType(){return this.type;}
-    public Dimension getDimension(){return this.dim;}
-    public ArrayList<Entity> getEntities() {return this.entities;}
+
 
     //enumeration
     enum RoomType{

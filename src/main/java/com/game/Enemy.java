@@ -2,6 +2,7 @@ package com.game;
 
 import com.game.Effect.EffectType;
 import com.game.Projectile.ProjectileType;
+import com.game.Projectile.TargetType;
 
 import javafx.geometry.Point2D;
 
@@ -12,7 +13,6 @@ public class Enemy extends LivingEntity {
     public Enemy(LivingType lType, Point2D position, LivingEntity targetEntity, Room currentRoom, double diffMulti) {
         super(lType, position, currentRoom, diffMulti);
         this.targetEntity = targetEntity;
-        currentRoom.entities.add(this);
     }
     // @Override // if you can implement like this it will be easier.
     // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
@@ -39,13 +39,13 @@ public class Enemy extends LivingEntity {
         
         switch(lType) {
             case BOMBER:
-                new Projectile(ProjectileType.BOMB, dimension.getPos(), direction, 1, currentRoom);
+                new Projectile(ProjectileType.BOMB, TargetType.ALL, dimension.getPos(), direction, 1, currentArea);
                 break;
             case SKELETON:
-                new Projectile(ProjectileType.ARROW, dimension.getPos(), direction, 1, currentRoom);
+                new Projectile(ProjectileType.ARROW, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
                 break;
             case WALKER:
-                new Projectile(ProjectileType.MELEE, dimension.getPos(), direction, 1, currentRoom);
+                // melee animation and hit check
                 break;
             // more enemies
             

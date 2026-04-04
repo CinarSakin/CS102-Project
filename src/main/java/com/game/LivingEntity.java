@@ -57,8 +57,8 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-    public LivingEntity(LivingType lType, Point2D position, Room currentRoom, double diffMulti) {
-        super(new Dimension(position.getX(), position.getY(), lType.size.getX(), lType.size.getY()), currentRoom);
+    public LivingEntity(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
+        super(new Dimension(position.getX(), position.getY(), lType.size.getX(), lType.size.getY()), currentArea);
 
         this.maxHealth = (int)(lType.maxHealth * diffMulti);
         this.health = this.maxHealth;
@@ -69,7 +69,6 @@ public abstract class LivingEntity extends Entity {
         this.fear = lType.fear;
 
         this.animManager = new AnimationManager(lType);
-        LivingEntityManager.register(this);
     }
     public static LivingType RandomType() {
         int rand = (int) (Math.random()*livingTypes.length);
@@ -89,15 +88,11 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void move(double dx, double dy) {
-        if (dimension.insideOf(currentRoom.getDimension())) {
-            dimension.moveBy(dx, dy);
-        }
+        dimension.moveByWithCollision(currentArea, dx, dy);
     }
 
     public void move(Point2D velocity) {
-        if (dimension.insideOf(currentRoom.getDimension())) {
-            dimension.moveBy(velocity);
-        }
+        dimension.moveByWithCollision(currentArea, velocity);
     }
 
     public void follow(LivingEntity targetEntity) {
@@ -116,7 +111,6 @@ public abstract class LivingEntity extends Entity {
     @Override
     public void despawn() {
         super.despawn(); 
-        LivingEntityManager.unregister(this);
     }
 
     public void heal(double healAmount) {

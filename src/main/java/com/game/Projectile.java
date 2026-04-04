@@ -1,11 +1,14 @@
 package com.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Projectile extends Entity {
 
-    enum ProjectileType {
+    public enum ProjectileType {
         MELEE(
             new Image("slash.png"),
             3, new Point2D(8, 8)
@@ -44,28 +47,48 @@ public class Projectile extends Entity {
     private Point2D velocity;
     private double speed;
     private int tick = 0;
+    private TargetType targetType;
 
-    public Projectile(ProjectileType projType, Point2D position, Point2D velocity, double speed, Room currentRoom) {
-        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()), currentRoom);
+    public enum TargetType {HERO, ENEMIES, ALL}
+
+    public Projectile(ProjectileType projType, TargetType target, Point2D position, Point2D velocity, double speed, Area currentArea) {
+        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()), (Room)(currentArea));
         this.projType = projType;
         this.velocity = velocity.normalize();
         this.speed = projType.speed * speed;
+        this.targetType = target;
     }
 
     public void update() {
         
         dimension.moveBy(velocity.multiply(speed));
-        // will add check for walls
         
+        Point2D center = dimension.getCenter();
+        Area areaAtCenter = Dimension.findAreaAt(center);
+    
+        if (areaAtCenter == null) {
+            despawn(); return;
+        }
+    
+        if (Dimension.findAreaAt(getLeadingPoint()) == null){
+            despawn(); return;
+        }
+    
+        if (areaAtCenter != currentArea) {
+            currentArea.unregister(this);
+            currentArea = areaAtCenter;
+            currentArea.register(this);
+        }
+
         if (projType.equals(ProjectileType.BOMB)){
             speed = Math.max(speed*.95-.03, 0); // slows down
             tick++;
             if (tick > 120){
                 // ToDo: explode effect
-                for (LivingEntity living : LivingEntityManager.getLivingEntities()){
-                    double dist = living.getDimension().distanceTo(dimension);
+                for (LivingEntity target : getTargets()){
+                    double dist = target.getDimension().distanceTo(dimension);
                     if (dist < 14){
-                        living.getDamaged(300/(dist+6)); // damage range from 50 to 15
+                        target.getDamaged(300/(dist+6)); // damage range from 50 to 15
                     }                    
                 }
             }
@@ -74,9 +97,27 @@ public class Projectile extends Entity {
             
         }
         else{ // arrow
-            // hits enemies if shooted by the hero
-            // hits only hero if shooted by an enemy
+            for (LivingEntity target : getTargets()){
+                if (dimension.intersects(target.dimension)) {
+
+                }
+            }
         }
+    }
+
+    public ArrayList<? extends LivingEntity> getTargets() {
+        return switch (this.targetType) {
+            case HERO -> new ArrayList<>(List.of(Hero.getHero()));
+            case ENEMIES -> currentArea.getEnemies();
+            case ALL -> currentArea.getLivingEntities();
+            default -> new ArrayList<>();
+        };
+    }
+
+    private Point2D getLeadingPoint() {
+        double lx = (velocity.getX() >= 0) ? dimension.getRightX() : dimension.getX();
+        double ly = (velocity.getY() >= 0) ? dimension.getBottomY() : dimension.getY();
+        return new Point2D(lx, ly);
     }
 
     @Override
