@@ -80,4 +80,7 @@ public class Projectile extends Entity {
 
     @Override
     public void draw() {} // todo
+
+    @Override
+    public  void setImage(){}//TODO
 }

@@ -99,14 +99,15 @@ public class Room {
             case NORMAL:
                 double enemyCount = max(5,(int)(Math.random()*MAXIMUM_ENEMIES));
                 for(int i = 0; i < enemyCount; i++ ){
-                    entitys.add(new Enemy(LivingEntity.RandomType(), randomPos(), Hero.getHero(), i));//add enemies in random points inside of the room
+                    entitys.add(new Enemy(LivingEntity.RandomType(), randomPos(), Hero.getHero(), this, dif));
+                    //add enemies in random points inside of the room
                     //If needed an enemys array can be added for less confision while updateing
                 }
                 break;
             case LOOT:
                 int lootCount = (int)(Math.random()*3);
                 for(int i = 0; i < lootCount; i++){
-                    entitys.add(new WorldEntity());// loots will be added inside a predefined(?) places in the room
+                    entitys.add(new WorldObject());// loots will be added inside a predefined(?) places in the room
                 }
                 break;
             case PUZZLE:
@@ -114,10 +115,10 @@ public class Room {
                 
                 break;
             case BOSS:
-                //Create a boss in the middle of the room which can or cannot move according to the move patern of its
+                //Create a boss in the middle of the room which can 
+                // or cannot move according to the move patern of its
                 
                 break;
-                
             default:
                 throw new AssertionError();
         }
@@ -151,12 +152,10 @@ public class Room {
     private static double random(double a, double b){
         return Math.random()*(b-a)+a;
     }
-
     private static double max(double x, double a){
         if(a<x){return x;}
         return a;
     }
-
     private static double min(double x, double a){
         if(x>a){return x;}
         return a;
@@ -171,6 +170,8 @@ public class Room {
     public double getWidth(){return dim.getWidth();}
     public RoomType getType(){return this.type;}
     public Dimension getDimension(){return this.dim;}
+    public ArrayList<Entity> getEntities(){return this.entitys;}
+    
 
     //enumeration
     enum RoomType{
