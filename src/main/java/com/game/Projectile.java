@@ -57,12 +57,15 @@ public class Projectile extends Entity {
             speed = Math.max(speed*.95-.03, 0); // slows down
             tick++;
             if (tick > 120){
-                // ToDo: explode effect
-                for (LivingEntity living : LivingEntityManager.getLivingEntities()){
-                    double dist = living.getDimension().distanceTo(dimension);
-                    if (dist < 14){
-                        living.getDamaged(300/(dist+6)); // damage range from 50 to 15
-                    }                    
+                // TODO: explode effect
+                if (tick > 120) {
+                    for (LivingEntity living : LivingEntityManager.getLivingEntities()) {
+                        double dist = living.getDimension().getCenter().distance(dimension.getCenter());
+                        if (dist < 50) { // Patlama yarıçapı
+                            living.getDamaged(100 / (dist / 10 + 1)); 
+                        }
+                    }
+                    this.despawn();
                 }
             }
         }

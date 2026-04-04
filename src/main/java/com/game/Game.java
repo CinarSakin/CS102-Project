@@ -27,13 +27,13 @@ public class Game{
     AnimationTimer timer = new AnimationTimer() {
     @Override
     public void handle(long now) {
-        // 1. Girişleri kontrol et
+        // Look at user input...
         handleInput();
 
-        // 2. Mantığı güncelle (Hareket, Çarpışma, Yapay Zeka)
+        // update game
         updateGame();
 
-        // 3. Çizim yap
+        // draw everything
         renderGame(gc); 
     }
 };
@@ -92,7 +92,7 @@ private void renderGame(GraphicsContext gc) {
 
     public void saveGame() {
         // ToDo
-        Level.save(this.level);
+        Level.save();
     }
 
     private void loadGame(char aSaveSlot) {
@@ -117,6 +117,27 @@ private void renderGame(GraphicsContext gc) {
         }
         return false;
     }        
+
+    public static boolean isPositionValid(Entity a, double nextX, double nextY) {
+        // Create a temporary dimension for where the entity wants to move
+        Dimension nextPos = new Dimension(nextX, nextY, a.getDimension().getWidth(), a.getDimension().getHeight());
+        
+        // Check if this potential position is inside any Room
+        for (Room room : Level.getRooms()) {
+            if (nextPos.insideOf(room.getDimension())) {
+                return true; 
+            }
+        }
+        
+        // Check if it's inside any Hall
+        for (Hall hall : Level.getHalls()) { 
+            if (nextPos.insideOf(hall.dim)) {
+                return true;
+            }
+        }
+        
+        return false; 
+    }
 
     public static Stage getStage(){ return currentStage;}
 }

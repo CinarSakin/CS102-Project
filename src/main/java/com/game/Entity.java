@@ -39,9 +39,13 @@ public abstract class Entity {
     }
 
     public void despawn() {
-        // TODO: remove from game.
+        if (currentRoom != null && currentRoom.entitys != null) {
+            currentRoom.entitys.remove(this);
+        }
+        if (this instanceof LivingEntity) {
+            LivingEntityManager.unregister((LivingEntity) this);
+        }
     }
-
     public abstract void update();
 
     public abstract void draw();

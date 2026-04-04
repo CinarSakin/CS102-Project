@@ -86,8 +86,10 @@ public class Dimension {
 
     // methods
     public boolean intersects(Dimension other) {
-        if (other == null) return false;
-        return this.getBoundingBox().intersects(other.getBoundingBox());
+        return this.x < other.x + other.width &&
+            this.x + this.width > other.x &&
+            this.y < other.y + other.height &&
+            this.y + this.height > other.y;
     }
 
     public boolean insideOf(Dimension other){

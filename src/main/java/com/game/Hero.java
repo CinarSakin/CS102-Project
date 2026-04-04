@@ -35,7 +35,18 @@ public class Hero extends LivingEntity {
 
     @Override
     public void update() {
-        // todo
+        // Efektleri güncelle (zehir, yanma vs.)
+        for (int i = effects.size() - 1; i >= 0; i--) {
+            effects.get(i).affectEntity();
+            if (effects.get(i).getRemainingDuration() <= 0) {
+                effects.remove(i);
+            }
+        }
+        // Ölüp ölmediğini kontrol et
+        if (this.health <= 0) {
+            animStates.add(LivingAnimStates.DIE);
+            // Oyun bitiş ekranını tetikle
+        }
     }
 
     @Override
