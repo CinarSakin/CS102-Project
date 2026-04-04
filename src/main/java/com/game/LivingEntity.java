@@ -16,12 +16,11 @@ public abstract class LivingEntity extends Entity {
     public double fear;
     public LivingType lType;
     public ArrayList<Effect> effects = new ArrayList<>();
-    private AnimationManager animManager;
 
     public static LivingType[] livingTypes = new LivingType[]{LivingType.WALKER, LivingType.BOMBER, LivingType.SKELETON};
 
     enum LivingStates {
-        ATTACK, GET_BUFFED, HEAL, TAKE_DAMAGE, DIE; 
+        ATTACK, HEAL, TAKE_DAMAGE, DIE; 
     }
 
     enum LivingType {
@@ -68,7 +67,7 @@ public abstract class LivingEntity extends Entity {
         this.attackSpeed = lType.attackSpeed;
         this.fear = lType.fear;
 
-        this.animManager = new AnimationManager(lType);
+        this.animManager = new AnimationManager(this);
     }
     public static LivingType RandomType() {
         int rand = (int) (Math.random()*livingTypes.length);
@@ -77,9 +76,6 @@ public abstract class LivingEntity extends Entity {
 
     public void update() {
         for (Effect effe : effects) {
-            if (effe.getRemainingDuration() < 0) {
-                effects.remove(effe);
-            }
             effe.affectEntity();
             animManager.playAnim(effe.getEffectType());
         }
@@ -87,11 +83,19 @@ public abstract class LivingEntity extends Entity {
         draw();
     }
 
-    public void move(double dx, double dy) {
-        dimension.moveByWithCollision(currentArea, dx, dy);
+    public void updateLookDirection(double dx) {
+        isLookingRight = Math.signum(dx) >= 0;
     }
 
+    public void move(double dx, double dy) {
+        updateLookDirection(dx);
+
+        dimension.moveByWithCollision(currentArea, dx, dy);
+    }
+    
     public void move(Point2D velocity) {
+        updateLookDirection(velocity.getX());
+
         dimension.moveByWithCollision(currentArea, velocity);
     }
 

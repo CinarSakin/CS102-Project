@@ -6,8 +6,8 @@ public abstract class Weapon extends Item {
     private double attackSpeed;
     private double damage;
     
-    protected Weapon(Image image, String name, String description, double attackSpeed, double damage) {
-        super(image, name, description);
+    protected Weapon(Image image, String name, String description, double cooldownDuration, double attackSpeed, double damage) {
+        super(image, name, description, cooldownDuration);
         this.attackSpeed = attackSpeed;
         this.damage = damage;
     }

@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 public abstract class Entity {
     protected Area currentArea;
     protected Dimension dimension;
+    protected AnimationManager animManager;
 
     public Entity(Dimension dimension, Area currentArea) {
         if (dimension == null) {

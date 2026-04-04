@@ -14,10 +14,6 @@ public class Enemy extends LivingEntity {
         super(lType, position, currentRoom, diffMulti);
         this.targetEntity = targetEntity;
     }
-    // @Override // if you can implement like this it will be easier.
-    // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
-
-    // }
     
     @Override
     public void update() {
@@ -28,14 +24,14 @@ public class Enemy extends LivingEntity {
         else {
             if (canAttack) {
                 attack();
-                new Effect(EffectType.TIRE, ((long)attackSpeed)*1, this).startEffect(); // cooldown
+                Effect.startEffect(new Effect(EffectType.TIRE, ((long)attackSpeed)*1, this)); // cooldown
             }
         }
     }
 
     @Override
     public void attack() {
-        Point2D direction = targetEntity.dimension.getPos().subtract(this.dimension.getPos());
+        Point2D direction = findTargetDirection(targetEntity);
         
         switch(lType) {
             case BOMBER:
@@ -64,7 +60,7 @@ public class Enemy extends LivingEntity {
     public void getDamaged(double damage) {
         super.getDamaged(damage);
         if (0.15 < Math.random()*fear && inRange()) {
-            new Effect(EffectType.FEAR, (long)fear*100, this).startEffect();
+            Effect.startEffect(new Effect(EffectType.FEAR, (long)fear*100, this));
         }
     }
     

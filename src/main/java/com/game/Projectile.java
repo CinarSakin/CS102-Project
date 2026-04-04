@@ -3,6 +3,8 @@ package com.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.game.Effect.EffectType;
+
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
@@ -57,6 +59,8 @@ public class Projectile extends Entity {
         this.velocity = velocity.normalize();
         this.speed = projType.speed * speed;
         this.targetType = target;
+
+        this.animManager = new AnimationManager(projType);
     }
 
     public void update() {
@@ -84,11 +88,13 @@ public class Projectile extends Entity {
             speed = Math.max(speed*.95-.03, 0); // slows down
             tick++;
             if (tick > 120){
-                // ToDo: explode effect
+                animManager.playAnim(ProjectileType.BOMB);
+
                 for (LivingEntity target : getTargets()){
                     double dist = target.getDimension().distanceTo(dimension);
                     if (dist < 14){
                         target.getDamaged(300/(dist+6)); // damage range from 50 to 15
+                        Effect.startEffect(new Effect(EffectType.BURN, 1000, null));
                     }                    
                 }
             }

@@ -5,9 +5,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class Game extends Application{
+public class Game extends Application {
 
     private Level level;
     private Hero hero;
@@ -30,6 +31,10 @@ public class Game extends Application{
             stage.setTitle("BSP Dungeon Generator");
             stage.show();
         }while(true);
+        
+    }
+
+    public void render(GraphicsContext g, Level level) {
         
     }
 

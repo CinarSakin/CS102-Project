@@ -1,11 +1,13 @@
 package com.game;
 
 public class Effect {
+    private AnimationManager animManager;
+
     private EffectType effectType;
     private long remainingDuration;
     private LivingEntity targetEntity;
 
-    enum EffectType {
+    public enum EffectType {
         FEAR {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
@@ -39,11 +41,18 @@ public class Effect {
                 targetEntity.attackSpeed += -1;
             }
         },
+
         HEAL {
-            @Override
-            public void affectEntity(LivingEntity targetEntity) {
-                targetEntity.health += 1;
-            }
+            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.health += 10; }
+        },
+        SPEED_UP{
+            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.walkSpeed += 10; }
+        },
+        ATK_SPEED_UP{
+            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.attackSpeed += 10; }
+        },
+        DMG_UP{
+            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.damage += 10; }
         },
         ;
 
@@ -54,19 +63,31 @@ public class Effect {
         this.effectType = effectType;
         this.remainingDuration = remainingDuration ;
         this.targetEntity = targetEntity;
+
+        this.animManager = new AnimationManager(effectType);
     }
 
-    public void startEffect() {
-        affectEntity();
-        targetEntity.effects.add(this);
+    public static void startEffect(Effect effe) {
+        effe.affectEntity();
+        effe.targetEntity.effects.add(effe);
+
+        effe.animManager.playAnim(effe.effectType);
     }
 
     public void affectEntity() {
         effectType.affectEntity(targetEntity);
         remainingDuration += -100;
+
+        if (remainingDuration < 0) { stopEffect(); }
+    }
+
+    public void stopEffect() {
+        targetEntity.effects.remove(this);
     }
 
     public long getRemainingDuration() {
         return remainingDuration;
     }
+
+    public Effect.EffectType getEffectType() { return effectType; }
 }
