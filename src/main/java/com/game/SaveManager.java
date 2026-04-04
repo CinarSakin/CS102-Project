@@ -1,0 +1,65 @@
+package com.game;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+public class SaveManager {
+    
+    // game directory
+    public static File getSaveDirectory() {
+        String os = System.getProperty("os.name").toLowerCase();
+        
+        String gameFolderName = ".dungeonfall"; 
+        File saveDirectory;
+
+        if (os.contains("win")) {
+            saveDirectory = new File(System.getenv("APPDATA"), gameFolderName);
+
+        } else {
+            saveDirectory = new File(System.getProperty("user.home"), gameFolderName);
+        }
+
+        if (!saveDirectory.exists()) {
+            saveDirectory.mkdirs();
+        }
+
+        return saveDirectory;
+    }
+
+    // settings saver
+    public static void saveSettings() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        File settingsFile = new File(getSaveDirectory(), "settings.json");
+
+        try (FileWriter writer = new FileWriter(settingsFile)) {
+            gson.toJson(GameSettings.instance, writer);
+        } catch (IOException e) {
+            System.err.println("Settings could not be saved: " + e.getMessage());
+        }
+    }
+
+    public static GameSettings loadSettings() {
+        File settingsFile = new File(getSaveDirectory(), "settings.json");
+
+        if (settingsFile.exists()) {
+            try (FileReader reader = new FileReader(settingsFile)) {               
+                GameSettings loadedSettings = (new Gson()).fromJson(reader, GameSettings.class);
+                if (loadedSettings != null) {
+                    GameSettings.instance = loadedSettings;
+                }
+                
+            } catch (Exception e) {
+                System.err.println("Error when reading settings.json: " + e.getMessage());
+            }
+        } else {
+            System.out.println("There is no settings file. Creating a new one.");
+        }
+
+        return GameSettings.instance;
+    }
+}

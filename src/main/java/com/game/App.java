@@ -2,7 +2,6 @@ package com.game;
 
 import javafx.animation.*;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.geometry.*;
@@ -19,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 public class App extends Application {
@@ -65,6 +65,9 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {            
+            GameSettings settings = SaveManager.loadSettings();
+            UI_SCALE.set(settings.uiScale);
+
             Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
             
             StackPane root = new StackPane();
@@ -200,7 +203,7 @@ public class App extends Application {
             slotGrid.hgapProperty().bind(uiSizeBinding(30));
 
             for (int i = 0; i < 6; i++) {
-                char slotChar = (char)(i + 97);
+                char slotChar = (char)(i + 65);
                 boolean isEmpty = true;
                 Button slotBtn = new Button();
                 slotBtn.setBackground(Background.EMPTY);
@@ -284,7 +287,9 @@ public class App extends Application {
             playBtn.setOnAction(e -> changeMenu(gamemodeMenu));
             settingsBtn.setOnAction(e -> changeMenu(settingsMenu));
             leaderboardBtn.setOnAction(e -> headShake(leaderboardBtn));
-            exitBtn.setOnAction(e -> Platform.exit());
+            exitBtn.setOnAction(e ->
+                primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))
+            );
 
             exitSettingsBtn.setOnAction(e -> changeMenu(mainMenu));
 
@@ -345,7 +350,16 @@ public class App extends Application {
             primaryStage.setScene(scene);
             primaryStage.setMinWidth(480);
             primaryStage.setMinHeight(360);
-            primaryStage.show();
+
+            // load window
+            if (settings.windowX != -1) {
+                primaryStage.setX(settings.windowX);
+                primaryStage.setY(settings.windowY);
+                primaryStage.setWidth(settings.windowWidth);
+                primaryStage.setHeight(settings.windowHeight);
+                primaryStage.setMaximized(settings.isMaximized);
+                primaryStage.setFullScreen(settings.isFullscreen);
+            }
 
             primaryStage.setFullScreenExitHint("");
             scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -354,12 +368,31 @@ public class App extends Application {
                 }
             });
 
-            UI_SCALE.set(1);
+            primaryStage.show();
+
+            // saver
+            primaryStage.setOnCloseRequest(e -> {
+                settings.isFullscreen = primaryStage.isFullScreen();
+                settings.isMaximized = primaryStage.isMaximized();
+
+                if (primaryStage.isFullScreen()) primaryStage.setFullScreen(false);
+                if (primaryStage.isMaximized()) primaryStage.setMaximized(false);
+
+                settings.windowX = primaryStage.getX();
+                settings.windowY = primaryStage.getY();
+                settings.windowWidth = primaryStage.getWidth();
+                settings.windowHeight = primaryStage.getHeight();
+
+                settings.uiScale = UI_SCALE.get();
+
+                SaveManager.saveSettings();
+            });
 
         } catch (Exception e) {
             System.err.println("error: " + e.getMessage());
         }
     }
+
 
     // ---- MAIN METHODS ---- //
 

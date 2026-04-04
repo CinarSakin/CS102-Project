@@ -5,6 +5,8 @@ module com.game {
 
     requires com.almasb.fxgl.all;
 
-    opens com.game to javafx.graphics, javafx.fxgl.all, javafx.controls;
+    requires com.google.gson;
+
+    opens com.game to javafx.graphics, javafx.fxgl.all, javafx.controls, com.google.gson;
     exports com.game;
 }
