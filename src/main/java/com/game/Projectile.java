@@ -134,4 +134,8 @@ public class Projectile extends Entity {
         return lifeTime;
     }
 
+    public ProjectileType getType() {
+        return projType;
+    }
+
 }

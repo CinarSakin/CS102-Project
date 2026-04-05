@@ -66,8 +66,9 @@ public abstract class LivingEntity extends Entity {
         this.walkSpeed = lType.walkSpeed;
         this.attackSpeed = lType.attackSpeed;
         this.fear = lType.fear;
+        this.lType = lType;
 
-        this.animManager = new AnimationManager(this);
+    //    this.animManager = new AnimationManager(this);
     }
     public static LivingType RandomType() {
         int rand = (int) (Math.random()*livingTypes.length);

@@ -65,10 +65,16 @@ public class SaveManager {
         return GameSettings.instance;
     }
 
+    // save file check
+    public static boolean saveExists(char slot) {
+        String fileName = "save" + slot + ".json";
+        File file = new File(fileName);
+        return file.exists() && file.length() > 0;
+    }
+
     // level
     public static void saveLevel(Level level, char slot) {
         String fileName = "save" + slot + ".json";
-        
         try (FileWriter writer = new FileWriter(fileName)) {
             gson.toJson(level, writer);
         } catch (IOException e) {

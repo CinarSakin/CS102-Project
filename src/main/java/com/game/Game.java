@@ -9,14 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
 
 public class Game{
 
-    public static Stage currentStage;
     private static char saveslot;
     private Level level;
-    private Hero hero;
+    public static Hero hero;
 
     private long lastUpdate = 0;
 
@@ -47,9 +45,7 @@ public class Game{
         saveslot = aChar;
      }
 
-    public void startGame(Stage aStage) {
-        hero = Hero.getHero();
-        currentStage = aStage;
+    public void startGame() {
 
         Scene scene = App.getScene();
 
@@ -71,7 +67,6 @@ public class Game{
         }
 
         loadGame(saveslot);
-        hero.getDimension().setPosition(level.getStartPoint());
 
         timer.start();
     }
@@ -81,6 +76,10 @@ public class Game{
         Point2D heroCenter = hero.getDimension().getCenter();
         double camX = -heroCenter.getX() + (App.getScene().getWidth() / 2);
         double camY = -heroCenter.getY() + (App.getScene().getHeight() / 2);
+
+        System.out.println(camX + " " + camY);
+        System.out.println(level.startingRoom.getDimension());
+
 
         for (App.GameLayer layer : App.GameLayer.values()) {
             // erasing old canvas and moving the "camera"
@@ -94,7 +93,8 @@ public class Game{
 
         // drawing level containing entities and other objects
         // drawer.draw(level);
-        for (Room r : level.getRooms()) {
+        System.out.println(Level.getRooms());
+        for (Room r : Level.getRooms()) {
             Drawer.draw(r);
             r.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
             for (Entity e : r.getEntities()) {

@@ -7,13 +7,12 @@ import com.game.Projectile.TargetType;
 import javafx.geometry.Point2D;
 
 public class Enemy extends LivingEntity {
-    private LivingEntity targetEntity;
     private boolean canAttack = true;
     
 
-    public Enemy(LivingType lType, Point2D position, LivingEntity targetEntity, Room currentRoom, double diffMulti) {
-        super(lType, position, currentRoom, diffMulti);
-        this.targetEntity = targetEntity;
+    public Enemy(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
+        super(lType, position, currentArea, diffMulti);
+    //    this.targetEntity = targetEntity;
     }
     // @Override // if you can implement like this it will be easier.
     // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
@@ -24,7 +23,7 @@ public class Enemy extends LivingEntity {
     public void update(double dt) {
         super.update();
         if (!inRange()) {
-            super.follow(targetEntity);
+            super.follow(Hero.getHero());
         }
         else {
             if (canAttack) {
@@ -36,7 +35,7 @@ public class Enemy extends LivingEntity {
 
     @Override
     public void attack() {
-        Point2D direction = targetEntity.dimension.getPos().subtract(this.dimension.getPos());
+        Point2D direction = Hero.getHero().dimension.getPos().subtract(this.dimension.getPos());
         
         switch (super.getLivingType()) {
             case BOMBER:
@@ -56,7 +55,7 @@ public class Enemy extends LivingEntity {
     }
 
     public void flee() {
-        Point2D direction = findTargetDirection(targetEntity).multiply(-1);
+        Point2D direction = findTargetDirection(Hero.getHero()).multiply(-1);
 
         move(direction.multiply(walkSpeed));
     }
@@ -75,6 +74,6 @@ public class Enemy extends LivingEntity {
 
     public boolean inRange() {
         Point2D position = new Point2D(dimension.getX(), dimension.getY());
-        return position.distance(targetEntity.dimension.getPos()) < range;
+        return position.distance(Hero.getHero().dimension.getPos()) < range;
     }
 }

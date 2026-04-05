@@ -7,42 +7,42 @@ import javafx.scene.image.Image;
 
 public class Room extends Area {
     //class variables
-    public static final int MINIMUM_SIZE = 80;//1 tile is 4 units for measurement
+    public static final int MINIMUM_SIZE = 240; //1 tile is 48 units for measurement
     public static ArrayList<Hall> hHalls;
     public static ArrayList<Hall> vHalls;
-    private Image image1,image2,image3;
+//    private Image image1,image2,image3;
+    private Image image1 = new Image(getClass().getResourceAsStream("/sprites/ui/wall.png"), 0, 42, true, false);
+    private Image image2 = new Image(getClass().getResourceAsStream("/sprites/ui/wall_top.png"), 0, 16, true, false);    
+    private Image image3 = new Image(getClass().getResourceAsStream("/sprites/ui/stone_floor.png"), 0, 16, true, false);    
+
 
     //Instance variables
     
     public double dif;
     private final int MAXIMUM_ENEMIES = (int)(10 * dif);
-    public Dimension dim;
     public Room right;
     public Room left;
     public RoomType type ;
     public ArrayList<Room> hNeighbors;
-    public ArrayList<Room> vNeighbors;
-    
-    
-    
+    public ArrayList<Room> vNeighbors;    
     
 
     public Room(double x1, double y1, double width, double height){
-        this(x1, y1, x2, y2, (int)(Math.random()*3+1));
+        this(x1, y1, width, height, (int)(Math.random()*3+1));
     }
     public Room(double x1, double y1, double width, double height, int newType){
-        super(new Dimension(x1, y1, x2-x1, y2-y1));
+        super(new Dimension(x1, y1, width, height));
         if(newType == 0)type = RoomType.PORTAL;
         if(newType == 1)type = RoomType.NORMAL;
         if(newType == 2)type = RoomType.LOOT;
-        if(newType == 1)type = RoomType.NORMAL;
-        if(newType == 1)type = RoomType.NORMAL;
+        if(newType == 3)type = RoomType.NORMAL;
+        if(newType == 4)type = RoomType.NORMAL;
         hNeighbors = new ArrayList<Room>();
         vNeighbors = new ArrayList<Room>();
         hHalls = new ArrayList<Hall>();
         vHalls = new ArrayList<Hall>();
         dif = 1+ Level.levelNo/10;
-        spawnEntities();
+
     }
 
     public boolean divide(double minSize){
@@ -93,7 +93,7 @@ public class Room extends Area {
         }
     }
 
-    private void spawnEntities(){
+    public void spawnEntities(){
         //ToDo
         switch (this.type) {
             case PORTAL:
@@ -101,7 +101,7 @@ public class Room extends Area {
             case NORMAL:
                 double enemyCount = max(5,(int)(Math.random()*MAXIMUM_ENEMIES));
                 for(int i = 0; i < enemyCount; i++ ){
-                    new Enemy(LivingEntity.RandomType(), randomPos(), Hero.getHero(), this, dif);
+                    new Enemy(LivingEntity.RandomType(), randomPos(), this, dif);
                     //add enemies in random points inside of the room
                     //If needed an enemys array can be added for less confision while updateing
                 }
@@ -109,7 +109,7 @@ public class Room extends Area {
             case LOOT:
                 int lootCount = (int)(Math.random()*3);
                 for(int i = 0; i < lootCount; i++){
-                    new WorldEntity();// loots will be added inside a predefined(?) places in the room
+//                    new WorldEntity();// loots will be added inside a predefined(?) places in the room
                 }
                 break;
             case PUZZLE:
@@ -149,8 +149,8 @@ public class Room extends Area {
 
     //EXTRA METHODS
     private Point2D randomPos(){
-        int x = (int)(this.dim.getX() + Math.random()*dim.getWidth()+1);
-        int y = (int)(this.dim.getY() + Math.random()*dim.getHeight()+1);
+        int x = (int)(dim.getX() + Math.random()*dim.getWidth()+1);
+        int y = (int)(dim.getY() + Math.random()*dim.getHeight()+1);
         return new Point2D(x, y);
         //TODO: make a random dimension, convertes it to a point inside the room for enemy to spawn in that position
     }
@@ -193,7 +193,7 @@ public class Room extends Area {
 
 
     //enumeration
-    enum RoomType{
+    public enum RoomType{
         PORTAL{
             protected void spawnEntities(int i){
                 spawnEntities(0);

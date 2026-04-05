@@ -12,17 +12,17 @@ public class Level {
     public static boolean heroSetIn = false;
     
     // instance variables
-    private ArrayList<Room> rooms;
-    public ArrayList<Area> areas;
-    private ArrayList<Entity> entities;
+    private ArrayList<Room> rooms = new ArrayList<Room>();
+    public ArrayList<Area> areas = new ArrayList<Area>();
+    public Room startingRoom;
     private Room root;
     private int numRooms;
     
     private Level(int levelCount){
         this.levelNo = levelCount;
         this.numRooms = 5 + levelNo;
+        currentLevel = this;
         generateLevel();
-        hero.getHero().getDimension().setPosition(getStartingRoom().getDimension().getCenter());
 
     }
 
@@ -55,7 +55,7 @@ public class Level {
 
     public static Level constructNew(int levelCount) {
         if (getLevel() != null) throw new IllegalStateException("There is already a Level instance!");
-        currentLevel = new Level(levelCount);
+        new Level(levelCount);
         return currentLevel;
     }
 
@@ -71,14 +71,25 @@ public class Level {
     
     //CONSTRUCTING METHODS
     private void generateLevel(){
-        root = new Room(0, 0, 48000, 48000,0);
+        root = new Room(144, 144, 4800, 4800);
         rooms = new ArrayList<>();
         rooms.add(root);
         
-        
-        divide(); 
+        divide();
         int index =(int) (Math.random()*rooms.size());
         rooms.get(index).setStartingRoom();
+        startingRoom = rooms.get(index);
+
+        Game.hero = new Hero(
+            startingRoom.getDimension().getCenter(),
+            null, 1, startingRoom
+        );
+
+        for (Room r : rooms) {
+            r.spawnEntities();
+        }
+
+
         // for (Room r : rooms) {
         //     if (r.type == Room.RoomType.PORTAL) {
         //         if(heroSetIn)break;

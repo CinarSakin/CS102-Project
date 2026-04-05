@@ -113,6 +113,11 @@ public class Dimension {
         this.y = centerY - height / 2;
     }
 
+    public void moveCenterTo(Point2D position) {
+        this.x = position.getX() - width / 2;
+        this.y = position.getY() - height / 2;
+    }
+
     public Object setArea(Area area) {
         return this.ownerArea = area;
     }

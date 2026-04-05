@@ -6,7 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.effect.Light.Point;
 
 public class Hero extends LivingEntity {
-    private static Hero CurrentHero;
+    private static Hero currentHero;
     
 
     private Talisman[] talismans = new Talisman[3];
@@ -14,9 +14,9 @@ public class Hero extends LivingEntity {
     private Weapon[] weapons = new Weapon[2];
     private int heldWeapon;
 
-    public Hero(Point2D position, Sword starterSword, double diffMulti, Room currentRoom) {
-        super(LivingType.HERO, position, currentRoom, diffMulti);
-
+    public Hero(Point2D position, Sword starterSword, double diffMulti, Area currentArea) {
+        super(LivingType.HERO, position, currentArea, diffMulti);
+        currentHero = this; 
         weapons[0] = starterSword;
         this.heldWeapon = 0;
     }
@@ -57,7 +57,7 @@ public class Hero extends LivingEntity {
         checkEntityCollisions();
 
         if (this.health <= 0) {
-            animStates.add(LivingAnimStates.DIE);
+        //    animStates.add(LivingAnimStates.DIE);
             // Oyun bitiş ekranını tetikle
         }
     }
@@ -69,8 +69,7 @@ public class Hero extends LivingEntity {
 
     //incremented getHero()
     public static Hero getHero() {
-        if(CurrentHero != null)return CurrentHero;
-        return CurrentHero = new Hero(null, null, 0,null);
+        return currentHero;
        
     }
     public void setImage(){

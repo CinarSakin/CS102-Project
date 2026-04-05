@@ -55,6 +55,7 @@ import javafx.util.Duration;
 public class App extends Application {
 
     private static Scene scene;
+    private static Stage stage;
     private static StackPane menuPane, gamePane; // holders of menus/layers
     private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
     private static Canvas[] layers = new Canvas[GameLayer.values().length];
@@ -97,6 +98,8 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {            
+            stage = primaryStage;
+
             GameSettings settings = SaveManager.loadSettings();
             UI_SCALE.set(settings.uiScale);
 
@@ -236,7 +239,7 @@ public class App extends Application {
 
             for (int i = 0; i < 6; i++) {
                 char slotChar = (char)(i + 65);
-                boolean isEmpty = true;
+                boolean saveExists = SaveManager.saveExists(slotChar);;
                 Button slotBtn = new Button();
                 slotBtn.setBackground(Background.EMPTY);
                 slotBtn.setPadding(Insets.EMPTY);
@@ -245,7 +248,7 @@ public class App extends Application {
                 slotLabel.fontProperty().bind(fontPropSmall);
                 slotLabel.setTextFill(Color.rgb(187, 174, 232, 1));
 
-                Label slotInfo = new Label(isEmpty ? "* EMPTY *" : "* CONTINUE *");
+                Label slotInfo = new Label(saveExists ? "* CONTINUE *" : "* EMPTY *");
                 slotInfo.fontProperty().bind(fontPropSmall);
                 slotInfo.setTextFill(Color.rgb(219, 218, 220, 1));
 
@@ -253,7 +256,7 @@ public class App extends Application {
                 slotTextBox.setAlignment(Pos.CENTER);
 
                 Button deleteBtn = createStyledButton("X", 2, 0.5);
-                deleteBtn.setVisible(!isEmpty);
+                deleteBtn.setVisible(saveExists);
 
                 StackPane slotPane = new StackPane(slotTextBox);
                 slotPane.setCursor(Cursor.HAND);
@@ -261,7 +264,7 @@ public class App extends Application {
                 slotPane.prefWidthProperty().bind(uiSizeBinding(220));
                 slotPane.prefHeightProperty().bind(uiSizeBinding(160));
 
-                if (!isEmpty) {
+                if (saveExists) {
                     StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
                     slotPane.getChildren().add(deleteBtn);
                 }
@@ -441,6 +444,10 @@ public class App extends Application {
     private void onSlotClicked(char saveSlot) {
         menuPane.setVisible(false);
         // TODO: load game
+
+        Game game = new Game(saveSlot);
+        game.startGame();
+
         gamePane.setVisible(true);
     }
 
