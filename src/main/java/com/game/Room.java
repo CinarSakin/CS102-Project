@@ -7,7 +7,8 @@ import javafx.geometry.Point2D;
 public class Room extends Area {
     //class variables
     public static final int MINIMUM_SIZE = 80;//1 tile is 4 units for measurement
-
+    public static ArrayList<Hall> hHalls;
+    public static ArrayList<Hall> vHalls;
 
     //Instance variables
     
@@ -19,8 +20,8 @@ public class Room extends Area {
     public RoomType type ;
     public ArrayList<Room> hNeighbors;
     public ArrayList<Room> vNeighbors;
-    public ArrayList<Hall> hHalls;
-    public ArrayList<Hall> vHalls;
+    
+    
     
     
 
@@ -167,6 +168,8 @@ public class Room extends Area {
 
     //GETTER SETTERS
     public RoomType getType(){return this.type;}
+    public static ArrayList<Hall> getHHalls(){return hHalls;}
+    public static ArrayList<Hall> getVHalls(){return vHalls;}
 
 
     //enumeration

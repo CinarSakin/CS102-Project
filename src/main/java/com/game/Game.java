@@ -94,12 +94,18 @@ public class Game{
 
         // drawing level containing entities and other objects
         // drawer.draw(level);
-        for (Area a : level.getAreas()) {
-            // drawer.draw(a);
-            a.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
-            for (Entity e : a.getEntities()) {
-                // drawer.draw(e);
+        for (Room r : level.getRooms()) {
+            Drawer.draw(r);
+            r.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
+            for (Entity e : r.getEntities()) {
+                Drawer.draw(e);
             }
+        }
+        for(Hall h : Room.getHHalls()){
+            Drawer.draw(h,0);
+        }
+        for(Hall h : Room.getVHalls()){
+            Drawer.draw(h,1);
         }
 
         // moving camera back
