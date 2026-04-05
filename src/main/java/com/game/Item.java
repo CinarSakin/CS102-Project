@@ -45,5 +45,4 @@ public abstract class Item {
         return isOnCooldown;
     }
 
-    public abstract void draw();
 }

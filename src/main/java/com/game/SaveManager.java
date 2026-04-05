@@ -31,7 +31,7 @@ public class SaveManager {
         return saveDirectory;
     }
 
-    // settings saver
+    // settings
     public static void saveSettings() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         File settingsFile = new File(getSaveDirectory(), "settings.json");
@@ -62,4 +62,6 @@ public class SaveManager {
 
         return GameSettings.instance;
     }
+
+    // level 
 }

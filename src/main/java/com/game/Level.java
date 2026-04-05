@@ -126,10 +126,7 @@ public class Level {
         for (Area a : getAreas()){
             a.update(dt);
         }
-    }
-    public void draw() { root.draw(); }//on wait
-
-    
+    }    
     
     //EXTRA METHODS
     private double random(double a, double b){
