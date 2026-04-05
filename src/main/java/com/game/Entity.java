@@ -56,7 +56,7 @@ public abstract class Entity {
         currentArea.unregister(this);
     }
 
-    public abstract void update();
+    public abstract void update(double dt);
 
     public abstract void draw();
 }

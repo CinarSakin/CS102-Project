@@ -48,7 +48,7 @@ public class Projectile extends Entity {
     private ProjectileType projType;
     private Point2D velocity;
     private double speed;
-    private int tick = 0;
+    private double lifeTime = 0;
     private TargetType targetType;
 
     public enum TargetType {HERO, ENEMIES, ALL}
@@ -63,7 +63,7 @@ public class Projectile extends Entity {
         this.animManager = new AnimationManager(projType);
     }
 
-    public void update() {
+    public void update(double dt) {
         
         dimension.moveBy(velocity.multiply(speed));
         
@@ -84,17 +84,20 @@ public class Projectile extends Entity {
             currentArea.register(this);
         }
 
+        lifeTime += dt;
+        if (lifeTime > 5) {
+            despawn(); return;
+        }
+
         if (projType.equals(ProjectileType.BOMB)){
             speed = Math.max(speed*.95-.03, 0); // slows down
-            tick++;
-            if (tick > 120){
+            if (lifeTime > 3){
                 animManager.playAnim(ProjectileType.BOMB);
 
                 for (LivingEntity target : getTargets()){
                     double dist = target.getDimension().distanceTo(dimension);
-                    if (dist < 14){
-                        target.getDamaged(300/(dist+6)); // damage range from 50 to 15
-                        Effect.startEffect(new Effect(EffectType.BURN, 1000, null));
+                    if (dist < 20){
+                        target.getDamaged(600/(dist+10)); // damage range from 20 to 60
                     }                    
                 }
             }

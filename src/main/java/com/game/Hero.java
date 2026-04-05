@@ -1,6 +1,9 @@
 package com.game;
 
+import java.util.ArrayList;
+
 import javafx.geometry.Point2D;
+import javafx.scene.effect.Light.Point;
 
 public class Hero extends LivingEntity {
     private static Hero CurrentHero;
@@ -18,29 +21,14 @@ public class Hero extends LivingEntity {
         this.heldWeapon = 0;
     }
 
-    public void move(int dir) {
+    public void move(Point2D velocity) {
         
-        double speed = 5.0;
-        double nextX = this.getDimension().getX();
-        double nextY = this.getDimension().getY();
-
-        if (dir == 1) nextY -= speed; // Up
-        if (dir == 2) nextX += speed; // Right
-        if (dir == 3) nextY += speed; // Down
-        if (dir == 4) nextX -= speed; // Left
+        double nextX = this.getDimension().getX() + velocity.getX();
+        double nextY = this.getDimension().getY() + velocity.getY();
 
         // Only update position if the new coordinates are within bounds
         if (Game.isPositionValid(this, nextX, nextY)) {
-            switch (dir) {
-                case 1: // up
-                    dimension.moveBy(new Point2D(0, -walkSpeed));
-                case 2: // right
-                    dimension.moveBy(new Point2D(walkSpeed, 0));
-                case 3: // down
-                    dimension.moveBy(new Point2D(0, walkSpeed));
-                case 4: // left
-                    dimension.moveBy(new Point2D(-walkSpeed, 0));
-            }
+            dimension.moveTo(nextX, nextY);
         }
 
         
@@ -62,14 +50,10 @@ public class Hero extends LivingEntity {
     
 
     @Override
-    public void update() {
+    public void update(double dt) {
         
-        for (int i = effects.size() - 1; i >= 0; i--) {
-            effects.get(i).affectEntity();
-            if (effects.get(i).getRemainingDuration() <= 0) {
-                effects.remove(i);
-            }
-        }
+        super.update();
+        
         checkEntityCollisions();
 
         if (this.health <= 0) {
@@ -86,11 +70,7 @@ public class Hero extends LivingEntity {
     //incremented getHero()
     public static Hero getHero() {
         if(CurrentHero != null)return CurrentHero;
-<<<<<<< HEAD
-        return CurrentHero = new Hero(null, null, 0, null);
-=======
         return CurrentHero = new Hero(null, null, 0,null);
->>>>>>> game-loop-and-drawing
        
     }
     public void setImage(){

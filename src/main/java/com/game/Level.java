@@ -13,13 +13,13 @@ public class Level {
     
     // instance variables
     private ArrayList<Room> rooms;
-    private ArrayList<Entity> entities;
+    public ArrayList<Area> areas;
     private Room root;
     private int numRooms;
     
     private Level(int levelCount){
         this.levelNo = levelCount;
-        this.numRooms = 5 + levelNo;
+        this.numRooms = 8 + levelNo*4;
         generateLevel();
     }
 
@@ -122,8 +122,10 @@ public class Level {
     public void shrink() { root.shrink(gridSize * 2); }
     
     //UPDATEING METHODS
-    public void update(){
-
+    public void update(double dt){
+        for (Area a : getAreas()){
+            a.update(dt);
+        }
     }
     public void draw() { root.draw(); }//on wait
 
@@ -150,6 +152,9 @@ public class Level {
     }
     public static ArrayList<Room> getRooms(){
         return Level.getLevel().rooms;
+    }
+    public static ArrayList<Area> getAreas(){
+        return Level.getLevel().areas;
     }
     public static void setHero(Hero aHero){hero = aHero;}
     

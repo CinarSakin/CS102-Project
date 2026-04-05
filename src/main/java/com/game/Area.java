@@ -1,21 +1,36 @@
 package com.game;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public abstract class Area {
 
     protected Dimension dim;
 
-    public ArrayList<Entity> entities;
-    public ArrayList<LivingEntity> livingEntities;
-    public ArrayList<Enemy> enemies;
+    public ArrayList<Entity> entities = new ArrayList<Entity>();
+    public ArrayList<LivingEntity> livingEntities = new ArrayList<LivingEntity>();
+    public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
     public Area(Dimension dim) {
         this.dim = dim;
         this.dim.setArea(this);
+        Level.getLevel().areas.add(this);
     }
 
     public Dimension getDimension() {return dim;}
+
+    public void update(double dt) {
+        for (Entity e : getEntities()){
+            e.update(dt);
+        }
+    }
+
+    public void draw() {
+        entities.sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
+        for (Entity e : getEntities()){
+            e.draw();
+        }
+    }
 
     // Register Methods for Entities
     public void register(Entity e) {

@@ -6,6 +6,8 @@ import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.geometry.*;
 import javafx.scene.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
@@ -26,6 +28,7 @@ public class App extends Application {
     private static Scene scene;
     private static StackPane menuPane, gamePane; // holders of menus/layers
     private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
+    private static Canvas[] layers = new Canvas[GameLayer.values().length];
 
     private final DoubleProperty UI_SCALE = new SimpleDoubleProperty(1.0); // load from save
     private final DoubleProperty uiSizeProp = new SimpleDoubleProperty(1.0);
@@ -368,6 +371,16 @@ public class App extends Application {
                 }
             });
 
+            // canvas
+            gamePane = new StackPane();
+            for (GameLayer layer : GameLayer.values()) {
+                Canvas canvas = new Canvas(800, 600);
+                canvas.widthProperty().bind(scene.widthProperty());
+                canvas.heightProperty().bind(scene.heightProperty());
+                layers[layer.ordinal()] = canvas;
+                gamePane.getChildren().add(canvas);
+            }
+
             primaryStage.show();
 
             // saver
@@ -539,7 +552,10 @@ public class App extends Application {
     public static Scene getScene() {return scene;}
 
     public enum GameLayer {GROUND, ENTITIES, VFX, HUD}
-    public static StackPane getGameLayer(GameLayer layer) {
-        return (StackPane) gamePane.getChildren().get(layer.ordinal());
+    public static GraphicsContext getLayerGC(GameLayer layer) {
+        return layers[layer.ordinal()].getGraphicsContext2D();
+    }
+    public static Canvas getLayerCanvas(GameLayer layer) {
+        return layers[layer.ordinal()];
     }
 }

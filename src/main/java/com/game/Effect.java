@@ -67,11 +67,11 @@ public class Effect {
         this.animManager = new AnimationManager(effectType);
     }
 
-    public static void startEffect(Effect effe) {
-        effe.affectEntity();
-        effe.targetEntity.effects.add(effe);
+    public void startEffect() {
+        affectEntity();
+        targetEntity.effects.add(this);
 
-        effe.animManager.playAnim(effe.effectType);
+        animManager.playAnim(effectType);
     }
 
     public void affectEntity() {

@@ -79,8 +79,6 @@ public abstract class LivingEntity extends Entity {
             effe.affectEntity();
             animManager.playAnim(effe.getEffectType());
         }
-        
-        draw();
     }
 
     public void updateLookDirection(double dx) {

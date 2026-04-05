@@ -127,6 +127,8 @@ public class Room extends Area {
 
 
     //UPDATERS
+
+    /* şuanlık Area classına update ve draw koydum
     public void update(){}
 
     public void draw(){
@@ -140,7 +142,7 @@ public class Room extends Area {
             //roomdrawing
             for(Entity e: entities) e.update();
         }
-    }
+    } */
 
     //EXTRA METHODS
     private Point2D randomPos(){

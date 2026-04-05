@@ -44,10 +44,11 @@ public class Sword extends Weapon {
 
     @Override
     public void use() {
-        Point2D heroPos = Hero.getHero().getDimension().getPos();
+        Dimension heroDim = Hero.getHero().getDimension();
+        Point2D heroPos = heroDim.getPos();
         Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
 
-        for (LivingEntity target : LivingEntityManager.getLivingEntities()) {
+        for (LivingEntity target : heroDim.getArea().getLivingEntities()) {
             if (target != Hero.getHero() && target.getDimension().intersects(hitBox)) {
                 target.getDamaged(this.damage);
 

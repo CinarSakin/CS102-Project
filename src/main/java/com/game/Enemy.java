@@ -21,7 +21,7 @@ public class Enemy extends LivingEntity {
     // }
     
     @Override
-    public void update() {
+    public void update(double dt) {
         super.update();
         if (!inRange()) {
             super.follow(targetEntity);
@@ -38,7 +38,7 @@ public class Enemy extends LivingEntity {
     public void attack() {
         Point2D direction = targetEntity.dimension.getPos().subtract(this.dimension.getPos());
         
-        switch(super.getType()) {
+        switch (super.getLivingType()) {
             case BOMBER:
                 new Projectile(ProjectileType.BOMB, TargetType.ALL, dimension.getPos(), direction, 1, currentArea);
                 break;
