@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public abstract class Entity {
-    protected Area currentArea;
+    public transient Area currentArea;
     protected Dimension dimension;
     protected AnimationManager animManager;
     public Image imageToDraw;

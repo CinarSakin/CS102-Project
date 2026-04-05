@@ -1,15 +1,14 @@
 package com.game;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public abstract class Area {
 
     protected Dimension dim;
 
     public ArrayList<Entity> entities = new ArrayList<Entity>();
-    public ArrayList<LivingEntity> livingEntities = new ArrayList<LivingEntity>();
-    public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    public transient ArrayList<LivingEntity> livingEntities = new ArrayList<LivingEntity>();
+    public transient ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
     public Area(Dimension dim) {
         this.dim = dim;

@@ -1,6 +1,7 @@
 package com.game;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class SaveManager {
+
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     
     // game directory
     public static File getSaveDirectory() {
@@ -33,7 +36,6 @@ public class SaveManager {
 
     // settings
     public static void saveSettings() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         File settingsFile = new File(getSaveDirectory(), "settings.json");
 
         try (FileWriter writer = new FileWriter(settingsFile)) {
@@ -63,5 +65,26 @@ public class SaveManager {
         return GameSettings.instance;
     }
 
-    // level 
+    // level
+    public static void saveLevel(Level level, char slot) {
+        String fileName = "save" + slot + ".json";
+        
+        try (FileWriter writer = new FileWriter(fileName)) {
+            gson.toJson(level, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Level loadLevel(char slot) throws IOException {
+        String fileName = "save" + slot + ".json";
+        File file = new File(fileName);
+    
+        if (!file.exists()) throw new FileNotFoundException();
+    
+        try (FileReader reader = new FileReader(file)) {
+            return gson.fromJson(reader, Level.class);
+        }
+    }
+
 }

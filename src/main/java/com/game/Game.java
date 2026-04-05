@@ -141,7 +141,7 @@ public class Game{
     private void loadGame(char aSaveSlot) {
         // ToDo
         try {
-            level = SaveManager.loadLevel(aSaveSlot);
+            level = Level.constructFromSave(aSaveSlot);
         } catch (Exception e) {
             newGame(1);
         }

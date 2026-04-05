@@ -28,10 +28,30 @@ public class Level {
     }
 
     // SAVEING MECHANISMS
-    public static Level constructFromSave(char saveSlot) {
+    public static Level constructFromSave(char saveSlot) throws Exception {
         if (getLevel() != null) throw new IllegalStateException("There is already a Level instance!");
-        currentLevel = new Level(saveSlot);
-        return currentLevel;
+
+        Level loadedLevel = SaveManager.loadLevel(saveSlot);
+    
+        if (loadedLevel == null) {
+            throw new Exception("Level data could not be loaded!");
+        }
+
+        for (Area area : loadedLevel.areas) {
+            area.livingEntities = new ArrayList<>();
+            area.enemies = new ArrayList<>();
+    
+            for (Entity e : area.getEntities()) {
+                e.currentArea = area; 
+    
+                if (e instanceof LivingEntity) area.livingEntities.add((LivingEntity) e);
+                if (e instanceof Enemy) area.enemies.add((Enemy) e);
+                
+                // e.reloadSprites(); 
+            }
+        }
+    
+        return currentLevel = loadedLevel;
     }
 
     public static Level constructNew(int levelCount) {
