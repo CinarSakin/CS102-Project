@@ -106,11 +106,6 @@ public abstract class LivingEntity extends Entity {
     public void attack() {}
 
     @Override
-    public void draw() {
-        animManager.draw();
-    }
-
-    @Override
     public void despawn() {
         super.despawn(); 
     }

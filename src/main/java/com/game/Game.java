@@ -1,6 +1,7 @@
 package com.game;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
@@ -70,6 +71,7 @@ public class Game{
         }
 
         loadGame(saveslot);
+        hero.getDimension().setPosition(level.getStartPoint());
 
         timer.start();
     }
@@ -91,7 +93,14 @@ public class Game{
         }
 
         // drawing level containing entities and other objects
-        level.draw();
+        // drawer.draw(level);
+        for (Area a : level.getAreas()) {
+            // drawer.draw(a);
+            a.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
+            for (Entity e : a.getEntities()) {
+                // drawer.draw(e);
+            }
+        }
 
         // moving camera back
         for (App.GameLayer layer : App.GameLayer.values()) {

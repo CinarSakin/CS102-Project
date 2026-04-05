@@ -25,13 +25,6 @@ public abstract class Area {
         }
     }
 
-    public void draw() {
-        entities.sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
-        for (Entity e : getEntities()){
-            e.draw();
-        }
-    }
-
     // Register Methods for Entities
     public void register(Entity e) {
         entities.add(e);

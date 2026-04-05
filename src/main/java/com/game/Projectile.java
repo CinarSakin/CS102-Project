@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 
 public class Projectile extends Entity {
 
+    public final double EXPLODE_TIMER = 3;
+
     public enum ProjectileType {
         MELEE(
             new Image("slash.png"),
@@ -31,8 +33,6 @@ public class Projectile extends Entity {
             new Image("flaming_armor.png"),
             2, new Point2D(20, 20)
         );
-
-        
 
         private Image image;
         private double speed;
@@ -59,6 +59,7 @@ public class Projectile extends Entity {
         this.velocity = velocity.normalize();
         this.speed = projType.speed * speed;
         this.targetType = target;
+        this.imageToDraw = projType.image;
 
         this.animManager = new AnimationManager(projType);
     }
@@ -91,7 +92,7 @@ public class Projectile extends Entity {
 
         if (projType.equals(ProjectileType.BOMB)){
             speed = Math.max(speed*.95-.03, 0); // slows down
-            if (lifeTime > 3){
+            if (lifeTime > EXPLODE_TIMER){
                 animManager.playAnim(ProjectileType.BOMB);
 
                 for (LivingEntity target : getTargets()){
@@ -129,6 +130,8 @@ public class Projectile extends Entity {
         return new Point2D(lx, ly);
     }
 
-    @Override
-    public void draw() {} // todo
+    public double getLifeTime() {
+        return lifeTime;
+    }
+
 }

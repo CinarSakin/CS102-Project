@@ -1,11 +1,13 @@
 package com.game;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 public abstract class Entity {
     protected Area currentArea;
     protected Dimension dimension;
     protected AnimationManager animManager;
+    public Image imageToDraw;
 
     public Entity(Dimension dimension, Area currentArea) {
         if (dimension == null) {
@@ -19,6 +21,10 @@ public abstract class Entity {
 
     public Dimension getDimension() {
         return dimension;
+    }
+
+    public Image getImage() {
+        return imageToDraw;
     }
 
     public void setDimension(Dimension dimension) {
@@ -58,5 +64,4 @@ public abstract class Entity {
 
     public abstract void update(double dt);
 
-    public abstract void draw();
 }

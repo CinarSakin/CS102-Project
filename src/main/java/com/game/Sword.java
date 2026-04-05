@@ -61,8 +61,4 @@ public class Sword extends Weapon {
         }
     }
 
-    @Override
-    public void draw() {
-        // ToDo
-    }
 }
