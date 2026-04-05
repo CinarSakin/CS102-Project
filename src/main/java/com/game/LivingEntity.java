@@ -23,7 +23,7 @@ public abstract class LivingEntity extends Entity {
         ATTACK, HEAL, TAKE_DAMAGE, DIE; 
     }
 
-    enum LivingType {
+    public enum LivingType {
         HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0),
         WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2),
         BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30),
@@ -134,5 +134,9 @@ public abstract class LivingEntity extends Entity {
                 despawn();
             }
         }
+    }
+
+    public LivingType getLivingType() {
+        return this.lType;
     }
 }
