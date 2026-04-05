@@ -14,12 +14,13 @@ public class Level {
     // instance variables
     private ArrayList<Room> rooms;
     public ArrayList<Area> areas;
+    private ArrayList<Entity> entities;
     private Room root;
     private int numRooms;
     
     private Level(int levelCount){
         this.levelNo = levelCount;
-        this.numRooms = 8 + levelNo*4;
+        this.numRooms = 5 + levelNo;
         generateLevel();
     }
 
