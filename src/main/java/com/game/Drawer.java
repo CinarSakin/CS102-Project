@@ -17,9 +17,15 @@ public class Drawer {
 
     public static void draw(Room r){
         GraphicsContext gc = App.getLayerGC(App.GameLayer.GROUND);
-        for(int i = (int)(r.getDimension().getX()); i < (r.getDimension().getWidth()); i += gridSize){
-            for(int j = (int)(r.getDimension().getY()); j < (r.getDimension().getHeight()); j += gridSize){
-                gc.drawImage(r.getImage(1), i, j, gridSize, gridSize);//change the image acordingly
+        int f = 0;
+        for(int i = (int)(r.getDimension().getX())-gridSize; i < (r.getDimension().getWidth())+gridSize; i += gridSize){
+            for(int j = (int)(r.getDimension().getY())-gridSize; j < (r.getDimension().getHeight())+gridSize; j += gridSize){
+                if(i == (int)(r.getDimension().getX())-gridSize && j != (int)(r.getDimension().getY())-gridSize)f = 1;
+                else if(i == (r.getDimension().getWidth())+gridSize && j != (int)(r.getDimension().getY())-gridSize)f = 3;
+                else if(j == (int)(r.getDimension().getY())-gridSize)f = 0;
+                else if(j == (int)(r.getDimension().getHeight())+gridSize)f = 4;
+                else f = 2;
+                gc.drawImage(r.getImage(f), i, j, gridSize, gridSize);//change the image acordingly
             }
         }
         
