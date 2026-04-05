@@ -71,23 +71,24 @@ public class Level {
     
     //CONSTRUCTING METHODS
     private void generateLevel(){
-        root = new Room(0, 0, 500, 500,0);
+        root = new Room(0, 0, 48000, 48000,0);
         rooms = new ArrayList<>();
         rooms.add(root);
         
         
         divide(); 
-        
-        for (Room r : rooms) {
-            if (r.type == Room.RoomType.PORTAL) {
-                if(heroSetIn)break;
-                Dimension newDim = new Dimension((r.getX1()+r.getWidth())/2-hero.getDimension().getWidth()/2,
-                    (r.getY1()+r.getHeight())/2 - hero.getDimension().getHeight(),
-                    hero.getDimension().getWidth(),hero.getDimension().getHeight());
-                hero.setDimension(newDim);
+        int index =(int) (Math.random()*rooms.size());
+        rooms.get(index).setStartingRoom();
+        // for (Room r : rooms) {
+        //     if (r.type == Room.RoomType.PORTAL) {
+        //         if(heroSetIn)break;
+        //         Dimension newDim = new Dimension((r.getX1()+r.getWidth())/2-hero.getDimension().getWidth()/2,
+        //             (r.getY1()+r.getHeight())/2 - hero.getDimension().getHeight(),
+        //             hero.getDimension().getWidth(),hero.getDimension().getHeight());
+        //         hero.setDimension(newDim);
                 
-            }
-        }
+        //     }
+        // }
     }
 
     private void divide() {

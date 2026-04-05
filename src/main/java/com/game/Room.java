@@ -27,10 +27,10 @@ public class Room extends Area {
     
     
 
-    public Room(double x1, double y1, double x2, double y2){
-        this(x1, y1, x2, y2, (int)(Math.random()*4));
+    public Room(double x1, double y1, double width, double height){
+        this(x1, y1, x2, y2, (int)(Math.random()*3+1));
     }
-    public Room(double x1, double y1, double x2, double y2, int newType){
+    public Room(double x1, double y1, double width, double height, int newType){
         super(new Dimension(x1, y1, x2-x1, y2-y1));
         if(newType == 0)type = RoomType.PORTAL;
         if(newType == 1)type = RoomType.NORMAL;
@@ -189,6 +189,7 @@ public class Room extends Area {
                 throw new AssertionError();
         }
     }
+    public void setStartingRoom(){this.type = RoomType.PORTAL;}
 
 
     //enumeration
