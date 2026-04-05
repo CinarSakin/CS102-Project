@@ -13,17 +13,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
-<<<<<<< HEAD
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-
-public class Game extends Application {
-=======
 import javafx.scene.shape.MoveTo;
 import javafx.stage.Stage;
 
 public class Game{
->>>>>>> game-loop-and-drawing
 
     public static Stage currentStage;
     private static char saveslot;
@@ -33,18 +26,9 @@ public class Game{
     
     AnimationTimer timer = new AnimationTimer() {
     @Override
-<<<<<<< HEAD
-    public void start(Stage stage) throws Exception {
-        Canvas canvas = new Canvas(800, 800);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        int i = 1;
-        hero = new Hero(null, null, i, null);
-        level = Level.constructNew(i);
-=======
     public void handle(long now) {
         // Look at user input...
         handleInput();
->>>>>>> game-loop-and-drawing
 
         // update game
         updateGame();
@@ -63,7 +47,7 @@ private void renderGame(GraphicsContext gc) {
         }
     }
 
-    if (hero != null) hero.draw(gc);
+    if (hero != null) Drawer.draw(hero);
 }
     
     public Game(char aChar){saveslot = aChar;}

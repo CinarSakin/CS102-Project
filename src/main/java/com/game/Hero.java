@@ -19,19 +19,6 @@ public class Hero extends LivingEntity {
     }
 
     public void move(int dir) {
-<<<<<<< HEAD
-        switch (dir) {
-            case 1: // up
-                move(new Point2D(0, -walkSpeed));
-            case 2: // right
-                move(new Point2D(walkSpeed, 0));
-                isLookingRight = true;
-            case 3: // down
-                move(new Point2D(0, walkSpeed));
-            case 4: // left
-                move(new Point2D(-walkSpeed, 0));
-                isLookingRight = false;
-=======
         
         double speed = 5.0;
         double nextX = this.getDimension().getX();
@@ -70,7 +57,6 @@ public class Hero extends LivingEntity {
                     this.getDamaged(10);//TODO: change the damage later.
                 }
             }
->>>>>>> game-loop-and-drawing
         }
     }
     

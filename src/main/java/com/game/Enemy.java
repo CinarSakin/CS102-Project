@@ -9,11 +9,16 @@ import javafx.geometry.Point2D;
 public class Enemy extends LivingEntity {
     private LivingEntity targetEntity;
     private boolean canAttack = true;
+    
 
     public Enemy(LivingType lType, Point2D position, LivingEntity targetEntity, Room currentRoom, double diffMulti) {
         super(lType, position, currentRoom, diffMulti);
         this.targetEntity = targetEntity;
     }
+    // @Override // if you can implement like this it will be easier.
+    // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
+
+    // }
     
     @Override
     public void update() {
@@ -24,16 +29,16 @@ public class Enemy extends LivingEntity {
         else {
             if (canAttack) {
                 attack();
-                Effect.startEffect(new Effect(EffectType.TIRE, ((long)attackSpeed)*1, this)); // cooldown
+                new Effect(EffectType.TIRE, ((long)attackSpeed)*1, this).startEffect(); // cooldown
             }
         }
     }
 
     @Override
     public void attack() {
-        Point2D direction = findTargetDirection(targetEntity);
+        Point2D direction = targetEntity.dimension.getPos().subtract(this.dimension.getPos());
         
-        switch(lType) {
+        switch(super.getType()) {
             case BOMBER:
                 new Projectile(ProjectileType.BOMB, TargetType.ALL, dimension.getPos(), direction, 1, currentArea);
                 break;
@@ -60,7 +65,7 @@ public class Enemy extends LivingEntity {
     public void getDamaged(double damage) {
         super.getDamaged(damage);
         if (0.15 < Math.random()*fear && inRange()) {
-            Effect.startEffect(new Effect(EffectType.FEAR, (long)fear*100, this));
+            new Effect(EffectType.FEAR, (long)fear*100, this).startEffect();
         }
     }
     
@@ -71,9 +76,5 @@ public class Enemy extends LivingEntity {
     public boolean inRange() {
         Point2D position = new Point2D(dimension.getX(), dimension.getY());
         return position.distance(targetEntity.dimension.getPos()) < range;
-    }
-
-    public void setImage(){
-        //seting image iplementation...
     }
 }
