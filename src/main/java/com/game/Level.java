@@ -8,6 +8,8 @@ public class Level {
     public static double gridSize = 20;
     private static Level currentLevel;
     public static int levelNo;
+    public static Hero hero;
+    public static boolean heroSetIn = false;
     
     // instance variables
     private ArrayList<Room> rooms;
@@ -21,12 +23,9 @@ public class Level {
         generateLevel();
     }
 
-    
-
     private Level(char saveSlot){
         //read from the save file: EREN KOZAN
     }
-
 
     // SAVEING MECHANISMS
     public static Level constructFromSave(char saveSlot) {
@@ -41,14 +40,35 @@ public class Level {
         return currentLevel;
     }
 
-    public void save(){
-        //TODO
+    public static void save(){
+        try (java.io.PrintWriter out = new java.io.PrintWriter("save" + levelNo + ".txt")) {
+            out.println(levelNo);
+            out.println(Hero.getHero().health);  
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     
     //CONSTRUCTING METHODS
     private void generateLevel(){
-
+        root = new Room(0, 0, 500, 500,0);
+        rooms = new ArrayList<>();
+        rooms.add(root);
+        
+        
+        divide(); 
+        
+        for (Room r : rooms) {
+            if (r.type == Room.RoomType.PORTAL) {
+                if(heroSetIn)break;
+                Dimension newDim = new Dimension((r.getX1()+r.getWidth())/2-hero.getDimension().getWidth()/2,
+                    (r.getY1()+r.getHeight())/2 - hero.getDimension().getHeight(),
+                    hero.getDimension().getWidth(),hero.getDimension().getHeight());
+                hero.setDimension(newDim);
+                
+            }
+        }
     }
 
     private void divide() {
@@ -128,5 +148,10 @@ public class Level {
     public static Level getLevel() {
         return currentLevel;
     }
+    public static ArrayList<Room> getRooms(){
+        return Level.getLevel().rooms;
+    }
+    public static void setHero(Hero aHero){hero = aHero;}
+    
 
 }

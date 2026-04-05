@@ -1,5 +1,6 @@
 package com.game;
 
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Sword extends Weapon {
@@ -43,8 +44,19 @@ public class Sword extends Weapon {
 
     @Override
     public void use() {
-        if (this.swordType == SwordType.FLAMING) {
-            // ToDo
+        Point2D heroPos = Hero.getHero().getDimension().getPos();
+        Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
+
+        for (LivingEntity target : LivingEntityManager.getLivingEntities()) {
+            if (target != Hero.getHero() && target.getDimension().intersects(hitBox)) {
+                target.getDamaged(this.damage);
+
+                if (this.swordType == SwordType.FLAMING) {
+                    new Effect(Effect.EffectType.BURN, 3000, target).startEffect();
+                } else if (this.swordType == SwordType.ICY) {
+                    new Effect(Effect.EffectType.FREEZE, 2000, target).startEffect();
+                }
+            }
         }
     }
 
