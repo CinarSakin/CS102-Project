@@ -3,12 +3,14 @@ package com.game;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 public class Room extends Area {
     //class variables
     public static final int MINIMUM_SIZE = 80;//1 tile is 4 units for measurement
     public static ArrayList<Hall> hHalls;
     public static ArrayList<Hall> vHalls;
+    private Image image1,image2,image3;
 
     //Instance variables
     
@@ -170,6 +172,23 @@ public class Room extends Area {
     public RoomType getType(){return this.type;}
     public static ArrayList<Hall> getHHalls(){return hHalls;}
     public static ArrayList<Hall> getVHalls(){return vHalls;}
+    public Image getImage(int i){
+        //0 for top wall, 1 for right walls, 2 for ground, 3 for right walls, 4 for lower walls
+        switch (i) {
+            case 0://further wall
+                return image1;
+            case 1://left side wall
+                return image2;
+            case 2:// ground tiles
+                return image3;
+            case 3://right side wall
+                return image2;
+            case 4://closer wall
+                return image2;
+            default:
+                throw new AssertionError();
+        }
+    }
 
 
     //enumeration
