@@ -22,10 +22,8 @@ public class Level {
         this.levelNo = levelCount;
         this.numRooms = 5 + levelNo;
         generateLevel();
-    }
+        hero.getHero().getDimension().setPosition(getStartingRoom().getDimension().getCenter());
 
-    private Level(char saveSlot){
-        //read from the save file: EREN KOZAN
     }
 
     // SAVEING MECHANISMS
