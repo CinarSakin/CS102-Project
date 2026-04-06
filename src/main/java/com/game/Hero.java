@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
 import javafx.scene.effect.Light.Point;
+import javafx.scene.image.Image;
 
 public class Hero extends LivingEntity {
     private static Hero currentHero;
-    
+    private static Image idle_right = new Image(Hero.class.getResourceAsStream("/sprites/entities/hero_idle.png"), Level.gridSize, 0, true, false);
+    private static Image idle_left = new Image(Hero.class.getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
 
     private Talisman[] talismans = new Talisman[3];
     private Consumable[] consumables = new Consumable[3];
@@ -19,17 +21,15 @@ public class Hero extends LivingEntity {
         currentHero = this; 
         weapons[0] = starterSword;
         this.heldWeapon = 0;
+
+        // for now to try
+        imageToDraw = idle_right;
     }
 
     public void move(Point2D velocity) {
         
-        double nextX = this.getDimension().getX() + velocity.getX();
-        double nextY = this.getDimension().getY() + velocity.getY();
-
         // Only update position if the new coordinates are within bounds
-        if (Game.isPositionValid(this, nextX, nextY)) {
-            dimension.moveTo(nextX, nextY);
-        }
+        super.move(velocity);
 
         
     }
@@ -55,6 +55,8 @@ public class Hero extends LivingEntity {
         super.update();
         
         checkEntityCollisions();
+
+        imageToDraw = isLookingRight ? idle_right : idle_left;
 
         if (this.health <= 0) {
         //    animStates.add(LivingAnimStates.DIE);

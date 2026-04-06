@@ -24,7 +24,7 @@ public abstract class LivingEntity extends Entity {
     }
 
     public enum LivingType {
-        HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0),
+        HERO(new Point2D(48, 48), 100, 0, 10, 16, 0.8, 0, 0),
         WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2),
         BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30),
         SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10)
@@ -83,7 +83,8 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void updateLookDirection(double dx) {
-        isLookingRight = Math.signum(dx) >= 0;
+        if (dx > 0) isLookingRight = true;
+        else if (dx < 0) isLookingRight = false;
     }
 
     public void move(double dx, double dy) {

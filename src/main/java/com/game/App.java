@@ -404,7 +404,6 @@ public class App extends Application {
             });
 
             // canvas
-            gamePane = new StackPane();
             for (GameLayer layer : GameLayer.values()) {
                 Canvas canvas = new Canvas(800, 600);
                 canvas.widthProperty().bind(scene.widthProperty());

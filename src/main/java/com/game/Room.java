@@ -7,13 +7,13 @@ import javafx.scene.image.Image;
 
 public class Room extends Area {
     //class variables
-    public static final int MINIMUM_SIZE = 240; //1 tile is 48 units for measurement
-    public static ArrayList<Hall> hHalls;
-    public static ArrayList<Hall> vHalls;
+    public static int minSize = Level.gridSize*3;
+    public static ArrayList<Hall> hHalls = new ArrayList<Hall>();
+    public static ArrayList<Hall> vHalls = new ArrayList<Hall>();
 //    private Image image1,image2,image3;
-    private Image image1 = new Image(getClass().getResourceAsStream("/sprites/ui/wall.png"), 0, 42, true, false);
-    private Image image2 = new Image(getClass().getResourceAsStream("/sprites/ui/wall_top.png"), 0, 16, true, false);    
-    private Image image3 = new Image(getClass().getResourceAsStream("/sprites/ui/stone_floor.png"), 0, 16, true, false);    
+    private static final Image image1 = new Image(Room.class.getResourceAsStream("/sprites/ui/wall.png"), Level.gridSize, 0, true, false);
+    private static final Image image2 = new Image(Room.class.getResourceAsStream("/sprites/ui/wall_top.png"), Level.gridSize, 0, true, false);    
+    private static final Image image3 = new Image(Room.class.getResourceAsStream("/sprites/ui/stone_floor.png"), Level.gridSize, 0, true, false);    
 
 
     //Instance variables
@@ -39,58 +39,65 @@ public class Room extends Area {
         if(newType == 4)type = RoomType.NORMAL;
         hNeighbors = new ArrayList<Room>();
         vNeighbors = new ArrayList<Room>();
-        hHalls = new ArrayList<Hall>();
-        vHalls = new ArrayList<Hall>();
         dif = 1+ Level.levelNo/10;
 
     }
 
     public boolean divide(double minSize){
         if (left != null) { // If not a leaf, recurse
-        if (Math.random() < 0.5) return left.divide(minSize);
-        else return right.divide(minSize);
+            // if (Math.random() < 0.5) return left.divide(minSize);
+            // else return right.divide(minSize);
+            boolean divided = false;
+            if (Math.random() < 0.5) {
+                divided = left.divide(minSize);
+                if (!divided) divided = right.divide(minSize);
+            } else {
+                divided = right.divide(minSize);
+                if (!divided) divided = left.divide(minSize);
+            }
+            return divided;
         }
 
         double w = dim.getWidth();
         double h = dim.getHeight();
         double x1 = dim.getX();
         double y1 = dim.getY();
-        double x2 = w + x1;
-        double y2 = h + y1;
 
         if (w < minSize && h < minSize) return false;
 
         if (w > h) { // Split vertically
-            double mid = x1 + w * random(0.3, 0.7);
-            left = new Room(x1, y1, mid, y2);
-            right = new Room(mid, y1, x2, y2);
+            double mid = snapToGrid(w * random(0.3, 0.7));
+            left = new Room(x1, y1, mid, h);
+            right = new Room(x1 + mid, y1, w - mid, h);
         } else { // Split horizontally
-            double mid = y1 + h * random(0.3, 0.7);
-            left = new Room(x1, y1, x2, mid);
-            right = new Room(x1, mid, x2, y2);
+            double mid = snapToGrid(h * random(0.3, 0.7));
+            left = new Room(x1, y1, w, mid);
+            right = new Room(x1, y1 + mid, w, h - mid);
         }
 
         return true;
     }
 
-    public void shrink(double minSize) {
+    public void shrink() {
         if (left != null) {
-        left.shrink(minSize);
-        right.shrink(minSize);
+            left.shrink();
+            right.shrink();
         } else {
-            double x1 = dim.getX();
-            double y1 = dim.getY();
-            double x2 = dim.getWidth() + dim.getX();
-            double y2 = dim.getHeight() + dim.getY();
-            double w = x2 - x1;
-            double h = y2 - y1;
-            double nw = Math.max(minSize, (w * random(0.4, 0.9)));
-            double nh = Math.max(minSize, (h * random(0.4, 0.9)));
-            dim.setX(x1 + (w - nw) / 2);
-            dim.setWidth((x2 - (w - nw) / 2)-x1);
-            dim.setY(y1 + (h - nh) / 2);
-            dim.setHeight((y2 - (h - nh) / 2)-y1);
+            double nw = snapToGrid(Math.max(minSize, (dim.getWidth() * random(0.4, 0.9))));
+            double nh = snapToGrid(Math.max(minSize, (dim.getHeight() * random(0.4, 0.9))));
+
+            double offsetX = snapToGrid((dim.getWidth() - nw) / 2);
+            double offsetY = snapToGrid((dim.getHeight() - nh) / 2);
+
+            dim.setX(dim.getX() + offsetX);
+            dim.setY(dim.getY() + offsetY);
+            dim.setWidth(nw);
+            dim.setHeight(nh);
         }
+    }
+
+    private double snapToGrid(double value) {
+        return Math.round(value/Level.gridSize) * Level.gridSize;
     }
 
     public void spawnEntities(){
@@ -172,7 +179,7 @@ public class Room extends Area {
     public RoomType getType(){return this.type;}
     public static ArrayList<Hall> getHHalls(){return hHalls;}
     public static ArrayList<Hall> getVHalls(){return vHalls;}
-    public Image getImage(int i){
+    public static Image getImage(int i){
         //0 for top wall, 1 for right walls, 2 for ground, 3 for right walls, 4 for lower walls
         switch (i) {
             case 0://further wall

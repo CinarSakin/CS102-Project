@@ -77,9 +77,6 @@ public class Game{
         double camX = -heroCenter.getX() + (App.getScene().getWidth() / 2);
         double camY = -heroCenter.getY() + (App.getScene().getHeight() / 2);
 
-        System.out.println(camX + " " + camY);
-        System.out.println(level.startingRoom.getDimension());
-
 
         for (App.GameLayer layer : App.GameLayer.values()) {
             // erasing old canvas and moving the "camera"
@@ -93,7 +90,7 @@ public class Game{
 
         // drawing level containing entities and other objects
         // drawer.draw(level);
-        System.out.println(Level.getRooms());
+    //    System.out.println(Level.getRooms());
         for (Room r : Level.getRooms()) {
             Drawer.draw(r);
             r.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
@@ -122,10 +119,10 @@ public class Game{
         if (hero == null) return;
 
         Point2D velocity = new Point2D(0, 0);
-        if (activeKeys.contains(KeyCode.W)) velocity.add(0, -1);
-        if (activeKeys.contains(KeyCode.A)) velocity.add(-1, 0);
-        if (activeKeys.contains(KeyCode.S)) velocity.add(0, 1);
-        if (activeKeys.contains(KeyCode.D)) velocity.add(1, 0);
+        if (activeKeys.contains(KeyCode.W)) velocity = velocity.add(0, -1);
+        if (activeKeys.contains(KeyCode.A)) velocity = velocity.add(-1, 0);
+        if (activeKeys.contains(KeyCode.S)) velocity = velocity.add(0, 1);
+        if (activeKeys.contains(KeyCode.D)) velocity = velocity.add(1, 0);
         hero.move(velocity.normalize());
         
         if (activeKeys.contains(KeyCode.SPACE)) {

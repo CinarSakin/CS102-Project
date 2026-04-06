@@ -2,10 +2,12 @@ package com.game;
 
 import java.util.ArrayList;
 
+import javafx.geometry.Point2D;
+
 public class Level {
 
     // class variables
-    public static double gridSize = 20;
+    public static int gridSize = 48;
     private static Level currentLevel;
     public static int levelNo;
     public static Hero hero;
@@ -20,7 +22,7 @@ public class Level {
     
     private Level(int levelCount){
         this.levelNo = levelCount;
-        this.numRooms = 5 + levelNo;
+        this.numRooms = 8 + 4*levelNo;
         currentLevel = this;
         generateLevel();
 
@@ -73,15 +75,23 @@ public class Level {
     private void generateLevel(){
         root = new Room(144, 144, 4800, 4800);
         rooms = new ArrayList<>();
-        rooms.add(root);
+    //    rooms.add(root);
         
         divide();
+        getLeaves(root);
+        findNeighbors();
+        addHalls();
+        shrink();
+
         int index =(int) (Math.random()*rooms.size());
         rooms.get(index).setStartingRoom();
         startingRoom = rooms.get(index);
 
+        startingRoom = rooms.get((int) (Math.random() * rooms.size()));
+        startingRoom.setStartingRoom();
+
         Game.hero = new Hero(
-            startingRoom.getDimension().getCenter(),
+            startingRoom.getDimension().getCenter().subtract(new Point2D(8, 8)),
             null, 1, startingRoom
         );
 
@@ -118,7 +128,7 @@ public class Level {
     }
 
     private void findNeighbors() {
-        getLeaves(root);
+        // getLeaves(root);
         for (Room c : rooms) {
             for (Room o : rooms) {
                 if (c == o) continue;
@@ -150,7 +160,7 @@ public class Level {
             }
         }
     }
-    public void shrink() { root.shrink(gridSize * 2); }
+    public void shrink() { root.shrink(); }
     
     //UPDATEING METHODS
     public void update(double dt){
