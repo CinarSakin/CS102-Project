@@ -7,7 +7,7 @@ public abstract class Entity {
     public transient Area currentArea;
     protected Dimension dimension;
     protected AnimationManager animManager;
-    public Image imageToDraw;
+    public transient Image imageToDraw;
 
     public Entity(Dimension dimension, Area currentArea) {
         if (dimension == null) {

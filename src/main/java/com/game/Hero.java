@@ -1,12 +1,10 @@
 package com.game;
 
-import java.util.ArrayList;
-
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Hero extends LivingEntity {
-    private static Hero currentHero;
+    public static Hero currentHero;
     private static Image idle_right = new Image(Hero.class.getResourceAsStream("/sprites/entities/hero_idle.png"), Level.gridSize, 0, true, false);
     private static Image idle_left = new Image(Hero.class.getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
 

@@ -151,6 +151,13 @@ public class Game{
             newGame(1);
         }
     }
+
+    public void saveCurrentGame() {
+        if (this.level != null) {
+            SaveManager.saveLevel(this.level, saveslot);
+        }
+    }
+
     private void newGame(int levelCount) {
         // TODO
         level = Level.constructNew(levelCount);

@@ -57,6 +57,7 @@ import javafx.scene.control.ContentDisplay;
 
 public class App extends Application {
 
+    private static Game activeGame;
     private static Scene scene;
     private static Stage stage;
     private static StackPane menuPane, gamePane; // holders of menus/layers
@@ -466,6 +467,9 @@ public class App extends Application {
 
                 deleteBtn.setOnAction(e -> {
                     // ToDo (Delete Button)
+                    SaveManager.deleteSave(slotChar);
+                    slotInfo.setText("* EMPTY *");
+                    deleteBtn.setVisible(false);
                 });
                 slotGrid.add(slotPane, i % 3, i / 3);
             }
@@ -597,6 +601,10 @@ public class App extends Application {
 
                 settings.uiScale = UI_SCALE.get();
 
+                if (activeGame != null) {
+                    activeGame.saveCurrentGame();
+                }
+
                 SaveManager.saveSettings();
             });
 
@@ -611,8 +619,8 @@ public class App extends Application {
     private void onSlotClicked(char saveSlot) {
         menuPane.setVisible(false);
 
-        Game game = new Game(saveSlot);
-        game.startGame();
+        activeGame = new Game(saveSlot);
+        activeGame.startGame();
 
         gamePane.setVisible(true);
     }

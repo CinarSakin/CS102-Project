@@ -68,8 +68,15 @@ public class SaveManager {
     // save file check
     public static boolean saveExists(char slot) {
         String fileName = "save" + slot + ".json";
-        File file = new File(fileName);
+        File file = new File(getSaveDirectory(), fileName);
         return file.exists() && file.length() > 0;
+    }
+
+    public static void deleteSave(char slot) {
+        File file = new File(getSaveDirectory(), "save" + slot + ".json");
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     // level

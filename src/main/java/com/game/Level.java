@@ -46,7 +46,12 @@ public class Level {
                 if (e instanceof LivingEntity) area.livingEntities.add((LivingEntity) e);
                 if (e instanceof Enemy) area.enemies.add((Enemy) e);
                 
-                // e.reloadSprites(); 
+                if (e instanceof Hero) {
+                    Game.hero = (Hero) e;
+                    Hero.currentHero = (Hero) e;
+                }
+                
+                // e.reloadImage(); 
             }
         }
     
