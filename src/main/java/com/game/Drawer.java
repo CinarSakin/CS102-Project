@@ -199,7 +199,7 @@ public class Drawer {
         Image imgToDraw = e.getImage();
         double rescale = gridSize / imgToDraw.getWidth();
         gc.drawImage(imgToDraw, e.getDimension().getX(), e.getDimension().getY(),
-         e.getDimension().getWidth()*rescale, e.getDimension().getHeight()*rescale);
+         imgToDraw.getWidth(), imgToDraw.getHeight());
     }
 
     public static void draw(Room r){
