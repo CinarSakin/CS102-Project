@@ -94,6 +94,10 @@ public class Sword extends Weapon {
         Point2D heroPos = heroDim.getPos();
         Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
 
+        if (getIsOnCooldown()) {
+            return;
+        }
+
         for (LivingEntity target : heroDim.getArea().getLivingEntities()) {
             if (target != Hero.getHero() && target.getDimension().intersects(hitBox)) {
                 target.getDamaged(this.damage);
@@ -105,5 +109,6 @@ public class Sword extends Weapon {
                 }
             }
         }
+        startCooldown();
     }
 }
