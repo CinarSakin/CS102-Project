@@ -161,7 +161,7 @@ public class Drawer {
         // update consumable icons
         for (int i = 0; i < 3; i++) {
             if (Hero.getHero().consumables[i] != null) {
-                consIcons[i].setImage(Hero.getHero().consumables[i].getImage());
+                consIcons[i].setImage(Hero.getHero().consumables[i].image);
             } else {
                 consIcons[i].setImage(null);
             }
