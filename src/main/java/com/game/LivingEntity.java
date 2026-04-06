@@ -6,6 +6,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public abstract class LivingEntity extends Entity {
+    private double timeSinceLastAttack = 0;
+
     public int maxHealth;
     public double health;
     public double armor;
@@ -81,10 +83,20 @@ public abstract class LivingEntity extends Entity {
 
     @Override
     public void update(double dt) {
+        timeSinceLastAttack += dt;
+
         for (Effect effe : effects) {
             if(effe != null)effe.affectEntity();
             //animManager.setCurrentAnim(effe.getEffectType());
         }
+    }
+
+    public boolean canAttack() {
+        return timeSinceLastAttack > 1/lType.attackSpeed;
+    }
+
+    public void resetAttack() {
+        timeSinceLastAttack = 0;
     }
 
     public void updateLookDirection(double dx) {

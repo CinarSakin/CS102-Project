@@ -8,10 +8,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Enemy extends LivingEntity {
-    private static final long ATTACK_DELAY = 1000;
-
-    private double timeSinceLastAttack = 1001;
-    private boolean canAttack = ATTACK_DELAY < timeSinceLastAttack;
     
     
     public Enemy(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
@@ -37,9 +33,9 @@ public class Enemy extends LivingEntity {
             super.follow(Hero.getHero());
         }
         else {
-            if (canAttack && inAttackRange()) {
+            if (canAttack() && inAttackRange()) {
                 attack();
-                this.timeSinceLastAttack = 0;
+                resetAttack();
             }
         }
     }
