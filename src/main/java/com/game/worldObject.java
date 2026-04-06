@@ -1,106 +1,80 @@
 package com.game;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
-public class WorldObject extends Entity {
+public abstract class WorldObject extends Entity {
     
-    public enum WorldObjectType {
-        GATE,
-        DROPPED_ITEM,
-        CHEST
-    }
-    
-    public WorldObjectType type;
-    public Item item;
     public boolean interacted;
-    public boolean open;
-    public boolean unlocked;
     public double interactRadius;
-    
-    public WorldObject(Point2D position, WorldObjectType type, Area currentArea) {
+
+    public WorldObject(Point2D position, Area currentArea, double interactRadius) {
         super(new Dimension(position.getX(), position.getY(), 32, 32), currentArea);
-        this.type = type;
-        this.item = Item.randomItem();
+        this.interactRadius = interactRadius;
         this.interacted = false;
-        this.open = false;
-        this.unlocked = false;
-        
-        // Circular interaction radius
-        this.interactRadius = 64;
     }
-    
-    public boolean isHeroInRange(Hero hero) {
-        Point2D objectCenter = new Point2D(
-            dimension.getX() + dimension.getWidth() / 2,
-            dimension.getY() + dimension.getHeight() / 2
-        );
-        
-        Point2D heroCenter = new Point2D(
-            hero.getDimension().getX() + hero.getDimension().getWidth() / 2,
-            hero.getDimension().getY() + hero.getDimension().getHeight() / 2
-        );
-        
-        double distance = objectCenter.distance(heroCenter);
+
+    public abstract void interact();
+
+    public boolean isHeroInRange() {        
+        double distance = dimension.getCenter().distance(Hero.getHero().dimension.getCenter());
         return distance <= interactRadius;
-    }
-    public void interact(Hero hero) {
-        if (interacted) return;
-        
-        switch (type) {
-            case DROPPED_ITEM:
-                pickupItem(hero);
-                break;
-            case CHEST:
-                openChest(hero);
-                break;
-            case GATE:
-                unlockGate(hero);
-                break;
-        }
-    }
-    
-    private void pickupItem(Hero hero) {
-        if (item == null) return;
-        
-        if (item instanceof Weapon) {
-            // Add weapon to hero inventory
-        } else if (item instanceof Consumable) {
-            // Add consumable to hero inventory
-        } else if (item instanceof Talisman) {
-            // Add talisman to hero inventory
-        }
-        
-        interacted = true;
-        currentArea.unregister(this);
-    }
-    
-    private void openChest(Hero hero) {
-        if (open) return;
-        
-        open = true;
-        interacted = true;
-        
-        if (item == null) return;
-        
-        if (item instanceof Weapon) {
-            // Add weapon to hero inventory
-        } else if (item instanceof Consumable) {
-            // Add consumable to hero inventory
-        } else if (item instanceof Talisman) {
-            // Add talisman to hero inventory
-        }
-    }
-    
-    private void unlockGate(Hero hero) {
-        if (unlocked) return;
-        
-        unlocked = true;
-        interacted = true;
     }
 
     @Override
-    public void update(double dt) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public void update(double dt) {}
+}
+
+class Chest extends WorldObject {
+    
+    public Item item;
+    public boolean open;
+    public boolean unlocked;
+
+    public Chest(Point2D position, Area currentArea, Item item) {
+        super(position, currentArea, Level.gridSize*3);
+        this.item = item;
+        this.open = false;
+        this.unlocked = false;
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_closed.png"));
     }
+
+    @Override
+    public void interact() {
+        if (!isHeroInRange() || open) return;
+        this.open = true;
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_open.png"));
+    }
+}
+
+class DroppedItem extends WorldObject {
+    
+    public Item item;
+
+    public DroppedItem(Point2D position, Area currentArea, Item item) {
+        super(position, currentArea, Level.gridSize);
+        this.item = item;
+        this.imageToDraw = item.image;
+    }
+
+    public void interact() {
+        if (!isHeroInRange()) return;
+        // add item to inventory
+        this.despawn(); 
+    }
+}
+
+class Gate extends WorldObject {
+
+    public Gate(Point2D position, Area currentArea) {
+        super(position, currentArea, Level.gridSize*3);
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"));
+    }
+
+    @Override
+    public void interact() {
+        if (!isHeroInRange()) return;
+
+    }
+
 }

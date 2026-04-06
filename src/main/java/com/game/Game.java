@@ -136,6 +136,28 @@ public class Game{
         if (activeKeys.contains(KeyCode.SPACE)) {
             hero.attack();
         }
+
+        if (activeKeys.contains(GameSettings.getKeyCode("Interact"))) {
+            boolean hasInteracted = false;
+
+            for (Area area : Level.getAreas()) {
+                ArrayList<Entity> entitiesCopy = new ArrayList<>(area.getEntities());
+                for (Entity e : entitiesCopy) {
+                    if (e instanceof WorldObject) {
+                        WorldObject wo = (WorldObject) e;
+                        if (wo.isHeroInRange()) {
+                            wo.interact(); 
+                            hasInteracted = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasInteracted) break;
+            }
+            if (hasInteracted) {
+                activeKeys.remove(GameSettings.getKeyCode("Interact")); 
+            }
+        }
     }
 
     public void stopGame() {

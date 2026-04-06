@@ -1,5 +1,7 @@
 package com.game;
 
+import javafx.scene.input.KeyCode;
+
 public class GameSettings {
 
     public static final int DEFAULT_MASTER_VOLUME = 80;
@@ -103,6 +105,11 @@ public class GameSettings {
             default -> "";
         };
     }
+
+    public static KeyCode getKeyCode(String action) {
+        return KeyCode.valueOf(getKeyBinding(action));
+    }
+
 
     public static String getMasterVolumeLabel() {
         return "%" + instance.masterVolume;
