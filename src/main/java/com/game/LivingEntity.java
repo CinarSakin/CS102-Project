@@ -21,7 +21,7 @@ public abstract class LivingEntity extends Entity {
     public static LivingType[] livingTypes = new LivingType[]{LivingType.WALKER, LivingType.BOMBER, LivingType.SKELETON};
 
     enum LivingStates {
-        ATTACK, HEAL, TAKE_DAMAGE, DIE; 
+        ATTACK, HEAL, TAKE_DAMAGE, DIE;
     }
 
     public enum LivingType {
@@ -71,7 +71,6 @@ public abstract class LivingEntity extends Entity {
         this.lType = lType;
 
         this.imageToDraw = lType.imageToDraw;
-        //this.animManager = new AnimationManager(this);
     }
     public static LivingType RandomType() {
         int rand = (int) (Math.random()*livingTypes.length);
@@ -160,10 +159,10 @@ public abstract class LivingEntity extends Entity {
 
     public void getDamaged(double damage){
         this.health = Math.max(this.health+damage, 0);
-        animManager.setCurrentAnim(LivingStates.TAKE_DAMAGE);
+        // + take_damage animation
 
         if (this.health == 0){
-            animManager.setCurrentAnim(LivingStates.DIE);
+            AnimationManager.updateImage(this, LivingStates.DIE);
             // if hero > lose the game
             // if enemy > despawn
             if (this.lType != LivingType.HERO) {
