@@ -10,7 +10,6 @@ import javafx.scene.image.Image;
 public class Enemy extends LivingEntity {
     private boolean canAttack = true;
     
-
     public Enemy(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(lType, position, currentArea, diffMulti);
     //    this.targetEntity = targetEntity;
@@ -34,7 +33,7 @@ public class Enemy extends LivingEntity {
             super.follow(Hero.getHero());
         }
         else {
-            if (canAttack) {
+            if (canAttack && inAttackRange()) {
                 attack();
                 new Effect(EffectType.TIRE, ((long)attackSpeed)*1, this).startEffect(); // cooldown
             }
@@ -53,7 +52,7 @@ public class Enemy extends LivingEntity {
                 new Projectile(ProjectileType.ARROW, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
                 break;
             case WALKER:
-                // melee animation and hit check
+                new Projectile(ProjectileType.SLASH, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
                 break;
             // more enemies
             
@@ -81,8 +80,7 @@ public class Enemy extends LivingEntity {
     }
 
     public boolean inRange(){
-        if(getDimension().distanceTo(Hero.getHero().getDimension().getPos())<range)return true;
-        return false;
+        return (getDimension().distanceTo(Hero.getHero().getDimension().getPos())<range);
     }
     public boolean inAttackRange() {
         Point2D position = new Point2D(dimension.getX(), dimension.getY());

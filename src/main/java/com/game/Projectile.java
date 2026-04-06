@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.game.Effect.EffectType;
+import com.game.Projectile.ProjectileType;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -88,7 +89,16 @@ public class Projectile extends Entity {
             despawn(); return;
         }
 
-        if (projType.equals(ProjectileType.BOMB)){
+        if (projType.equals(ProjectileType.SLASH)){
+            for (LivingEntity target : getTargets()){
+                    double dist = target.getDimension().distanceTo(dimension);
+                    if (dist < 14){
+                        target.getDamaged(10); // damage range from 50 to 15
+                    }                    
+            }
+        }
+
+        else if (projType.equals(ProjectileType.BOMB)){
             speed = Math.max(speed*.95-.03, 0); // slows down
             if (lifeTime > EXPLODE_TIMER){
                 //AnimationManager.updateImage(this);
@@ -103,13 +113,16 @@ public class Projectile extends Entity {
                 }
             }
         }
+
         else if (projType.equals(ProjectileType.BOSS_ORB)) {
-            
+
         }
-        else{ // arrow
+
+        else { // arrow
             for (LivingEntity target : getTargets()){
                 if (dimension.intersects(target.dimension)) {
-
+                    target.getDamaged(10);
+                    this.despawn();
                 }
             }
         }
@@ -137,5 +150,4 @@ public class Projectile extends Entity {
     public ProjectileType getType() {
         return projType;
     }
-
 }
