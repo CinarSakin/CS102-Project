@@ -13,7 +13,9 @@ public class Drawer {
 
     public static void draw(Entity e){
         GraphicsContext gc;
-        if (e instanceof Projectile && ((Projectile)e).getType() == ProjectileType.BOMB) {
+        
+        if (e instanceof Projectile && ((Projectile)e).getType() == ProjectileType.BOMB){
+            
             gc = App.getLayerGC(App.GameLayer.VFX);
         }else{
             gc = App.getLayerGC(App.GameLayer.ENTITIES);

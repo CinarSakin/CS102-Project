@@ -13,7 +13,7 @@ public class Projectile extends Entity {
     public final double EXPLODE_TIMER = 3;
 
     public enum ProjectileType {
-        MELEE(
+        SLASH(
             new Image("slash.png"),
             3, new Point2D(8, 8)
         ),
@@ -93,12 +93,14 @@ public class Projectile extends Entity {
         if (projType.equals(ProjectileType.BOMB)){
             speed = Math.max(speed*.95-.03, 0); // slows down
             if (lifeTime > EXPLODE_TIMER){
-                animManager.playAnim(ProjectileType.BOMB);
+                animManager.setCurrentAnim(ProjectileType.BOMB);
 
                 for (LivingEntity target : getTargets()){
                     double dist = target.getDimension().distanceTo(dimension);
-                    if (dist < 20){
-                        target.getDamaged(600/(dist+10)); // damage range from 20 to 60
+                    if (dist < 14){
+                        target.getDamaged(300/(dist+6)); // damage range from 50 to 15
+                        new Effect(EffectType.FEAR, 1000, target).startEffect();
+                        new Effect(EffectType.BURN, 1000, target).startEffect();
                     }                    
                 }
             }

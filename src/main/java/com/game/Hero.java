@@ -59,7 +59,7 @@ public class Hero extends LivingEntity {
         imageToDraw = isLookingRight ? idle_right : idle_left;
 
         if (this.health <= 0) {
-        //    animStates.add(LivingAnimStates.DIE);
+            animManager.setCurrentAnim(LivingStates.DIE);
             // Oyun bitiş ekranını tetikle
         }
     }

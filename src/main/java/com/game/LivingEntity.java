@@ -3,6 +3,7 @@ package com.game;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 public abstract class LivingEntity extends Entity {
     public int maxHealth;
@@ -24,14 +25,13 @@ public abstract class LivingEntity extends Entity {
     }
 
     public enum LivingType {
-        HERO(new Point2D(48, 48), 100, 0, 10, 3, 0.8, 0, 0),
-        WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2),
-        BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30),
-        SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10)
+        HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0, new Image("hero_idle")),
+        WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2, new Image("monster")),
+        BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30, new Image("monster")),
+        SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10, new Image("monster")),
         ;
 
         void attack(LivingEntity targetEntity) {}
-        // TODO boolean isLookingRight in Drawer for knowing if walking animation will be reversed or not.
 
         private Point2D size;
         private int maxHealth;
@@ -43,7 +43,9 @@ public abstract class LivingEntity extends Entity {
         private double fear;
         private double range;
 
-        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double range) {
+        private Image imageToDraw;
+
+        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double range, Image imageToDraw) {
             this.size = size;
             this.maxHealth = maxHealth;
             this.health = maxHealth;
@@ -53,6 +55,8 @@ public abstract class LivingEntity extends Entity {
             this.attackSpeed = attackSpeed;
             this.fear = fear;
             this.range = range;
+
+            this.imageToDraw = imageToDraw;
         }
     }
 
@@ -68,7 +72,8 @@ public abstract class LivingEntity extends Entity {
         this.fear = lType.fear;
         this.lType = lType;
 
-    //    this.animManager = new AnimationManager(this);
+        this.imageToDraw = lType.imageToDraw;
+        this.animManager = new AnimationManager(this);
     }
     public static LivingType RandomType() {
         int rand = (int) (Math.random()*livingTypes.length);
@@ -78,7 +83,7 @@ public abstract class LivingEntity extends Entity {
     public void update() {
         for (Effect effe : effects) {
             effe.affectEntity();
-            animManager.playAnim(effe.getEffectType());
+            animManager.setCurrentAnim(effe.getEffectType());
         }
     }
 
@@ -155,10 +160,10 @@ public abstract class LivingEntity extends Entity {
 
     public void getDamaged(double damage){
         this.health = Math.max(this.health+damage, 0);
-        animManager.playAnim(LivingStates.TAKE_DAMAGE);
+        animManager.setCurrentAnim(LivingStates.TAKE_DAMAGE);
 
         if (this.health == 0){
-            animManager.playAnim(LivingStates.DIE);
+            animManager.setCurrentAnim(LivingStates.DIE);
             // if hero > lose the game
             // if enemy > despawn
             if (this.lType != LivingType.HERO) {

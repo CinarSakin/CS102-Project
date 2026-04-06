@@ -71,7 +71,7 @@ public class Effect {
         affectEntity();
         targetEntity.effects.add(this);
 
-        animManager.playAnim(effectType);
+        animManager.setCurrentAnim(effectType);
     }
 
     public void affectEntity() {

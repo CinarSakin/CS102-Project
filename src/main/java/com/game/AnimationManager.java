@@ -2,111 +2,154 @@ package com.game;
 
 import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
+import com.game.Anim.AnimStates;
+import com.game.Effect.EffectType;
+import com.game.LivingEntity.LivingStates;
+import com.game.LivingEntity.LivingType;
+import com.game.Projectile.ProjectileType;
 
+import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.util.Duration;
 
 public class AnimationManager {
 
+    private static final int FX = 0, IDLE = 0, WALK = 1, ATTACK = 2, DIE = 3;
+
     private int speed = 0;
     private LivingEntity livingEntity;
-    
-    // spriteSheet file names : hero_idle, walker_walk
-    private AnimatedTexture baseLayer;
-    private AnimatedTexture effectLayer;
+    private Animats Animat;
 
-    private AnimationChannel idleAnim, walkAnim, attackAnim, dieAnim, effectAnim;
+    private Image imageToChange = (WritableImage)livingEntity.getImage();
+
+    private Image a = new Image("as", 100, 200, true, true);
+    // drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh)
+    // (s=source), (sx,sy) noktasından (sx+sw, sy+sh)'a kadar oluşan dikdörtgeni img resminden kırp,
+    // (dx, dy) noktasından (dx+dw, dy+dh)'ye kadar oluşan dikdörtgene çiz.
+
+    private Anim currentAnim;
+    private Anim effectAnim, idleAnim, walkRAnim, walkLAnim, attackAnim, dieAnim;
     // Image spriteSheet, numFrames per row, single frame width, single frame height, duration of the animation channel, start frame and end frame
 
-    enum Anims { // 0=idle, 1=walk, 2=attack, 3=die
-        HERO(new int[]{1, 1, 1, 1}, new int[]{2, 2, 2, 2}),
-        WALKER(new int[]{1, 1, 1, 1}, new int[]{2, 2, 2, 2}),
-        BOMBER(new int[]{1, 1, 1, 1}, new int[]{2, 2, 2, 2}),
-        SKELETON(new int[]{1, 1, 1, 1}, new int[]{2, 2, 2, 2}),
-
+    enum Animats { // 0=fx, 0=idle, 1=walkRight, 2=walkLeft, 3=attack, 4=die
+        // every anim has a spriteSheet
+        HERO(
+            new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKR),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKL),
+            new Anim(LivingType.HERO, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.HERO, Anim.AnimStates.DIE)
+        ),
+        WALKER(
+            new Anim(LivingType.WALKER, Anim.AnimStates.IDLE),
+            new Anim(LivingType.WALKER, Anim.AnimStates.WALKR),
+            new Anim(LivingType.WALKER, Anim.AnimStates.WALKL),
+            new Anim(LivingType.WALKER, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.WALKER, Anim.AnimStates.DIE)
+        ),
+        BOMBER(
+            new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKR),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKL),
+            new Anim(LivingType.HERO, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.HERO, Anim.AnimStates.DIE)
+        ),
+        SKELETON(
+            new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKR),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKL),
+            new Anim(LivingType.HERO, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.HERO, Anim.AnimStates.DIE)
+        ),
+        
         // particle effects
         // projectiles
-        BOMB(new int[]{1}, new int[]{2}), // explosion
+        BOMB(new Anim(ProjectileType.BOMB)), // explosion
+        SLASH(new Anim(ProjectileType.SLASH)),
 
         // effects
-        STUN(new int[]{1}, new int[]{2}),
-        SLASH(new int[]{1}, new int[]{2}),
-        BURN(new int[]{1}, new int[]{2}),
-        FREEZE(new int[]{1}, new int[]{2}),
-        TIRE(new int[]{1}, new int[]{2}),
-        HEAL(new int[]{1}, new int[]{2}),
+        STUN(new Anim(EffectType.STUN)),
+        BURN(new Anim(EffectType.BURN)),
+        FREEZE(new Anim(EffectType.FREEZE)),
+        TIRE(new Anim(EffectType.TIRE)),
+        HEAL(new Anim(EffectType.HEAL)),
         ;
-
-        private int[] framesPerRow;
-        private int[] durations;
         
-        private Anims(int[] durations, int[] numFrames) {
-            this.durations = durations;
-            this.framesPerRow = numFrames;
+        private Anim[] animations;
+        private Animats(Anim... animations) {
+            this.animations = animations;
         }
     }
 
     public AnimationManager(LivingEntity livingEntity) {
-        Anims Anim = Anims.valueOf(livingEntity.lType.name());
-
         this.livingEntity = livingEntity;
+        this.Animat = Animats.valueOf(livingEntity.lType.name());
 
-        // placeholder values
-        idleAnim = new AnimationChannel(new Image(Anim.name().toLowerCase()+"_idle"), Anim.framesPerRow[0], 128, 128, new Duration(Anim.durations[0]), 0, 3);
-        walkAnim = new AnimationChannel(new Image(Anim.name().toLowerCase()+"_walk"), Anim.framesPerRow[1], 128, 128, new Duration(Anim.durations[1]), 0, 3);
-        attackAnim = new AnimationChannel(new Image(Anim.name().toLowerCase()+"_attack"), Anim.framesPerRow[2], 128, 128, new Duration(Anim.durations[2]), 0, 3);
-        dieAnim = new AnimationChannel(new Image(Anim.name().toLowerCase()+"_die"), Anim.framesPerRow[3], 128, 128, new Duration(Anim.durations[3]), 0, 3);
+        idleAnim = Animat.animations[0];
+        walkRAnim = Animat.animations[1];
+        walkLAnim = Animat.animations[2];
+        attackAnim = Animat.animations[3];
+        dieAnim = Animat.animations[4];
 
-        baseLayer = new AnimatedTexture(idleAnim);
+        currentAnim = idleAnim;
     }
 
-    private AnimationManager(Anims Anim) {
-        effectAnim = new AnimationChannel(new Image(Anim.name().toLowerCase()+"_fx"), Anim.framesPerRow[0], 128, 128, new Duration(Anim.durations[0]), 0, 3);
-        effectLayer = new AnimatedTexture(effectAnim);
+    private AnimationManager(Animats Anim) {
+        effectAnim = Anim.animations[0];
+
+        currentAnim = effectAnim;
     }
 
     public AnimationManager(Projectile.ProjectileType projType) {
-        this(Anims.valueOf(projType.name()));
+        this(Animats.valueOf(projType.name()));
     }
     public AnimationManager(Effect.EffectType effectType) {
-        this(Anims.valueOf(effectType.name()));
+        this(Animats.valueOf(effectType.name()));
     }
 
     // todo constructor and enums for world objects
 
     public void draw() {
         if (speed != 0) {
-            if (baseLayer.getAnimationChannel() == idleAnim) {
+            if (currentAnim == idleAnim) {
                 
-                if (!livingEntity.isLookingRight || baseLayer.getScaleX() == -1) {
-                    baseLayer.setScaleX(-1);
+                if (!livingEntity.isLookingRight) {
+                    currentAnim = walkRAnim;
+                } else {
+
                 }
-                baseLayer.loopAnimationChannel(walkAnim);
             }
             speed = (int) (speed*0.9); // friction
 
             if (speed < 1) {
                 speed = 0;
-                baseLayer.loopAnimationChannel(idleAnim);
+                currentAnim = idleAnim;
             }
         }
+
+        imageToChange = currentAnim.nextFrame();
     }
 
-    public void playAnim(LivingEntity.LivingStates state) { // for non-looping animations
-        AnimationChannel animToPlay = idleAnim;
+    public void setCurrentAnim(LivingEntity.LivingStates state) { // for non-looping animations
+        Anim animToPlay = idleAnim;
         switch (state.name()) {
             case "ATTACK" -> animToPlay = attackAnim;
             case "DIE" -> animToPlay = dieAnim;
         }
 
-        baseLayer.playAnimationChannel(animToPlay);
+        currentAnim = animToPlay;
     }
 
-    public void playAnim(Effect.EffectType effectType) {
-        effectLayer.playAnimationChannel(effectAnim);
+    public void setCurrentAnim(Effect.EffectType effectType) {
+        currentAnim = Animats.valueOf(effectType.name()).animations[0];
     }
 
-    public void playAnim(Projectile.ProjectileType projType) {
-        effectLayer.playAnimationChannel(effectAnim);
+    public void setCurrentAnim(Projectile.ProjectileType projType) {
+        currentAnim = Animats.valueOf(projType.name()).animations[0];
     }
 }
