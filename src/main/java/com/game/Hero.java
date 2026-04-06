@@ -29,7 +29,7 @@ public class Hero extends LivingEntity {
     public void move(Point2D velocity) {
         
         // Only update position if the new coordinates are within bounds
-        super.move(velocity);
+        super.move(velocity.multiply(walkSpeed));
 
         
     }
