@@ -29,7 +29,8 @@ public class Enemy extends LivingEntity {
     @Override
     public void update(double dt) {
         super.update(dt);
-        if (!inRange()) {
+        
+        if (!inAttackRange()&&inRange()) {
             super.follow(Hero.getHero());
         }
         else {
@@ -70,7 +71,7 @@ public class Enemy extends LivingEntity {
     @Override
     public void getDamaged(double damage) {
         super.getDamaged(damage);
-        if (0.15 < Math.random()*fear && inRange()) {
+        if (0.15 < Math.random()*fear && inAttackRange()) {
             new Effect(EffectType.FEAR, (long)fear*100, this).startEffect();
         }
     }
@@ -79,8 +80,12 @@ public class Enemy extends LivingEntity {
         this.canAttack = canAttack;
     }
 
-    public boolean inRange() {
+    public boolean inRange(){
+        if(getDimension().distanceTo(Hero.getHero().getDimension().getPos())<range)return true;
+        return false;
+    }
+    public boolean inAttackRange() {
         Point2D position = new Point2D(dimension.getX(), dimension.getY());
-        return position.distance(Hero.getHero().dimension.getPos()) < range;
+        return position.distance(Hero.getHero().dimension.getPos()) < attackRange;
     }
 }

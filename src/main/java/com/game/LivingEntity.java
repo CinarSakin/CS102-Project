@@ -13,6 +13,7 @@ public abstract class LivingEntity extends Entity {
     public double walkSpeed;
     public boolean isLookingRight = true;
     public double attackSpeed;
+    public double attackRange;
     public double range;
     public double fear;
     public LivingType lType;
@@ -25,10 +26,10 @@ public abstract class LivingEntity extends Entity {
     }
 
     public enum LivingType {
-        HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0),
-        WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2 ),
-        BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30),
-        SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10),
+        HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0, 5),
+        WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2, 5),
+        BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 3, 5),
+        SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 1, 5),
         ;
 
         void attack(LivingEntity targetEntity) {}
@@ -41,11 +42,12 @@ public abstract class LivingEntity extends Entity {
         private double walkSpeed;
         private double attackSpeed;
         private double fear;
+        private double attackRange;
         private double range;
 
         private Image imageToDraw;
 
-        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double range) {
+        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double attackRange, double range) {
             this.size = size;
             this.maxHealth = maxHealth;
             this.health = maxHealth;
@@ -54,6 +56,7 @@ public abstract class LivingEntity extends Entity {
             this.walkSpeed = walkSpeed;
             this.attackSpeed = attackSpeed;
             this.fear = fear;
+            this.attackRange = attackRange;
             this.range = range;
         }
     }
@@ -67,6 +70,8 @@ public abstract class LivingEntity extends Entity {
         this.damage = lType.damage * diffMulti;
         this.walkSpeed = lType.walkSpeed;
         this.attackSpeed = lType.attackSpeed;
+        this.attackRange = lType.attackRange;
+        this.range= lType.range;
         this.fear = lType.fear;
         this.lType = lType;
 
