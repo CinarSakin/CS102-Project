@@ -14,23 +14,23 @@ public class Projectile extends Entity {
 
     public enum ProjectileType {
         SLASH(
-            new Image("slash.png"),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
             3, new Point2D(8, 8)
         ),
         BOMB(
-            new Image("bomb.png"),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
             3, new Point2D(16, 16)
         ),  
         ARROW(
-            new Image("arrow.png"),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
             5, new Point2D(12, 12)
         ), 
         FLAMING_ARROW(
-            new Image("flaming_armor.png"),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
             5, new Point2D(12, 12)
         ),
         BOSS_ORB(
-            new Image("flaming_armor.png"),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
             2, new Point2D(20, 20)
         );
 
@@ -91,7 +91,7 @@ public class Projectile extends Entity {
         if (projType.equals(ProjectileType.BOMB)){
             speed = Math.max(speed*.95-.03, 0); // slows down
             if (lifeTime > EXPLODE_TIMER){
-                AnimationManager.updateImage(this);
+                //AnimationManager.updateImage(this);
 
                 for (LivingEntity target : getTargets()){
                     double dist = target.getDimension().distanceTo(dimension);
