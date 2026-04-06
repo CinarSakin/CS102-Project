@@ -1,11 +1,11 @@
 package com.game;
 
 public class Effect {
-    private AnimationManager animManager;
+    private transient AnimationManager animManager;
 
     private EffectType effectType;
     private long remainingDuration;
-    private LivingEntity targetEntity;
+    private transient LivingEntity targetEntity;
 
     public enum EffectType {
         FEAR {
@@ -86,4 +86,8 @@ public class Effect {
     }
 
     public Effect.EffectType getEffectType() { return effectType; }
+
+    public void setTargetEntity(LivingEntity entity) {
+        this.targetEntity = entity;
+    }
 }

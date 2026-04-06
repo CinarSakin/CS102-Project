@@ -14,13 +14,15 @@ public class Level {
     public static boolean heroSetIn = false;
     
     // instance variables
-    private ArrayList<Room> rooms = new ArrayList<Room>();
+    private transient ArrayList<Room> rooms = new ArrayList<Room>();
     public ArrayList<Area> areas = new ArrayList<Area>();
     public Room startingRoom;
-    private Room root;
-    
+    private transient Room root;
+    private int savedLevelNo; // non-static copy for GSON (levelNo is static)
+
     private Level(int levelCount){
         this.levelNo = levelCount;
+        this.savedLevelNo = levelCount;
         currentLevel = this;
         generateLevel();
 
@@ -31,31 +33,60 @@ public class Level {
         if (getLevel() != null) throw new IllegalStateException("There is already a Level instance!");
 
         Level loadedLevel = SaveManager.loadLevel(saveSlot);
-    
+
         if (loadedLevel == null) {
             throw new Exception("Level data could not be loaded!");
         }
 
+        levelNo = loadedLevel.savedLevelNo;
+        loadedLevel.rooms = new ArrayList<>();
+
+        Room.hHalls.clear();
+        Room.vHalls.clear();
+
         for (Area area : loadedLevel.areas) {
+            area.getDimension().setArea(area);
+
             area.livingEntities = new ArrayList<>();
             area.enemies = new ArrayList<>();
-    
+
+            if (area instanceof Room) {
+                Room r = (Room) area;
+                loadedLevel.rooms.add(r);
+                r.hNeighbors = new ArrayList<>();
+                r.vNeighbors = new ArrayList<>();
+            } else if (area instanceof Hall) {
+                Hall hall = (Hall) area;
+                if (hall.isHorizontal) Room.hHalls.add(hall);
+                else Room.vHalls.add(hall);
+            }
+
             for (Entity e : area.getEntities()) {
-                e.currentArea = area; 
-    
-                if (e instanceof LivingEntity) area.livingEntities.add((LivingEntity) e);
+                e.currentArea = area;
+
+                if (e instanceof LivingEntity) {
+                    LivingEntity le = (LivingEntity) e;
+                    area.livingEntities.add(le);
+                    for (Effect effect : le.effects) {
+                        effect.setTargetEntity(le);
+                    }
+                }
                 if (e instanceof Enemy) area.enemies.add((Enemy) e);
-                
+
                 if (e instanceof Hero) {
                     Game.hero = (Hero) e;
                     Hero.currentHero = (Hero) e;
                 }
-                
-                // e.reloadImage(); 
+
+                e.reloadImages();
             }
         }
-    
+
         return currentLevel = loadedLevel;
+    }
+
+    public static void resetLevel() {
+        currentLevel = null;
     }
 
     public static Level constructNew(int levelCount) {
@@ -64,16 +95,6 @@ public class Level {
         return currentLevel;
     }
 
-    public static void save(){
-        try (java.io.PrintWriter out = new java.io.PrintWriter("save" + levelNo + ".txt")) {
-            out.println(levelNo);
-            out.println(Hero.getHero().health);  
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    
     //CONSTRUCTING METHODS
     private void generateLevel(){
         root = new Room(144, 144, 4800, 3600);
@@ -163,7 +184,7 @@ public class Level {
  
                 double midY = overlapTop + (overlap - hallThickness) / 2;
                 double y = c.snapToGrid(midY);
-                Room.hHalls.add(new Hall(startX, y, gapW, hallThickness));
+                Room.hHalls.add(new Hall(startX, y, gapW, hallThickness, true));
             }
  
             // VERTICAL NEIGHBORS (c is top, n is bottom)
@@ -180,7 +201,7 @@ public class Level {
  
                 double midX = overlapLeft + (overlap - hallThickness) / 2;
                 double x = c.snapToGrid(midX);
-                Room.vHalls.add(new Hall(x, startY, hallThickness, gapH));
+                Room.vHalls.add(new Hall(x, startY, hallThickness, gapH, false));
             }
         }
     }

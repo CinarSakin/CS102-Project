@@ -15,11 +15,11 @@ public class Room extends Area {
     //Instance variables
     public double dif;
     private final int MAXIMUM_ENEMIES = (int)(20 * dif);
-    public Room right;
-    public Room left;
+    public transient Room right;
+    public transient Room left;
     public RoomType type ;
-    public ArrayList<Room> hNeighbors = new ArrayList<Room>();
-    public ArrayList<Room> vNeighbors = new ArrayList<Room>();    
+    public transient ArrayList<Room> hNeighbors = new ArrayList<Room>();
+    public transient ArrayList<Room> vNeighbors = new ArrayList<Room>();
     
 
     public Room(double x1, double y1, double width, double height){

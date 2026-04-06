@@ -127,13 +127,13 @@ public class Game{
         if (hero == null) return;
 
         Point2D velocity = new Point2D(0, 0);
-        if (activeKeys.contains(KeyCode.W)) velocity = velocity.add(0, -1);
-        if (activeKeys.contains(KeyCode.A)) velocity = velocity.add(-1, 0);
-        if (activeKeys.contains(KeyCode.S)) velocity = velocity.add(0, 1);
-        if (activeKeys.contains(KeyCode.D)) velocity = velocity.add(1, 0);
+        if (activeKeys.contains(GameSettings.getKeyCode("up"))) velocity = velocity.add(0, -1);
+        if (activeKeys.contains(GameSettings.getKeyCode("left"))) velocity = velocity.add(-1, 0);
+        if (activeKeys.contains(GameSettings.getKeyCode("down"))) velocity = velocity.add(0, 1);
+        if (activeKeys.contains(GameSettings.getKeyCode("right"))) velocity = velocity.add(1, 0);
         hero.move(velocity.normalize());
         
-        if (activeKeys.contains(KeyCode.SPACE)) {
+        if (activeKeys.contains(GameSettings.getKeyCode("attack"))) {
             hero.attack();
         }
 
@@ -166,10 +166,14 @@ public class Game{
     }
 
     private void loadGame(char aSaveSlot) {
-        // ToDo
+        Level.resetLevel();
         try {
             level = Level.constructFromSave(aSaveSlot);
+            System.out.println("[Load] Game loaded from slot: " + aSaveSlot);
         } catch (Exception e) {
+            System.err.println("[Load] Failed to load save (slot " + aSaveSlot + "): " + e.getMessage());
+            e.printStackTrace();
+            Level.resetLevel();
             newGame(1);
         }
     }

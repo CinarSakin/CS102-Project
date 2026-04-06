@@ -10,7 +10,7 @@ public class Dimension {
     private double y;
     private double width;
     private double height;
-    private Area ownerArea;
+    private transient Area ownerArea;
 
     // constructor
     public Dimension(double x, double y, double width, double height) {

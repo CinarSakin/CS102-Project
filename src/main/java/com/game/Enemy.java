@@ -75,6 +75,16 @@ public class Enemy extends LivingEntity {
         }
     }
     
+    @Override
+    public void reloadImages() {
+        switch (lType) {
+            case WALKER -> imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/monster_idle.png"), Level.gridSize, 0, true, false);
+            case BOMBER -> imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/bomber.png"), Level.gridSize, 0, true, false);
+            case SKELETON -> imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
+            default -> {}
+        }
+    }
+
     public void setCanAttack(boolean canAttack) {
         this.canAttack = canAttack;
     }

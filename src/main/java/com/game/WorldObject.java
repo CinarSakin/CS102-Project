@@ -8,8 +8,8 @@ public abstract class WorldObject extends Entity {
     public boolean interacted;
     public double interactRadius;
 
-    public WorldObject(Point2D position, Area currentArea, double interactRadius) {
-        super(new Dimension(position.getX(), position.getY(), 32, 32), currentArea);
+    public WorldObject(Point2D position, double width, double height, Area currentArea, double interactRadius) {
+        super(new Dimension(position.getX(), position.getY(), width*Level.gridSize, height*Level.gridSize), currentArea);
         this.interactRadius = interactRadius;
         this.interacted = false;
     }
@@ -32,19 +32,26 @@ class Chest extends WorldObject {
     public boolean unlocked;
 
     public Chest(Point2D position, Area currentArea, Item item) {
-        super(position, currentArea, Level.gridSize*3);
+        super(position, 1, 1, currentArea, Level.gridSize*3);
         this.item = item;
         this.open = false;
         this.unlocked = false;
-        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_closed.png"));
-        this.dimension.moveCenterTo(position);
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_closed.png"), Level.gridSize, 0, true, false);
+        this.dimension.moveCenterTo(position.getX(), position.getY()-Level.gridSize/2);
     }
 
     @Override
     public void interact() {
         if (!isHeroInRange() || open) return;
         this.open = true;
-        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_open.png"));
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_open.png"), Level.gridSize, 0, true, false);
+    }
+
+    @Override
+    public void reloadImages() {
+        this.imageToDraw = open
+            ? new Image(getClass().getResourceAsStream("/sprites/world/chest_open.png"), Level.gridSize, 0, true, false)
+            : new Image(getClass().getResourceAsStream("/sprites/world/chest_closed.png"), Level.gridSize, 0, true, false);
     }
 }
 
@@ -53,7 +60,7 @@ class DroppedItem extends WorldObject {
     public Item item;
 
     public DroppedItem(Point2D position, Area currentArea, Item item) {
-        super(position, currentArea, Level.gridSize);
+        super(position, .8, .8 , currentArea, Level.gridSize);
         this.item = item;
         this.imageToDraw = item.image;
     }
@@ -68,7 +75,7 @@ class DroppedItem extends WorldObject {
 class Gate extends WorldObject {
 
     public Gate(Point2D position, Area currentArea) {
-        super(position, currentArea, Level.gridSize*3);
+        super(position, 3, 1, currentArea, Level.gridSize*3);
         this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"));
     }
 
@@ -76,6 +83,11 @@ class Gate extends WorldObject {
     public void interact() {
         if (!isHeroInRange()) return;
 
+    }
+
+    @Override
+    public void reloadImages() {
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"));
     }
 
 }

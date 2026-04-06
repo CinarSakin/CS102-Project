@@ -11,7 +11,7 @@ public class AnimationManager {
     private static final int ANIM_DELAY = 500;
 
     private int speed = 0;
-    private LivingEntity livingEntity;
+    private transient LivingEntity livingEntity;
     private Animats Animat;
 
     private Image currentImage = livingEntity.getImage();

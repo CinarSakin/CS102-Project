@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.game.Effect.EffectType;
-import com.game.Projectile.ProjectileType;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -150,4 +149,10 @@ public class Projectile extends Entity {
     public ProjectileType getType() {
         return projType;
     }
+
+    @Override
+    public void reloadImages() {
+        if (projType != null) imageToDraw = projType.image;
+    }
+
 }

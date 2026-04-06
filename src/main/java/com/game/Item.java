@@ -3,7 +3,7 @@ package com.game;
 import javafx.scene.image.Image;
 
 public abstract class Item {
-    public Image image; 
+    public transient Image image;
     public String name;
     public String description;
     public double cooldownDuration;

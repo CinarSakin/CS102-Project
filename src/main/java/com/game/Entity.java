@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 public abstract class Entity {
     public transient Area currentArea;
     protected Dimension dimension;
-    protected AnimationManager animManager;
+    protected transient AnimationManager animManager;
     public transient Image imageToDraw;
 
     public Entity(Dimension dimension, Area currentArea) {
@@ -63,5 +63,7 @@ public abstract class Entity {
     }
 
     public abstract void update(double dt);
+
+    public void reloadImages() {}
 
 }

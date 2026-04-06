@@ -14,7 +14,7 @@ public abstract class LivingEntity extends Entity {
     public boolean isLookingRight = true;
     public double attackSpeed;
     public double attackRange;
-    public double range;
+    public double range = 8*Level.gridSize;
     public double fear;
     public LivingType lType;
     public ArrayList<Effect> effects = new ArrayList<>();
@@ -26,10 +26,10 @@ public abstract class LivingEntity extends Entity {
     }
 
     public enum LivingType {
-        HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0, 6*Drawer.gridSize),
-        WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 10, 6*Drawer.gridSize),
-        BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 10, 6*Drawer.gridSize),
-        SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10, 6*Drawer.gridSize),
+        HERO(new Point2D(48, 48), 100, 0, 10, 5, 0.8, 0, 0),
+        WALKER(new Point2D(24, 24), 10, 0, 2, 4, 0.9, 1, .5*Level.gridSize),
+        BOMBER(new Point2D(36,36), 50, 10, 20, 3, 0.2, 1, 1.5*Level.gridSize),
+        SKELETON(new Point2D(96, 96), 75, 5, 1, 3, 0.3, 1, 4*Level.gridSize),
         ;
 
         void attack(LivingEntity targetEntity) {}
@@ -43,11 +43,10 @@ public abstract class LivingEntity extends Entity {
         private double attackSpeed;
         private double fear;
         private double attackRange;
-        private double range;
 
         private Image imageToDraw;
 
-        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double attackRange, double range) {
+        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double attackRange) {
             this.size = size;
             this.maxHealth = maxHealth;
             this.health = maxHealth;
@@ -57,7 +56,6 @@ public abstract class LivingEntity extends Entity {
             this.attackSpeed = attackSpeed;
             this.fear = fear;
             this.attackRange = attackRange;
-            this.range = range;
         }
     }
 
@@ -71,7 +69,6 @@ public abstract class LivingEntity extends Entity {
         this.walkSpeed = lType.walkSpeed;
         this.attackSpeed = lType.attackSpeed;
         this.attackRange = lType.attackRange;
-        this.range= lType.range;
         this.fear = lType.fear;
         this.lType = lType;
 
