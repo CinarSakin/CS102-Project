@@ -106,6 +106,10 @@ public class Sword extends Weapon {
                     new Effect(Effect.EffectType.BURN, 3000, target).startEffect();
                 } else if (this.swordType == SwordType.ICY) {
                     new Effect(Effect.EffectType.FREEZE, 2000, target).startEffect();
+                } else if (this.swordType == SwordType.NORMAL) {
+                    
+                } else { // starter sword
+
                 }
             }
         }
