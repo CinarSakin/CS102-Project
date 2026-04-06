@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 
 public class Room extends Area {
     //class variables
-    public static int minSize = Level.gridSize*3;
+    public static int minSize = Level.gridSize*16;
     public static ArrayList<Hall> hHalls = new ArrayList<Hall>();
     public static ArrayList<Hall> vHalls = new ArrayList<Hall>();
 
@@ -38,39 +38,38 @@ public class Room extends Area {
 
     }
 
-    public boolean divide(double minSize){
-        if (left != null) { // If not a leaf, recurse
-            // if (Math.random() < 0.5) return left.divide(minSize);
-            // else return right.divide(minSize);
-            boolean divided = false;
-            if (Math.random() < 0.5) {
-                divided = left.divide(minSize);
-                if (!divided) divided = right.divide(minSize);
-            } else {
-                divided = right.divide(minSize);
-                if (!divided) divided = left.divide(minSize);
-            }
-            return divided;
-        }
+    public void divide(){
+        if (left != null) return;
 
         double w = dim.getWidth();
         double h = dim.getHeight();
-        double x1 = dim.getX();
-        double y1 = dim.getY();
 
-        if (w < minSize && h < minSize) return false;
+        boolean canSplitW = w >= minSize * 2;
+        boolean canSplitH = h >= minSize * 2;
 
-        if (w > h) { // Split vertically
-            double mid = snapToGrid(w * random(0.3, 0.7));
-            left = new Room(x1, y1, mid, h);
-            right = new Room(x1 + mid, y1, w - mid, h);
+        if (!canSplitW && !canSplitH) return;
+
+        boolean splitW = Math.random() > 0.5;
+        if (canSplitW && !canSplitH) splitW = true;
+        else if (!canSplitW && canSplitH) splitW = false;
+
+        if (w > h && w / h >= 1.25) splitW = true;
+        else if (h > w && h / w >= 1.25) splitW = false;
+
+        double splitPoint;
+        if (splitW) { // Split vertically
+            splitPoint = snapToGrid(random(minSize, w - minSize));
+            left = new Room(dim.getX(), dim.getY(), splitPoint, h);
+            right = new Room(dim.getX() + splitPoint, dim.getY(), w - splitPoint, h);
         } else { // Split horizontally
-            double mid = snapToGrid(h * random(0.3, 0.7));
-            left = new Room(x1, y1, w, mid);
-            right = new Room(x1, y1 + mid, w, h - mid);
+            splitPoint = snapToGrid(random(minSize, h - minSize));
+            left = new Room(dim.getX(), dim.getY(), w, splitPoint);
+            right = new Room(dim.getX(), dim.getY() + splitPoint, w, h - splitPoint);
         }
 
-        return true;
+        left.divide();
+        right.divide();
+
     }
 
     public void shrink() {
@@ -78,12 +77,21 @@ public class Room extends Area {
             left.shrink();
             right.shrink();
         } else {
-            double nw = snapToGrid(Math.max(minSize, (dim.getWidth() * random(0.4, 0.9))));
-            double nh = snapToGrid(Math.max(minSize, (dim.getHeight() * random(0.4, 0.9))));
+            double padding = Level.gridSize * 3; 
+            
+            double maxW = dim.getWidth() - (padding * 2);
+            double maxH = dim.getHeight() - (padding * 2);
+            
+            double actualMinSize = Level.gridSize * 6; 
 
-            double offsetX = snapToGrid((dim.getWidth() - nw) / 2);
-            double offsetY = snapToGrid((dim.getHeight() - nh) / 2);
+            double nw = snapToGrid(random(Math.min(actualMinSize, maxW), maxW));
+            double nh = snapToGrid(random(Math.min(actualMinSize, maxH), maxH));
 
+            double maxOffsetX = dim.getWidth() - nw - padding;
+            double maxOffsetY = dim.getHeight() - nh - padding;
+
+            double offsetX = snapToGrid(random(padding, Math.max(padding, maxOffsetX)));
+            double offsetY = snapToGrid(random(padding, Math.max(padding, maxOffsetY)));
             dim.setX(dim.getX() + offsetX);
             dim.setY(dim.getY() + offsetY);
             dim.setWidth(nw);
@@ -91,7 +99,7 @@ public class Room extends Area {
         }
     }
 
-    private double snapToGrid(double value) {
+    public double snapToGrid(double value) {
         return Math.round(value/Level.gridSize) * Level.gridSize;
     }
 
