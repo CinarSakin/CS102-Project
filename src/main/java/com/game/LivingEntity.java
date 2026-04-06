@@ -88,6 +88,7 @@ public abstract class LivingEntity extends Entity {
             if(effe != null)effe.affectEntity();
             //animManager.setCurrentAnim(effe.getEffectType());
         }
+        //collision detection
         //animManager.update(dt);
     }
 
@@ -163,7 +164,7 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void getDamaged(double damage){
-        this.health = Math.max(this.health+damage, 0);
+        this.health = Math.max(this.health-damage, 0);
         // + take_damage animation
 
         if (this.health == 0){
