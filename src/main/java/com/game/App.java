@@ -51,6 +51,9 @@ import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ContentDisplay;
 
 public class App extends Application {
 
@@ -180,18 +183,149 @@ public class App extends Application {
             menuPane.getChildren().add(mainMenu);
 
             // settings menu
+            Button resetControlsBtn = createStyledButton("RESET CONTROLS", 1);
             Button resetSettingsBtn = createStyledButton("RESET SETTINGS", 0);
-            StackPane stpane = (StackPane)(resetSettingsBtn.getGraphic());
-            stpane.getChildren().get(1).setScaleX(.7);
+            StackPane resetSettingsGraphic = (StackPane)(resetSettingsBtn.getGraphic());
+            resetSettingsGraphic.getChildren().get(1).setScaleX(.7);
 
             Button exitSettingsBtn = createStyledButton("CLOSE", 0);
             Label settingsTitle = new Label("SETTINGS");
             settingsTitle.fontProperty().bind(fontPropSmall);
             settingsTitle.setAlignment(Pos.TOP_CENTER);
+            settingsTitle.setTextFill(Color.WHITE);
 
-            VBox settingsMenuContainer = new VBox(settingsTitle, resetSettingsBtn, exitSettingsBtn);
-            settingsMenuContainer.setAlignment(Pos.CENTER);
-            settingsMenuContainer.spacingProperty().bind(uiSizeBinding(15));
+            Label controlsLabel = new Label("Controls");
+            controlsLabel.fontProperty().bind(fontPropSmall);
+            controlsLabel.setTextFill(Color.WHITE);
+
+            GridPane controlsGrid = new GridPane();
+            controlsGrid.setHgap(12);
+            controlsGrid.setVgap(12);
+            controlsGrid.setAlignment(Pos.CENTER_LEFT);
+
+            String[] controlActions = {"Up", "Down", "Left", "Right", "Attack", "Interact"};
+            Button[] keyButtons = new Button[controlActions.length];
+            javafx.beans.property.ObjectProperty<String> waitingForKey = new SimpleObjectProperty<>(null);
+
+            for (int i = 0; i < controlActions.length; i++) {
+                String action = controlActions[i];
+                Button actionBtn = createStyledButton(action, 1);
+                actionBtn.setDisable(true);
+                actionBtn.setOpacity(0.9);
+
+                String binding = GameSettings.getKeyBinding(action);
+                Button keyBtn = createStyledButton(binding, 1);
+                int index = i;
+                keyBtn.setOnAction(e -> {
+                    keyBtn.setText("Press a key...");
+                    waitingForKey.set(controlActions[index]);
+                });
+                keyBtn.prefWidthProperty().bind(uiSizeBinding(140));
+                actionBtn.prefWidthProperty().bind(uiSizeBinding(140));
+                controlsGrid.add(actionBtn, 0, i);
+                controlsGrid.add(keyBtn, 1, i);
+                keyButtons[i] = keyBtn;
+            }
+
+            Label visualsLabel = new Label("Visuals");
+            visualsLabel.fontProperty().bind(fontPropSmall);
+            visualsLabel.setTextFill(Color.WHITE);
+
+            GridPane visualsGrid = new GridPane();
+            visualsGrid.setHgap(12);
+            visualsGrid.setVgap(12);
+            visualsGrid.setAlignment(Pos.CENTER_LEFT);
+
+            Button uiScaleBtn = createStyledButton("UI Scale", 1);
+            Button uiScaleValue = createStyledButton(GameSettings.getUiScaleLabel(), 1);
+            uiScaleValue.setDisable(true);
+            uiScaleValue.setOpacity(0.9);
+            Slider uiScaleSlider = new Slider(0.5, 2.0, settings.uiScale);
+            uiScaleSlider.setShowTickLabels(false);
+            uiScaleSlider.setShowTickMarks(false);
+            uiScaleSlider.setPrefWidth(240);
+            uiScaleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                GameSettings.setUiScale(newVal.doubleValue());
+                UI_SCALE.set(newVal.doubleValue());
+                uiScaleValue.setText(GameSettings.getUiScaleLabel());
+            });
+            visualsGrid.add(uiScaleBtn, 0, 0);
+            visualsGrid.add(uiScaleValue, 1, 0);
+            visualsGrid.add(uiScaleSlider, 0, 1, 2, 1);
+
+            Button resolutionBtn = createStyledButton("Resolution", 1);
+            Button resolutionValue = createStyledButton(GameSettings.getResolutionLabel(), 1);
+            resolutionValue.setOpacity(0.9);
+            java.util.List<String> resolutionOptions = java.util.List.of("1280x720", "1600x900", "1920x1080");
+            int[] resolutionIndexRef = new int[1];
+            resolutionIndexRef[0] = Math.max(0, resolutionOptions.indexOf(GameSettings.getResolutionLabel()));
+            resolutionValue.setOnAction(e -> {
+                resolutionIndexRef[0] = (resolutionIndexRef[0] + 1) % resolutionOptions.size();
+                String[] parts = resolutionOptions.get(resolutionIndexRef[0]).split("x");
+                GameSettings.setResolution(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+                resolutionValue.setText(GameSettings.getResolutionLabel());
+            });
+            visualsGrid.add(resolutionBtn, 0, 2);
+            visualsGrid.add(resolutionValue, 1, 2);
+
+            Label audioLabel = new Label("Audio");
+            audioLabel.fontProperty().bind(fontPropSmall);
+            audioLabel.setTextFill(Color.WHITE);
+
+            GridPane audioGrid = new GridPane();
+            audioGrid.setHgap(12);
+            audioGrid.setVgap(12);
+            audioGrid.setAlignment(Pos.CENTER_LEFT);
+
+            Button allBtn = createStyledButton("All", 1);
+            Button allValue = createStyledButton(GameSettings.getMasterVolumeLabel(), 1);
+            allValue.setDisable(true);
+            allValue.setOpacity(0.9);
+            Slider allSlider = new Slider(0, 100, settings.masterVolume);
+            allSlider.setShowTickLabels(false);
+            allSlider.setShowTickMarks(false);
+            allSlider.setPrefWidth(240);
+            allSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                GameSettings.setMasterVolume(newVal.intValue());
+                allValue.setText(GameSettings.getMasterVolumeLabel());
+            });
+            audioGrid.add(allBtn, 0, 0);
+            audioGrid.add(allValue, 1, 0);
+            audioGrid.add(allSlider, 0, 1, 2, 1);
+
+            Button musicBtn = createStyledButton("Music", 1);
+            Button musicValue = createStyledButton(GameSettings.getMusicVolumeLabel(), 1);
+            musicValue.setDisable(true);
+            musicValue.setOpacity(0.9);
+            Slider musicSlider = new Slider(0, 100, settings.musicVolume);
+            musicSlider.setShowTickLabels(false);
+            musicSlider.setShowTickMarks(false);
+            musicSlider.setPrefWidth(240);
+            musicSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                GameSettings.setMusicVolume(newVal.intValue());
+                musicValue.setText(GameSettings.getMusicVolumeLabel());
+            });
+            audioGrid.add(musicBtn, 0, 2);
+            audioGrid.add(musicValue, 1, 2);
+            audioGrid.add(musicSlider, 0, 3, 2, 1);
+
+            VBox leftColumn = new VBox(controlsLabel, controlsGrid);
+            leftColumn.setSpacing(18);
+            VBox rightColumn = new VBox(visualsLabel, visualsGrid, audioLabel, audioGrid);
+            rightColumn.setSpacing(18);
+
+            HBox settingsContent = new HBox(leftColumn, rightColumn);
+            settingsContent.setAlignment(Pos.CENTER);
+            settingsContent.setSpacing(40);
+
+            HBox resetButtons = new HBox(resetControlsBtn, resetSettingsBtn);
+            resetButtons.setAlignment(Pos.CENTER);
+            resetButtons.setSpacing(12);
+
+            VBox settingsMenuContainer = new VBox(settingsTitle, settingsContent, resetButtons, exitSettingsBtn);
+            settingsMenuContainer.setAlignment(Pos.TOP_CENTER);
+            settingsMenuContainer.setSpacing(24);
+            settingsMenuContainer.setPadding(new Insets(30));
 
             ObjectBinding<Background> textureBackground = Bindings.createObjectBinding(() -> {
                 Image img = bgTextureProp.get();
@@ -207,7 +341,45 @@ public class App extends Application {
             
             settingsMenu = new StackPane(settingsBgRegion, settingsMenuContainer);
 
-            // gamemode menu
+            resetControlsBtn.setOnAction(e -> {
+                GameSettings.resetControls();
+                for (int i = 0; i < controlActions.length; i++) {
+                    keyButtons[i].setText(GameSettings.getKeyBinding(controlActions[i]));
+                }
+            });
+
+            resetSettingsBtn.setOnAction(e -> {
+                GameSettings.resetVisuals();
+                GameSettings.resetAudio();
+                uiScaleSlider.setValue(settings.uiScale);
+                allSlider.setValue(settings.masterVolume);
+                musicSlider.setValue(settings.musicVolume);
+                uiScaleValue.setText(GameSettings.getUiScaleLabel());
+                resolutionValue.setText(GameSettings.getResolutionLabel());
+                allValue.setText(GameSettings.getMasterVolumeLabel());
+                musicValue.setText(GameSettings.getMusicVolumeLabel());
+                UI_SCALE.set(GameSettings.instance.uiScale);
+            });
+
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (waitingForKey.get() != null) {
+                    String action = waitingForKey.get();
+                    String keyName = event.getCode().getName();
+                    GameSettings.setKeyBinding(action, keyName);
+                    for (int i = 0; i < controlActions.length; i++) {
+                        if (controlActions[i].equals(action)) {
+                            keyButtons[i].setText(keyName);
+                            break;
+                        }
+                    }
+                    waitingForKey.set(null);
+                    event.consume();
+                    return;
+                }
+                if (event.getCode() == KeyCode.F11) {
+                    primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                }
+            });
             Button standardBtn = createStyledButton("STANDARD", 0);
             Button infiniteBtn = createStyledButton("INFINITE", 0);
             Button exitGamemodeBtn = createStyledButton("GO BACK", 1, .8);
@@ -397,11 +569,6 @@ public class App extends Application {
             }
 
             primaryStage.setFullScreenExitHint("");
-            scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.F11) {
-                    primaryStage.setFullScreen(!primaryStage.isFullScreen());
-                }
-            });
 
             // canvas
             for (GameLayer layer : GameLayer.values()) {
@@ -493,7 +660,8 @@ public class App extends Application {
             isPressed, defProp, pressProp
         ));
 
-        Text btnText = new Text(label);
+        Text btnText = new Text();
+        btnText.textProperty().bind(btn.textProperty());
         btnText.fontProperty().bind(fontPropSmall);
         btnText.setFill(Color.WHITE);
         btnText.setScaleX(.8);
@@ -508,6 +676,8 @@ public class App extends Application {
         btn.setGraphic(btnContent);
         btn.setBackground(Background.EMPTY);
         btn.setPadding(Insets.EMPTY);
+        btn.setText(label);
+        btn.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 
         // hover effect
         btn.setOnMouseEntered(e -> {
