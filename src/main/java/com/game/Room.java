@@ -117,7 +117,7 @@ public class Room extends Area {
             case LOOT:
                 int lootCount = (int)(Math.random()*3);
                 for(int i = 0; i < lootCount; i++){
-                    new WorldObject(this.getDimension().getCenter(), WorldObject.WorldObjectType.CHEST, this);// loots will be added inside a predefined(?) places in the room
+                    //new WorldObject(this.getDimension().getCenter(), WorldObject.WorldObjectType.CHEST, this);// loots will be added inside a predefined(?) places in the room
                 }
                 break;
             case PUZZLE:

@@ -3,31 +3,11 @@ package com.game;
 import javafx.scene.image.Image;
 
 public class Anim {
-    
-    public int dx = 0;
-    public int dy = 0;
-    public int frameW, frameH;
+    public Image currentFrame;
 
-    public int currentFrame;
-    public int totalFrames;
-    
-    public boolean hasLoop;
-    public Image[] frames;
-
-    enum AnimStates {
-        IDLE(true), WALKR(true), WALKL(true),
-        FX(false), ATTACK(false), DIE(false)
-        ;
-
-        private boolean hasLoop;
-        private AnimStates(boolean hasLoop) {
-            this.hasLoop = hasLoop;
-        }
-    }
+    enum AnimStates { IDLE, WALKR, WALKL, FX, ATTACK, DIE }
 
     enum Anims {
-        // each enum is a spriteSheet, containing Image's
-        // her frame için ayrı Image yapcaz başka çare yok
 
         HERO_IDLE(
             new Image("hero_idle")),
@@ -36,9 +16,9 @@ public class Anim {
         HERO_WALKL(
             new Image("hero_idle_flipped")),
         HERO_ATTACK(
-            new Image("hero_idle")),
+            new Image("hero_attack")),
         HERO_DIE(
-            new Image("hero_idle")),
+            new Image("hero_die")),
 
         WALKER_IDLE(
             new Image("monster")),
@@ -94,41 +74,25 @@ public class Anim {
         ;
 
         private int totalFrames;
-        private Image[] frames;
-        private Anims(Image... frames) {
-            this.frames = frames;
-            this.totalFrames = frames.length;
+        private Image currentImage;
+        private Anims(Image currentImage) {
+            this.currentImage = currentImage;
         }
     }
-
+    
     public Anim(LivingEntity.LivingType lType, AnimStates animState) {
-        this(Anims.valueOf(lType.name()+"_"+animState.name()), animState);
-        this.hasLoop = animState.hasLoop;
+        Anims anim = Anims.valueOf(lType.name()+"_"+animState.name());
+
+        this.currentFrame = anim.currentImage;
     }
+
     public Anim(Effect.EffectType effeType) {
-        this(Anims.valueOf(effeType.name()), AnimStates.FX);
+        this(Anims.valueOf(effeType.name()));
     }
     public Anim(Projectile.ProjectileType pType) {
-        this(Anims.valueOf(pType.name()), AnimStates.FX);
+        this(Anims.valueOf(pType.name()));
     }
-
-    private Anim(Anims Anim, AnimStates animState) {
-        this.frames = Anim.frames;
-        this.hasLoop = animState.hasLoop;
-
-        this.totalFrames = Anim.totalFrames;
-        this.currentFrame = 0;
-    }
-
-    public Image nextFrame() {
-        if (currentFrame < totalFrames) {
-            currentFrame++;
-
-            if (currentFrame == totalFrames && hasLoop) {
-                currentFrame = 0;
-            }
-        }
-        
-        return frames[currentFrame];
+    private Anim(Anims anim) {
+        this.currentFrame = anim.currentImage; // anim.currentFrame de olur.
     }
 }

@@ -14,6 +14,7 @@ public class AnimationManager {
     private LivingEntity livingEntity;
     private Animats Animat;
 
+    private Image currentImage = livingEntity.getImage();
     private Image imageToChange = livingEntity.getImage();
 
     private Anim currentAnim;
@@ -96,26 +97,9 @@ public class AnimationManager {
 
     // todo constructor and enums for world objects
 
-    public void draw(double dt) {
-        if (speed != 0) {
-            if (currentAnim == idleAnim) {
-                
-                if (!livingEntity.isLookingRight) {
-                    currentAnim = walkRAnim;
-                } else {
-                    currentAnim = walkLAnim;
-                }
-            }
-            speed = (int) (speed*0.9); // friction
-
-            if (speed < 1) {
-                speed = 0;
-                currentAnim = idleAnim;
-            }
-        }
-
+    public void update(double dt) {
         if (dt > ANIM_DELAY) {
-            imageToChange = currentAnim.nextFrame();
+            imageToChange = currentImage;
         }
     }
 
@@ -126,7 +110,7 @@ public class AnimationManager {
             case "DIE" -> animToPlay = dieAnim;
         }
 
-        currentAnim = animToPlay;
+        currentImage = animToPlay.currentFrame;
     }
 
     public void setCurrentAnim(Effect.EffectType effectType) {
