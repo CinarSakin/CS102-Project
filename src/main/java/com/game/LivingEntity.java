@@ -80,11 +80,13 @@ public abstract class LivingEntity extends Entity {
         return livingTypes[rand];
     }
 
-    public void update() {
+    @Override
+    public void update(double dt) {
         for (Effect effe : effects) {
             effe.affectEntity();
             animManager.setCurrentAnim(effe.getEffectType());
         }
+        animManager.draw(dt);
     }
 
     public void updateLookDirection(double dx) {

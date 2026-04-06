@@ -21,7 +21,7 @@ public class Enemy extends LivingEntity {
     
     @Override
     public void update(double dt) {
-        super.update();
+        super.update(dt);
         if (!inRange()) {
             super.follow(Hero.getHero());
         }

@@ -52,7 +52,7 @@ public class Hero extends LivingEntity {
     @Override
     public void update(double dt) {
         
-        super.update();
+        super.update(dt);
         
         checkEntityCollisions();
 

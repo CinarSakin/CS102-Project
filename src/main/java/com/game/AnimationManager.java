@@ -1,43 +1,25 @@
 package com.game;
 
-import com.almasb.fxgl.texture.AnimatedTexture;
-import com.almasb.fxgl.texture.AnimationChannel;
-import com.game.Anim.AnimStates;
 import com.game.Effect.EffectType;
-import com.game.LivingEntity.LivingStates;
 import com.game.LivingEntity.LivingType;
 import com.game.Projectile.ProjectileType;
 
-import javafx.geometry.Rectangle2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
-import javafx.util.Duration;
 
 public class AnimationManager {
 
-    private static final int FX = 0, IDLE = 0, WALK = 1, ATTACK = 2, DIE = 3;
+    private static final int ANIM_DELAY = 500;
 
     private int speed = 0;
     private LivingEntity livingEntity;
     private Animats Animat;
 
-    private Image imageToChange = (WritableImage)livingEntity.getImage();
-
-    private Image a = new Image("as", 100, 200, true, true);
-    // drawImage(Image img, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh)
-    // (s=source), (sx,sy) noktasından (sx+sw, sy+sh)'a kadar oluşan dikdörtgeni img resminden kırp,
-    // (dx, dy) noktasından (dx+dw, dy+dh)'ye kadar oluşan dikdörtgene çiz.
+    private Image imageToChange = livingEntity.getImage();
 
     private Anim currentAnim;
     private Anim effectAnim, idleAnim, walkRAnim, walkLAnim, attackAnim, dieAnim;
-    // Image spriteSheet, numFrames per row, single frame width, single frame height, duration of the animation channel, start frame and end frame
 
-    enum Animats { // 0=fx, 0=idle, 1=walkRight, 2=walkLeft, 3=attack, 4=die
-        // every anim has a spriteSheet
+    enum Animats {
         HERO(
             new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
             new Anim(LivingType.HERO, Anim.AnimStates.WALKR),
@@ -114,14 +96,14 @@ public class AnimationManager {
 
     // todo constructor and enums for world objects
 
-    public void draw() {
+    public void draw(double dt) {
         if (speed != 0) {
             if (currentAnim == idleAnim) {
                 
                 if (!livingEntity.isLookingRight) {
                     currentAnim = walkRAnim;
                 } else {
-
+                    currentAnim = walkLAnim;
                 }
             }
             speed = (int) (speed*0.9); // friction
@@ -132,7 +114,9 @@ public class AnimationManager {
             }
         }
 
-        imageToChange = currentAnim.nextFrame();
+        if (dt > ANIM_DELAY) {
+            imageToChange = currentAnim.nextFrame();
+        }
     }
 
     public void setCurrentAnim(LivingEntity.LivingStates state) { // for non-looping animations
