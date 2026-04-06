@@ -12,14 +12,24 @@ public class Sword extends Weapon {
             "Flaming Sword",
             "It Burns.",
             1.5,
-            10
+            10,
+            .1
         ),
         ICY(
             new Image("icy_sword.png"),
             "Icy Sword",
             "Freezes the enemies!",
             1.5,
-            10
+            10,
+            .1
+        ),
+        NORMAL(
+            new Image("sword.png"),
+            "Sword",
+            "Just a regular sword.",
+            1,
+            10,
+            -1
         );
     
         public final Image image;
@@ -27,13 +37,15 @@ public class Sword extends Weapon {
         public final String description;
         public final double attackSpeed;
         public final double damage;
+        public final double baseChance;
     
-        SwordType(Image image, String name, String description, double attackSpeed, double damage) {
+        SwordType(Image image, String name, String description, double attackSpeed, double damage, double baseChance) {
             this.image = image;
             this.name = name;
             this.description = description;
             this.attackSpeed = attackSpeed;
             this.damage = damage;
+            this.baseChance = baseChance;
         }
     }
 
@@ -42,6 +54,30 @@ public class Sword extends Weapon {
         this.swordType = swordType;
     }
 
+    public static Sword randomSword(double luckFactor) {
+        double roll = Math.random();
+        double cumulativeChance = 0.0;
+
+        for (SwordType type : SwordType.values()) {
+            
+            double actualChance = type.baseChance;
+
+            if (type.baseChance != -1) {
+                actualChance = type.baseChance * luckFactor;
+            } else {
+                actualChance = 1.0 - cumulativeChance; 
+            }
+
+            cumulativeChance += actualChance;
+
+            if (roll <= cumulativeChance) {
+                return new Sword(type, .75+Level.levelNo/4);
+            }
+        }
+        
+        return new Sword(SwordType.NORMAL, .75+Level.levelNo/4); 
+    }
+    
     @Override
     public void use() {
         Dimension heroDim = Hero.getHero().getDimension();
