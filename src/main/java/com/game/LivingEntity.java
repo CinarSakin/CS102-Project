@@ -90,13 +90,47 @@ public abstract class LivingEntity extends Entity {
     public void move(double dx, double dy) {
         updateLookDirection(dx);
 
-        dimension.moveByWithCollision(currentArea, dx, dy);
+        if (dx != 0) {
+            dimension.moveBy(dx, 0);
+            
+            if (!isValidPosition()) { 
+                dimension.moveBy(-dx, 0);
+            }
+        }
+
+        if (dy != 0) {
+            dimension.moveBy(0, dy);
+            
+            if (!isValidPosition()) { 
+                dimension.moveBy(0, -dy);
+            }
+        }
+
+        Point2D center = dimension.getCenter();
+        Area areaAtCenter = Dimension.findAreaAt(center);
+    
+        if (areaAtCenter != null && areaAtCenter != currentArea) {
+            currentArea.unregister(this);
+            currentArea = areaAtCenter;
+            currentArea.register(this);
+        }
     }
     
     public void move(Point2D velocity) {
-        updateLookDirection(velocity.getX());
+        move(velocity.getX(), velocity.getY());
+    }
 
-        dimension.moveByWithCollision(currentArea, velocity);
+    public boolean isValidPosition() {
+        return Dimension.findAreaAt(new Point2D(dimension.getX(), dimension.getY())) != null &&
+               Dimension.findAreaAt(new Point2D(dimension.getRightX(), dimension.getY())) != null &&
+               Dimension.findAreaAt(new Point2D(dimension.getX(), dimension.getBottomY())) != null &&
+               Dimension.findAreaAt(new Point2D(dimension.getRightX(), dimension.getBottomY())) != null;
+    }
+
+    private Point2D getLeadingPoint(double dx, double dy) {
+        double lx = (dx >= 0) ? dimension.getRightX() : dimension.getX();
+        double ly = (dy >= 0) ? dimension.getBottomY() : dimension.getY();
+        return new Point2D(lx, ly);
     }
 
     public void follow(LivingEntity targetEntity) {

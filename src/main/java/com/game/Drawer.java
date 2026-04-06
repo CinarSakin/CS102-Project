@@ -66,7 +66,7 @@ public class Drawer {
         }
         for(int i = (int)(h.getDimension().getX()); i < (h.getDimension().getWidth()); i += gridSize){
             for(int j = (int)(h.getDimension().getY()); j < (h.getDimension().getHeight()); j += gridSize){
-            //    gc.drawImage(h.getImage(1), i, j, gridSize, gridSize);//change the image acordingly
+                gc.drawImage(Area.getImage(2), i, j, gridSize, gridSize);//change the image acordingly
             }
         }
     }

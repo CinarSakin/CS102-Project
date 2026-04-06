@@ -99,6 +99,11 @@ public class Level {
             r.spawnEntities();
         }
 
+        this.areas.clear();
+        this.areas.addAll(this.rooms);
+        this.areas.addAll(Room.getHHalls());
+        this.areas.addAll(Room.getVHalls());
+
 
         // for (Room r : rooms) {
         //     if (r.type == Room.RoomType.PORTAL) {

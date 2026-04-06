@@ -10,10 +10,6 @@ public class Room extends Area {
     public static int minSize = Level.gridSize*3;
     public static ArrayList<Hall> hHalls = new ArrayList<Hall>();
     public static ArrayList<Hall> vHalls = new ArrayList<Hall>();
-//    private Image image1,image2,image3;
-    private static final Image image1 = new Image(Room.class.getResourceAsStream("/sprites/ui/wall.png"), Level.gridSize, 0, true, false);
-    private static final Image image2 = new Image(Room.class.getResourceAsStream("/sprites/ui/wall_top.png"), Level.gridSize, 0, true, false);    
-    private static final Image image3 = new Image(Room.class.getResourceAsStream("/sprites/ui/stone_floor.png"), Level.gridSize, 0, true, false);    
 
 
     //Instance variables
@@ -179,23 +175,6 @@ public class Room extends Area {
     public RoomType getType(){return this.type;}
     public static ArrayList<Hall> getHHalls(){return hHalls;}
     public static ArrayList<Hall> getVHalls(){return vHalls;}
-    public static Image getImage(int i){
-        //0 for top wall, 1 for right walls, 2 for ground, 3 for right walls, 4 for lower walls
-        switch (i) {
-            case 0://further wall
-                return image1;
-            case 1://left side wall
-                return image2;
-            case 2:// ground tiles
-                return image3;
-            case 3://right side wall
-                return image2;
-            case 4://closer wall
-                return image2;
-            default:
-                throw new AssertionError();
-        }
-    }
     public void setStartingRoom(){this.type = RoomType.PORTAL;}
 
 

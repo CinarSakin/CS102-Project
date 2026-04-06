@@ -132,7 +132,7 @@ public class Dimension {
 
     // methods
     public static Area findAreaAt(Point2D point) {
-        for (Area area : Level.getLevel().getAreas()) {
+        for (Area area : Level.getAreas()) {
             if (area.getDimension().contains(point)) {
                 return area;
             }
