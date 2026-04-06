@@ -25,10 +25,10 @@ public abstract class LivingEntity extends Entity {
     }
 
     public enum LivingType {
-        HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0, new Image("hero_idle")),
-        WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2, new Image("monster")),
-        BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30, new Image("monster")),
-        SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10, new Image("monster")),
+        HERO(new Point2D(48, 48), 100, 0, 10, 10, 0.8, 0, 0),
+        WALKER(new Point2D(24, 24), 10, 0, 2, 10, 0.9, 1, 2 ),
+        BOMBER(new Point2D(36,36), 50, 10, 20, 7, 0.2, 1, 30),
+        SKELETON(new Point2D(96, 96), 75, 5, 1, 8, 0.3, 1, 10),
         ;
 
         void attack(LivingEntity targetEntity) {}
@@ -45,7 +45,7 @@ public abstract class LivingEntity extends Entity {
 
         private Image imageToDraw;
 
-        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double range, Image imageToDraw) {
+        private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double range) {
             this.size = size;
             this.maxHealth = maxHealth;
             this.health = maxHealth;
@@ -55,8 +55,6 @@ public abstract class LivingEntity extends Entity {
             this.attackSpeed = attackSpeed;
             this.fear = fear;
             this.range = range;
-
-            this.imageToDraw = imageToDraw;
         }
     }
 
@@ -73,7 +71,7 @@ public abstract class LivingEntity extends Entity {
         this.lType = lType;
 
         this.imageToDraw = lType.imageToDraw;
-        this.animManager = new AnimationManager(this);
+        //this.animManager = new AnimationManager(this);
     }
     public static LivingType RandomType() {
         int rand = (int) (Math.random()*livingTypes.length);
@@ -84,9 +82,10 @@ public abstract class LivingEntity extends Entity {
     public void update(double dt) {
         for (Effect effe : effects) {
             effe.affectEntity();
-            animManager.setCurrentAnim(effe.getEffectType());
+            imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
+            //animManager.setCurrentAnim(effe.getEffectType());
         }
-        animManager.draw(dt);
+        //animManager.draw(dt);
     }
 
     public void updateLookDirection(double dx) {

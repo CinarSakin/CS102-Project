@@ -44,8 +44,8 @@ public abstract class Area {
     }
 
     public void update(double dt) {
-        ArrayList<Entity> copyList = new ArrayList<>(entities);
-        for (Entity e : copyList){
+        System.out.println(entities);
+        for (Entity e : entities){
             e.update(dt);
         }
     }

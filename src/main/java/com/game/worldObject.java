@@ -2,7 +2,7 @@ package com.game;
 
 import javafx.geometry.Point2D;
 
-public class worldObject extends Entity {
+public class WorldObject extends Entity {
     
     public enum WorldObjectType {
         GATE,
@@ -17,10 +17,10 @@ public class worldObject extends Entity {
     public boolean unlocked;
     public double interactRadius;
     
-    public worldObject(Point2D position, WorldObjectType type, Item item, Area currentArea) {
+    public WorldObject(Point2D position, WorldObjectType type, Area currentArea) {
         super(new Dimension(position.getX(), position.getY(), 32, 32), currentArea);
         this.type = type;
-        this.item = item;
+        this.item = Item.randomItem();
         this.interacted = false;
         this.open = false;
         this.unlocked = false;

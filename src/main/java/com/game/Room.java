@@ -14,12 +14,12 @@ public class Room extends Area {
 
     //Instance variables
     public double dif;
-    private final int MAXIMUM_ENEMIES = (int)(10 * dif);
+    private final int MAXIMUM_ENEMIES = (int)(20 * dif);
     public Room right;
     public Room left;
     public RoomType type ;
-    public ArrayList<Room> hNeighbors;
-    public ArrayList<Room> vNeighbors;    
+    public ArrayList<Room> hNeighbors = new ArrayList<Room>();
+    public ArrayList<Room> vNeighbors = new ArrayList<Room>();    
     
 
     public Room(double x1, double y1, double width, double height){
@@ -31,9 +31,7 @@ public class Room extends Area {
         if(newType == 1)type = RoomType.NORMAL;
         if(newType == 2)type = RoomType.LOOT;
         if(newType == 3)type = RoomType.NORMAL;
-        if(newType == 4)type = RoomType.NORMAL;
-        hNeighbors = new ArrayList<Room>();
-        vNeighbors = new ArrayList<Room>();
+        if(newType == 4)type = RoomType.NORMAL; 
         dif = 1+ Level.levelNo/10;
 
     }
@@ -119,7 +117,7 @@ public class Room extends Area {
             case LOOT:
                 int lootCount = (int)(Math.random()*3);
                 for(int i = 0; i < lootCount; i++){
-//                    new WorldEntity();// loots will be added inside a predefined(?) places in the room
+                    new WorldObject(this.getDimension().getCenter(), WorldObject.WorldObjectType.CHEST, this);// loots will be added inside a predefined(?) places in the room
                 }
                 break;
             case PUZZLE:
@@ -138,24 +136,6 @@ public class Room extends Area {
 
     }
 
-
-    //UPDATERS
-
-    /* şuanlık Area classına update ve draw koydum
-    public void update(){}
-
-    public void draw(){
-        if (left != null) {
-        left.draw();
-        right.draw();
-        } else {
-            for (Hall h : hHalls) h.draw();
-            for (Hall h : vHalls) h.draw();
-            //make a drawing principle for entities and room itself.(first room then entities.)
-            //roomdrawing
-            for(Entity e: entities) e.update();
-        }
-    } */
 
     //EXTRA METHODS
     private Point2D randomPos(){
@@ -187,31 +167,11 @@ public class Room extends Area {
 
     //enumeration
     public enum RoomType{
-        PORTAL{
-            protected void spawnEntities(int i){
-                spawnEntities(0);
-            }
-        },
-        NORMAL{
-            protected void spawnEntities(int i){
-                spawnEntities(1);
-            }
-        },
-        LOOT{
-            protected  void spawnEntities(int i){
-                spawnEntities(2);
-            }
-        },
-        PUZZLE{
-            protected void spawnEntities(int i){
-                spawnEntities(3);
-            }
-        },
-        BOSS{
-            protected void spawnEntities(int i){
-                spawnEntities(4);
-            }
-        } 
+        PORTAL,
+        NORMAL,
+        LOOT,
+        PUZZLE,
+        BOSS
     }
 
 }

@@ -5,6 +5,7 @@ import com.game.Projectile.ProjectileType;
 import com.game.Projectile.TargetType;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 public class Enemy extends LivingEntity {
     private boolean canAttack = true;
@@ -39,13 +40,16 @@ public class Enemy extends LivingEntity {
         
         switch (super.getLivingType()) {
             case BOMBER:
+                super.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
                 new Projectile(ProjectileType.BOMB, TargetType.ALL, dimension.getPos(), direction, 1, currentArea);
                 break;
             case SKELETON:
+                super.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
                 new Projectile(ProjectileType.ARROW, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
                 break;
             case WALKER:
                 // melee animation and hit check
+                super.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
                 break;
             // more enemies
             
