@@ -21,11 +21,11 @@ public class Anim {
             new Image("hero_die")),
 
         WALKER_IDLE(
-            new Image("monster")),
+            new Image("monsterR")),
         WALKER_WALKR(
-            new Image("monster")),
+            new Image("monster_walkR")),
         WALKER_WALKL(
-            new Image("monster")),
+            new Image("monster_walkL")),
         WALKER_ATTACK(
             new Image("monster_attack")),
         WALKER_DIE(

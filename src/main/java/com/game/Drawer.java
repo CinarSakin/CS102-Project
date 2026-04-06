@@ -196,8 +196,10 @@ public class Drawer {
         }else{
             gc = App.getLayerGC(App.GameLayer.ENTITIES);
         }
-        gc.drawImage(e.getImage(), e.getDimension().getX(), e.getDimension().getY(),
-         e.getDimension().getWidth(), e.getDimension().getHeight());
+        Image imgToDraw = e.getImage();
+        double rescale = gridSize / imgToDraw.getWidth();
+        gc.drawImage(imgToDraw, e.getDimension().getX(), e.getDimension().getY(),
+         e.getDimension().getWidth()*rescale, e.getDimension().getHeight()*rescale);
     }
 
     public static void draw(Room r){

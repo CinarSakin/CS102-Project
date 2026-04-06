@@ -44,8 +44,9 @@ public abstract class Area {
     }
 
     public void update(double dt) {
-        for (Entity e : entities){
-            e.update(dt);
+        ArrayList<Entity> copy = (ArrayList<Entity>) entities.clone();
+        for (Entity e : copy){
+            if(e!=null)e.update(dt);
         }
     }
 

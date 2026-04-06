@@ -15,8 +15,8 @@ public class Enemy extends LivingEntity {
         super(lType, position, currentArea, diffMulti);
     //    this.targetEntity = targetEntity;
         switch (lType) {
-            case WALKER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/monster/monster.png"), Level.gridSize, 0, true, false);
-            case BOMBER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/monster/bomber.png"), Level.gridSize, 0, true, false);
+            case WALKER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/monster_idle.png"), Level.gridSize, 0, true, false);
+            case BOMBER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/bomber.png"), Level.gridSize, 0, true, false);
             case SKELETON -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
         }
 

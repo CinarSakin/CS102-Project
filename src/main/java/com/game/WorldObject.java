@@ -37,6 +37,7 @@ class Chest extends WorldObject {
         this.open = false;
         this.unlocked = false;
         this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_closed.png"));
+        this.dimension.moveCenterTo(position);
     }
 
     @Override

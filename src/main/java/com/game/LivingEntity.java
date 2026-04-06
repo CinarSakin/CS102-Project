@@ -82,10 +82,9 @@ public abstract class LivingEntity extends Entity {
     public void update(double dt) {
         for (Effect effe : effects) {
             effe.affectEntity();
-            imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
             //animManager.setCurrentAnim(effe.getEffectType());
         }
-        animManager.update(dt);
+        //animManager.update(dt);
     }
 
     public void updateLookDirection(double dx) {
