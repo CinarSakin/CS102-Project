@@ -93,16 +93,21 @@ public class Game{
     //    System.out.println(Level.getRooms());
         for (Room r : Level.getRooms()) {
             Drawer.draw(r);
-            r.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
-            for (Entity e : r.getEntities()) {
-                Drawer.draw(e);
-            }
         }
         for(Hall h : Room.getHHalls()){
             Drawer.draw(h,0);
+        //    System.out.println(h.dim);
         }
         for(Hall h : Room.getVHalls()){
             Drawer.draw(h,1);
+        }
+
+
+        for (Area a : Level.getAreas()) {
+            a.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
+            for (Entity e : a.getEntities()) {
+                Drawer.draw(e);
+            }
         }
 
         // moving camera back
