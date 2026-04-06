@@ -14,6 +14,12 @@ public class Enemy extends LivingEntity {
     public Enemy(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(lType, position, currentArea, diffMulti);
     //    this.targetEntity = targetEntity;
+        switch (lType) {
+            case WALKER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/monster/monster.png"), Level.gridSize, 0, true, false);
+            case BOMBER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/monster/bomber.png"), Level.gridSize, 0, true, false);
+            case SKELETON -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
+        }
+
     }
     // @Override // if you can implement like this it will be easier.
     // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
@@ -40,16 +46,13 @@ public class Enemy extends LivingEntity {
         
         switch (super.getLivingType()) {
             case BOMBER:
-                super.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
                 new Projectile(ProjectileType.BOMB, TargetType.ALL, dimension.getPos(), direction, 1, currentArea);
                 break;
             case SKELETON:
-                super.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
                 new Projectile(ProjectileType.ARROW, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
                 break;
             case WALKER:
                 // melee animation and hit check
-                super.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
                 break;
             // more enemies
             

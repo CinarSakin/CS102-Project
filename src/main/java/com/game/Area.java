@@ -44,7 +44,6 @@ public abstract class Area {
     }
 
     public void update(double dt) {
-        System.out.println(entities);
         for (Entity e : entities){
             e.update(dt);
         }
