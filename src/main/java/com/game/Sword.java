@@ -8,7 +8,7 @@ public class Sword extends Weapon {
 
     public enum SwordType {
         FLAMING(
-            new Image("flaming_sword.png"),
+            new Image("/sprites/items/flaming_sword.png"),
             "Flaming Sword",
             "It Burns.",
             1.5,
@@ -16,7 +16,7 @@ public class Sword extends Weapon {
             .1
         ),
         ICY(
-            new Image("icy_sword.png"),
+            new Image("/sprites/items/icy_sword.png"),
             "Icy Sword",
             "Freezes the enemies!",
             1.5,
@@ -24,7 +24,7 @@ public class Sword extends Weapon {
             .1
         ),
         NORMAL(
-            new Image("sword.png"),
+            new Image("/sprites/items/icy_sword.png"),
             "Sword",
             "Just a regular sword.",
             1,

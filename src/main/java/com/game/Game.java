@@ -137,7 +137,7 @@ public class Game{
             hero.attack();
         }
 
-        if (activeKeys.contains(GameSettings.getKeyCode("Interact"))) {
+        if (activeKeys.contains(GameSettings.getKeyCode("interact"))) {
             boolean hasInteracted = false;
 
             for (Area area : Level.getAreas()) {
@@ -155,7 +155,7 @@ public class Game{
                 if (hasInteracted) break;
             }
             if (hasInteracted) {
-                activeKeys.remove(GameSettings.getKeyCode("Interact")); 
+                activeKeys.remove(GameSettings.getKeyCode("interact")); 
             }
         }
     }

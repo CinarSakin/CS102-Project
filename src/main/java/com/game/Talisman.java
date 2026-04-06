@@ -5,11 +5,11 @@ import javafx.scene.image.Image;
 public class Talisman extends Item {
     
     public enum TalismanType {
-        TALISMAN_5(new Image(Talisman.class.getResourceAsStream("/sprites/items/talismans/talisman-5.png")), "", "", 1, 0.05),
-        TALISMAN_4(new Image(Talisman.class.getResourceAsStream("/sprites/items/talismans/talisman-4.png")), "", "", 1, 0.10),
-        TALISMAN_3(new Image(Talisman.class.getResourceAsStream("/sprites/items/talismans/talisman-3.png")), "", "", 1, 0.20),
-        TALISMAN_2(new Image(Talisman.class.getResourceAsStream("/sprites/items/talismans/talisman-2.png")), "", "", 1, 0.30),
-        TALISMAN_1(new Image(Talisman.class.getResourceAsStream("/sprites/items/talismans/talisman-1.png")), "", "", 1, -1);
+        TALISMAN_5(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-5.png")), "", "", 1, 0.05),
+        TALISMAN_4(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-4.png")), "", "", 1, 0.10),
+        TALISMAN_3(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-3.png")), "", "", 1, 0.20),
+        TALISMAN_2(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-2.png")), "", "", 1, 0.30),
+        TALISMAN_1(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-1.png")), "", "", 1, -1);
 
         public final Image image;
         public final String name;

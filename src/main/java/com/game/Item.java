@@ -48,7 +48,6 @@ public abstract class Item {
     public static Item randomItem(double luckFactor) {
         
         double categoryRoll = Math.random();
-        double itemRoll = Math.random();
 
         if (categoryRoll <= .2) { // 20% -> weapon
             return Sword.randomSword(luckFactor);
