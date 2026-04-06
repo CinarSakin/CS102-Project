@@ -29,7 +29,7 @@ public class Enemy extends LivingEntity {
     public void update(double dt) {
         super.update(dt);
         
-        if (!inAttackRange()&&inRange()) {
+        if (!inAttackRange() && inRange()) {
             super.follow(Hero.getHero());
         }
         else {

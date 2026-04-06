@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Sword extends Weapon {
+    public static final Sword STARTER_SWORD = new Sword(SwordType.STARTER, 0);
     private SwordType swordType;
 
     public enum SwordType {
@@ -30,6 +31,14 @@ public class Sword extends Weapon {
             1,
             10,
             -1
+        ),
+        STARTER(
+            new Image(Sword.class.getResourceAsStream("/sprites/items/icy_sword.png")),
+            "Starter Sword",
+            "",
+            1.5,
+            10,
+            1
         );
     
         public final Image image;
@@ -59,19 +68,20 @@ public class Sword extends Weapon {
         double cumulativeChance = 0.0;
 
         for (SwordType type : SwordType.values()) {
-            
-            double actualChance = type.baseChance;
+            if(type!=SwordType.STARTER){
+                double actualChance = type.baseChance;
 
-            if (type.baseChance != -1) {
-                actualChance = type.baseChance * luckFactor;
-            } else {
-                actualChance = 1.0 - cumulativeChance; 
-            }
+                if (type.baseChance != -1) {
+                    actualChance = type.baseChance * luckFactor;
+                } else {
+                    actualChance = 1.0 - cumulativeChance; 
+                }
 
-            cumulativeChance += actualChance;
+                cumulativeChance += actualChance;
 
-            if (roll <= cumulativeChance) {
-                return new Sword(type, .75+Level.levelNo/4);
+                if (roll <= cumulativeChance) {
+                    return new Sword(type, .75+Level.levelNo/4);
+                }
             }
         }
         
@@ -96,5 +106,4 @@ public class Sword extends Weapon {
             }
         }
     }
-
 }
