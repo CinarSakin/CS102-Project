@@ -94,6 +94,10 @@ public class Sword extends Weapon {
         Point2D heroPos = heroDim.getPos();
         Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
 
+        if (getIsOnCooldown()) {
+            return;
+        }
+
         for (LivingEntity target : heroDim.getArea().getLivingEntities()) {
             if (target != Hero.getHero() && target.getDimension().intersects(hitBox)) {
                 target.getDamaged(this.damage);
@@ -102,8 +106,13 @@ public class Sword extends Weapon {
                     new Effect(Effect.EffectType.BURN, 3000, target).startEffect();
                 } else if (this.swordType == SwordType.ICY) {
                     new Effect(Effect.EffectType.FREEZE, 2000, target).startEffect();
+                } else if (this.swordType == SwordType.NORMAL) {
+                    
+                } else { // starter sword
+
                 }
             }
         }
+        startCooldown();
     }
 }

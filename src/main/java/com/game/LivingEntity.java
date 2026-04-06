@@ -85,8 +85,6 @@ public abstract class LivingEntity extends Entity {
             if(effe != null)effe.affectEntity();
             //animManager.setCurrentAnim(effe.getEffectType());
         }
-        //collision detection
-        //animManager.update(dt);
     }
 
     public void updateLookDirection(double dx) {

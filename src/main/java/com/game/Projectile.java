@@ -93,6 +93,7 @@ public class Projectile extends Entity {
                     double dist = target.getDimension().distanceTo(dimension);
                     if (dist < 14){
                         target.getDamaged(10); // damage range from 50 to 15
+                        this.despawn();
                     }                    
             }
         }

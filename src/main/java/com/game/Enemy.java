@@ -8,7 +8,11 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Enemy extends LivingEntity {
-    private boolean canAttack = true;
+    private static final long ATTACK_DELAY = 1000;
+
+    private double timeSinceLastAttack = 1001;
+    private boolean canAttack = ATTACK_DELAY < timeSinceLastAttack;
+    
     
     public Enemy(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(lType, position, currentArea, diffMulti);
@@ -35,7 +39,7 @@ public class Enemy extends LivingEntity {
         else {
             if (canAttack && inAttackRange()) {
                 attack();
-                new Effect(EffectType.TIRE, ((long)attackSpeed)*1, this).startEffect(); // cooldown
+                this.timeSinceLastAttack = 0;
             }
         }
     }

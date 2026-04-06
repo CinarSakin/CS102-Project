@@ -27,7 +27,7 @@ public abstract class Item {
         }
     }
 
-    private void startCooldown() {
+    protected void startCooldown() {
         isOnCooldown = true;
         cooldownTimer = cooldownDuration;
     }
