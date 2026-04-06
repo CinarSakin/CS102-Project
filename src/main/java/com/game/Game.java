@@ -38,12 +38,13 @@ public class Game{
 
             // draw everything
             renderGame();
+            Drawer.updateHUD();
         }
     };
 
     public Game(char aChar) {
         saveslot = aChar;
-     }
+    }
 
     public void startGame() {
 
@@ -67,6 +68,8 @@ public class Game{
         }
 
         loadGame(saveslot);
+
+        Drawer.setupHUD();
 
         timer.start();
     }
@@ -151,30 +154,6 @@ public class Game{
     private void newGame(int levelCount) {
         // TODO
         level = Level.constructNew(levelCount);
-    }
-
-    public static boolean isInBounds(Entity a){
-        ArrayList<Room> rooms = Level.getRooms();
-        for(int i = 0 ; i< rooms.size() ;i++){
-            Room b = rooms.get(i);
-            Dimension roomDim = b.getDimension();
-            if(a.getDimension().insideOf(roomDim)){return true;}
-        }
-        return false;
-    }
-
-    public static boolean isPositionValid(Entity a, double nextX, double nextY) {
-        // Create a temporary dimension for where the entity wants to move
-        Dimension nextPos = new Dimension(nextX, nextY, a.getDimension().getWidth(), a.getDimension().getHeight());
-
-        // Check if this potential position is inside any Room or Hall
-        for (Area area : Level.getAreas()) {
-            if (nextPos.insideOf(area)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 }

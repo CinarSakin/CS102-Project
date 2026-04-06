@@ -61,23 +61,24 @@ public class App extends Application {
     private static Stage stage;
     private static StackPane menuPane, gamePane; // holders of menus/layers
     private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
+    public static StackPane HUDlayer = new StackPane();
     private static Canvas[] layers = new Canvas[GameLayer.values().length];
 
-    private final DoubleProperty UI_SCALE = new SimpleDoubleProperty(1.0); // load from save
-    private final DoubleProperty uiSizeProp = new SimpleDoubleProperty(1.0);
+    public static final DoubleProperty UI_SCALE = new SimpleDoubleProperty(1.0); // load from save
+    public static final DoubleProperty uiSizeProp = new SimpleDoubleProperty(1.0);
 
-    private final ObjectProperty<Image> longBtnDefaultProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Image> longBtnPressedProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Image> shortBtnDefaultProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Image> shortBtnPressedProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Image> squareBtnDefaultProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Image> squareBtnPressedProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Image> bgImageProp = new SimpleObjectProperty<>();
-    private final ObjectProperty<Image> bgTextureProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> longBtnDefaultProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> longBtnPressedProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> shortBtnDefaultProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> shortBtnPressedProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> squareBtnDefaultProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> squareBtnPressedProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> bgImageProp = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Image> bgTextureProp = new SimpleObjectProperty<>();
 
-    private final ObjectProperty<Font> fontPropSmall = new SimpleObjectProperty<>();
-    private final ObjectProperty<Font> fontPropMedium = new SimpleObjectProperty<>();
-    private final ObjectProperty<Font> fontPropBig = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Font> fontPropSmall = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Font> fontPropMedium = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Font> fontPropBig = new SimpleObjectProperty<>();
     private String bytebounceFontFamily;
 
     private void reloadUI() {
@@ -115,10 +116,7 @@ public class App extends Application {
             menuPane.setBackground(bgFill);
             gamePane = new StackPane();
             gamePane.setVisible(false);
-            gamePane.getChildren().addAll(
-                new StackPane(),new StackPane(),new StackPane(),new StackPane()
-            );
- 
+
             root.getChildren().addAll(gamePane, menuPane);
 
             Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
@@ -579,6 +577,9 @@ public class App extends Application {
                 gamePane.getChildren().add(canvas);
             }
 
+            HUDlayer.setPickOnBounds(false);
+            gamePane.getChildren().add(HUDlayer);
+
             primaryStage.show();
 
             // saver
@@ -609,7 +610,6 @@ public class App extends Application {
 
     private void onSlotClicked(char saveSlot) {
         menuPane.setVisible(false);
-        // TODO: load game
 
         Game game = new Game(saveSlot);
         game.startGame();
@@ -739,11 +739,11 @@ public class App extends Application {
         fadeIn.play();
     }
 
-    public double uiSize(double s) {
+    public static double uiSize(double s) {
         return uiSizeProp.get() * s;
     }
 
-    public DoubleBinding uiSizeBinding(double s) {
+    public static DoubleBinding uiSizeBinding(double s) {
         return Bindings.createDoubleBinding(() -> uiSizeProp.get() * s, uiSizeProp);
     }
 
@@ -755,8 +755,9 @@ public class App extends Application {
     // ---- GETTER METHODS FOR OUTSIDE APP.JAVA ---- //
 
     public static Scene getScene() {return scene;}
+    public static Stage getStage() {return stage;}
 
-    public enum GameLayer {GROUND, ENTITIES, VFX, HUD}
+    public enum GameLayer {GROUND, ENTITIES, VFX}
     public static GraphicsContext getLayerGC(GameLayer layer) {
         return layers[layer.ordinal()].getGraphicsContext2D();
     }
