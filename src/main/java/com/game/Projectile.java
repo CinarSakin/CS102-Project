@@ -60,8 +60,6 @@ public class Projectile extends Entity {
         this.speed = projType.speed * speed;
         this.targetType = target;
         this.imageToDraw = projType.image;
-
-        this.animManager = new AnimationManager(projType);
     }
 
     public void update(double dt) {
@@ -93,7 +91,7 @@ public class Projectile extends Entity {
         if (projType.equals(ProjectileType.BOMB)){
             speed = Math.max(speed*.95-.03, 0); // slows down
             if (lifeTime > EXPLODE_TIMER){
-                animManager.setCurrentAnim(ProjectileType.BOMB);
+                AnimationManager.updateImage(this);
 
                 for (LivingEntity target : getTargets()){
                     double dist = target.getDimension().distanceTo(dimension);

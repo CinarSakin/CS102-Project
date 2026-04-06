@@ -63,15 +63,11 @@ public class Effect {
         this.effectType = effectType;
         this.remainingDuration = remainingDuration ;
         this.targetEntity = targetEntity;
-
-        this.animManager = new AnimationManager(effectType);
     }
 
     public void startEffect() {
         affectEntity();
         targetEntity.effects.add(this);
-
-        animManager.setCurrentAnim(effectType);
     }
 
     public void affectEntity() {

@@ -17,7 +17,6 @@ public class AnimationManager {
     private Image currentImage = livingEntity.getImage();
     private Image imageToChange = livingEntity.getImage();
 
-    private Anim currentAnim;
     private Anim effectAnim, idleAnim, walkRAnim, walkLAnim, attackAnim, dieAnim;
 
     enum Animats {
@@ -69,6 +68,20 @@ public class AnimationManager {
         }
     }
 
+    public static void updateImage(LivingEntity livingEntity, LivingEntity.LivingStates state) {
+        // TODO
+        String r = livingEntity.isLookingRight ? "" : "_flipped";
+        livingEntity.imageToDraw = loadImage(livingEntity.lType.name()+"_"+state.name()+r+".png");
+    }
+    public static void updateImage(Projectile proj) {
+        proj.imageToDraw = loadImage(proj.getType().name()+".png");
+    }
+
+    public static Image loadImage(String name) {
+        return new Image(AnimationManager.class.getResourceAsStream(name));
+    }
+
+/*
     public AnimationManager(LivingEntity livingEntity) {
         this.livingEntity = livingEntity;
         this.Animat = Animats.valueOf(livingEntity.lType.name());
@@ -79,13 +92,13 @@ public class AnimationManager {
         attackAnim = Animat.animations[3];
         dieAnim = Animat.animations[4];
 
-        currentAnim = idleAnim;
+        currentImage = idleAnim.currentFrame;
     }
 
     private AnimationManager(Animats Anim) {
         effectAnim = Anim.animations[0];
 
-        currentAnim = effectAnim;
+        currentImage = effectAnim.currentFrame;
     }
 
     public AnimationManager(Projectile.ProjectileType projType) {
@@ -93,7 +106,7 @@ public class AnimationManager {
     }
     public AnimationManager(Effect.EffectType effectType) {
         this(Animats.valueOf(effectType.name()));
-    }
+    } */
 
     // todo constructor and enums for world objects
 
@@ -103,7 +116,7 @@ public class AnimationManager {
         }
     }
 
-    public void setCurrentAnim(LivingEntity.LivingStates state) { // for non-looping animations
+    public void setCurrentImage(LivingEntity livingEntity, LivingEntity.LivingStates state) { // for non-looping animations
         Anim animToPlay = idleAnim;
         switch (state.name()) {
             case "ATTACK" -> animToPlay = attackAnim;
@@ -113,11 +126,11 @@ public class AnimationManager {
         currentImage = animToPlay.currentFrame;
     }
 
-    public void setCurrentAnim(Effect.EffectType effectType) {
-        currentAnim = Animats.valueOf(effectType.name()).animations[0];
+    /* public static void setCurrentImage(Effect.EffectType effectType) {
+        currentImage = Animats.valueOf(effectType.name()).animations[0];
     }
 
-    public void setCurrentAnim(Projectile.ProjectileType projType) {
-        currentAnim = Animats.valueOf(projType.name()).animations[0];
-    }
+    public static  void setCurrentImage(Projectile.ProjectileType projType) {
+        currentImage = Animats.valueOf(projType.name()).animations[0];
+    } */
 }
