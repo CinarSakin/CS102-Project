@@ -1,5 +1,10 @@
 package com.game;
 
-public class Consumable {
+import javafx.scene.image.Image;
+
+public class Consumable extends Item {
     
+    public Consumable(Image image, String name, String description, double cooldownDuration) {
+        super(image, name, description, cooldownDuration);
+    }
 }
