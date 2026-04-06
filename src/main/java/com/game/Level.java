@@ -95,7 +95,7 @@ public class Level {
 
         Game.hero = new Hero(
             startingRoom.getDimension().getCenter().subtract(new Point2D(8, 8)),
-            null, 1, startingRoom
+            Sword.STARTER_SWORD, 1, startingRoom
         );
 
         for (Room r : rooms) {
@@ -140,30 +140,7 @@ public class Level {
         }
     }
 
-    /*
-    private void addHalls() {
-        for (Room c : rooms) {
-            for (Room n : c.hNeighbors) {
-                double overlapTop = max(c.getY1(), n.getY1());
-                double overlapBot = min(c.getY2(), n.getY2());
-                if (overlapBot - overlapTop > gridSize*2) {
-                    double y = c.snapToGrid(random(overlapTop, overlapBot - gridSize));
-                    Room.hHalls.add(new Hall(c.getX2(), y, n.getX1()-c.getX2(), 2*gridSize));
-                }
-            }
-
-            // Repeat similar logic for vNeighbors/vHalls
-            for (Room n : c.vNeighbors) {
-                double overlapTop = max(c.getY1(), n.getY1());
-                double overlapBot = min(c.getY2(), n.getY2());
-                if (overlapBot - overlapTop > gridSize*2) {
-                    double x = random(overlapTop, overlapBot - gridSize);
-                    Room.vHalls.add(new Hall(x, c.getY2(), 2*gridSize, n.getY1()-c.getY2()));
-                }
-            }
-        }
-    }
-    */
+    
     private void addHalls() {
         Room.hHalls.clear();
         Room.vHalls.clear();

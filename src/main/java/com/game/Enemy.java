@@ -30,11 +30,11 @@ public class Enemy extends LivingEntity {
     public void update(double dt) {
         super.update(dt);
         
-        if (!inAttackRange()&&inRange()) {
+        if (!inAttackRange() && inRange()) {
             super.follow(Hero.getHero());
         }
         else {
-            if (canAttack) {
+            if (canAttack && inAttackRange()) {
                 attack();
                 new Effect(EffectType.TIRE, ((long)attackSpeed)*1, this).startEffect(); // cooldown
             }
