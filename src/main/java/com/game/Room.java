@@ -13,7 +13,6 @@ public class Room extends Area {
 
 
     //Instance variables
-    
     public double dif;
     private final int MAXIMUM_ENEMIES = (int)(10 * dif);
     public Room right;

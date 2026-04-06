@@ -150,7 +150,7 @@ public class Level {
                 double overlapBot = min(c.getY2(), n.getY2());
                 if (overlapBot - overlapTop > gridSize) {
                 double y = random(overlapTop, overlapBot - gridSize);
-                c.hHalls.add(new Hall(c.getX2(), y, n.getX1(), y + gridSize));
+                c.hHalls.add(new Hall(c.getX2(), y, n.getX1()-c.getX2(), y + 4*gridSize));
                 }
             }
 
@@ -159,8 +159,8 @@ public class Level {
                 double overlapTop = max(c.getY1(), n.getY1());
                 double overlapBot = min(c.getY2(), n.getY2());
                 if (overlapBot - overlapTop > gridSize) {
-                    double y = random(overlapTop, overlapBot - gridSize);
-                    c.vHalls.add(new Hall(c.getX2(), y, n.getX1(), y + gridSize));
+                    double x = random(overlapTop, overlapBot - gridSize);
+                    c.vHalls.add(new Hall(x, c.getY2(), x+3*gridSize, n.getY1()-c.getY2()));
                 }
             }
         }
