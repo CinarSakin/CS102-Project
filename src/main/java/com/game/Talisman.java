@@ -1,24 +1,22 @@
 package com.game;
 
-import javafx.scene.image.Image;
-
 public class Talisman extends Item {
     
     public enum TalismanType {
-        TALISMAN_5(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-5.png")), "", "", 1, 0.05),
-        TALISMAN_4(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-4.png")), "", "", 1, 0.10),
-        TALISMAN_3(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-3.png")), "", "", 1, 0.20),
-        TALISMAN_2(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-2.png")), "", "", 1, 0.30),
-        TALISMAN_1(new Image(Talisman.class.getResourceAsStream("/sprites/items/talisman-1.png")), "", "", 1, -1);
+        TALISMAN_5("/sprites/items/talisman-5.png", "", "", 1, 0.05),
+        TALISMAN_4("/sprites/items/talisman-4.png", "", "", 1, 0.10),
+        TALISMAN_3("/sprites/items/talisman-3.png", "", "", 1, 0.20),
+        TALISMAN_2("/sprites/items/talisman-2.png", "", "", 1, 0.30),
+        TALISMAN_1("/sprites/items/talisman-1.png", "", "", 1, -1);
 
-        public final Image image;
+        public final String imagePath;
         public final String name;
         public final String description;
         public final double cooldownDuration;
         public final double baseChance;
 
-        TalismanType(Image image, String name, String description, double cooldownDuration, double baseChance) {
-            this.image = image;
+        TalismanType(String imagePath, String name, String description, double cooldownDuration, double baseChance) {
+            this.imagePath = imagePath;
             this.name = name;
             this.description = description;
             this.cooldownDuration = cooldownDuration;
@@ -29,7 +27,7 @@ public class Talisman extends Item {
     private TalismanType talismanType;
 
     public Talisman(TalismanType type) {
-        super(type.image, type.name, type.description, type.cooldownDuration);
+        super(type.imagePath, type.name, type.description, type.cooldownDuration);
         this.talismanType = type;
     }
 

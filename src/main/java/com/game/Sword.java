@@ -1,15 +1,13 @@
 package com.game;
 
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
-
 public class Sword extends Weapon {
     public static final Sword STARTER_SWORD = new Sword(SwordType.STARTER, 0);
     private SwordType swordType;
 
     public enum SwordType {
         FLAMING(
-            new Image(Sword.class.getResourceAsStream("/sprites/items/flaming_sword.png")),
+            "/sprites/items/flaming_sword.png",
             "Flaming Sword",
             "It Burns.",
             1.5,
@@ -17,7 +15,7 @@ public class Sword extends Weapon {
             .1
         ),
         ICY(
-            new Image(Sword.class.getResourceAsStream("/sprites/items/icy_sword.png")),
+            "/sprites/items/icy_sword.png",
             "Icy Sword",
             "Freezes the enemies!",
             1.5,
@@ -25,7 +23,7 @@ public class Sword extends Weapon {
             .1
         ),
         NORMAL(
-            new Image(Sword.class.getResourceAsStream("/sprites/items/icy_sword.png")),
+            "/sprites/items/icy_sword.png",
             "Sword",
             "Just a regular sword.",
             1,
@@ -33,23 +31,23 @@ public class Sword extends Weapon {
             -1
         ),
         STARTER(
-            new Image(Sword.class.getResourceAsStream("/sprites/items/icy_sword.png")),
+            "/sprites/items/icy_sword.png",
             "Starter Sword",
             "",
             1.5,
             10,
             1
         );
-    
-        public final Image image;
+
+        public final String imagePath;
         public final String name;
         public final String description;
         public final double attackSpeed;
         public final double damage;
         public final double baseChance;
     
-        SwordType(Image image, String name, String description, double attackSpeed, double damage, double baseChance) {
-            this.image = image;
+        SwordType(String imagePath, String name, String description, double attackSpeed, double damage, double baseChance) {
+            this.imagePath = imagePath;
             this.name = name;
             this.description = description;
             this.attackSpeed = attackSpeed;
@@ -59,7 +57,7 @@ public class Sword extends Weapon {
     }
 
     public Sword(SwordType swordType, double damageMultiplier) {
-        super(swordType.image, swordType.name, swordType.description, swordType.attackSpeed, swordType.damage*damageMultiplier);
+        super(swordType.imagePath, swordType.name, swordType.description, swordType.attackSpeed, swordType.damage*damageMultiplier);
         this.swordType = swordType;
     }
 

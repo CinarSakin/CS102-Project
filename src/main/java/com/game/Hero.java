@@ -50,17 +50,55 @@ public class Hero extends LivingEntity {
     }
 
     public void dropConsumable(int index, double x, double y) {
+        if (consumables[index] == null) return;
         dropItem(consumables[index], x, y);
         consumables[index] = null;
     }
 
     public void dropTalisman(int index, double x, double y) {
+        if (talismans[index] == null) return;
         dropItem(talismans[index], x, y);
         talismans[index] = null;
     }
 
+    public void dropWeapon(int index, double x, double y) {
+        if (weapons[index] == null) return;
+        dropItem(weapons[index], x, y);
+        weapons[index] = null;
+        if (heldWeapon == index) heldWeapon = 1 - index;
+    }
+
     public void dropItem(Item item, double x, double y) {
         // TODO
+        new DroppedItem(new Point2D(x, y), currentArea, item);
+    }
+    
+    public boolean addItem(Item item) {
+        if (item instanceof Talisman) {
+            for (int i = 0; i < TALISMAN_AMOUNT; i++) {
+                if (talismans[i] == null) {
+                    talismans[i] = (Talisman) item;
+                    return true;
+                }
+            }
+        } else if (item instanceof Consumable) {
+            for (int i = 0; i < CONSUMABLE_AMOUNT; i++) {
+                if (consumables[i] == null) {
+                    consumables[i] = (Consumable) item;
+                    return true;
+                }
+            }
+        } else if (item instanceof Weapon) {
+            if (weapons[0] == null){
+                weapons[0] = (Weapon)item;
+                return true;  
+            }
+            if (weapons[1] == null){
+                weapons[1] = (Weapon)item;
+                return true;
+            }
+        } 
+        return false;
     }
 
     //incremented getHero()

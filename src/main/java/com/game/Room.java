@@ -28,7 +28,7 @@ public class Room extends Area {
     public Room(double x1, double y1, double width, double height, int newType){
         super(new Dimension(x1, y1, width, height));
         if(newType == 0)type = RoomType.PORTAL;
-        if(newType == 1)type = RoomType.NORMAL;
+        if(newType == 1)type = RoomType.LOOT;
         if(newType == 2)type = RoomType.LOOT;
         if(newType == 3)type = RoomType.NORMAL;
         if(newType == 4)type = RoomType.NORMAL; 

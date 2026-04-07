@@ -1,21 +1,19 @@
 package com.game;
 
-import javafx.scene.image.Image;
-
 public class Consumable extends Item {
 
     public enum ConsumableType {
         HEALTH_POTION(null, "Health Potion", "Regenerates your health.", 0.15),
         STRENGTH_POTION(null, "Strength Potion", "Powers you up.", 0.20),
-        APPLE(null, "Apple", "Apple.", -1);
+        APPLE("/sprites/projectiles/bomb.png", "Apple", "Apple.", -1);
 
-        public final Image image;
+        public final String imagePath;
         public final String name;
         public final String description;
         public final double baseChance;
 
-        ConsumableType(Image image, String name, String description, double baseChance) {
-            this.image = image;
+        ConsumableType(String imagePath, String name, String description, double baseChance) {
+            this.imagePath = imagePath;
             this.name = name;
             this.description = description;
             this.baseChance = baseChance;
@@ -25,7 +23,7 @@ public class Consumable extends Item {
     private ConsumableType consumableType;
 
     public Consumable(ConsumableType type) {
-        super(type.image, type.name, type.description, -1);
+        super(type.imagePath, type.name, type.description, -1);
         this.consumableType = type;
     }
 

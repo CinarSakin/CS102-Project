@@ -9,12 +9,15 @@ public abstract class WorldObject extends Entity {
     public double interactRadius;
 
     public WorldObject(Point2D position, double width, double height, Area currentArea, double interactRadius) {
-        super(new Dimension(position.getX(), position.getY(), width*Level.gridSize, height*Level.gridSize), currentArea);
+        super(
+            new Dimension(position.getX()-width*Level.gridSize/2, position.getY()-height*Level.gridSize/2,
+            width*Level.gridSize, height*Level.gridSize), currentArea
+        );
         this.interactRadius = interactRadius;
         this.interacted = false;
     }
 
-    public abstract void interact();
+    public abstract boolean interact();
 
     public boolean isHeroInRange() {        
         double distance = dimension.getCenter().distance(Hero.getHero().dimension.getCenter());
@@ -32,43 +35,67 @@ class Chest extends WorldObject {
     public boolean unlocked;
 
     public Chest(Point2D position, Area currentArea, Item item) {
-        super(position, 1, 1, currentArea, Level.gridSize*3);
+        super(position, 1, 1, currentArea, Level.gridSize*4);
         this.item = item;
         this.open = false;
         this.unlocked = false;
-        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_closed.png"), Level.gridSize, 0, true, false);
         this.dimension.moveCenterTo(position.getX(), position.getY()-Level.gridSize/2);
+        loadChestImage();
+    }
+
+    private void loadChestImage() {
+        String path = open ? "/sprites/world/chest_open.png" : "/sprites/world/chest_closed.png";
+        double w = dimension.getWidth(), h = dimension.getHeight();
+        this.imageToDraw = new Image(getClass().getResourceAsStream(path), w, h, false, false);
     }
 
     @Override
-    public void interact() {
-        if (!isHeroInRange() || open) return;
+    public boolean interact() {
+        if (!isHeroInRange() || open) return false;
         this.open = true;
-        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/chest_open.png"), Level.gridSize, 0, true, false);
+        loadChestImage();
+        new DroppedItem(this.dimension.getCenter().add(new Point2D(0, Level.gridSize)), currentArea, item);
+        return true;
     }
 
     @Override
     public void reloadImages() {
-        this.imageToDraw = open
-            ? new Image(getClass().getResourceAsStream("/sprites/world/chest_open.png"), Level.gridSize, 0, true, false)
-            : new Image(getClass().getResourceAsStream("/sprites/world/chest_closed.png"), Level.gridSize, 0, true, false);
+        loadChestImage();
     }
 }
 
 class DroppedItem extends WorldObject {
-    
+
+    public static final double DROP_SIZE = 0.8 * Level.gridSize;
     public Item item;
 
     public DroppedItem(Point2D position, Area currentArea, Item item) {
-        super(position, .8, .8 , currentArea, Level.gridSize);
+        super(position, .8, .8, currentArea, Level.gridSize*2);
         this.item = item;
-        this.imageToDraw = item.image;
+        refreshImage();
     }
 
-    public void interact() {
-        if (!isHeroInRange()) return;
-        // add item to inventory
-        this.despawn(); 
+    private void refreshImage() {
+        this.imageToDraw = item.loadImageAtSize(dimension.getWidth());
+    }
+
+    @Override
+    public void update(double dt) {
+        if (imageToDraw == null) refreshImage();
+    }
+
+    @Override
+    public void reloadImages() {
+        refreshImage();
+    }
+
+    public boolean interact() {
+        if (!isHeroInRange()) return false;
+        if (Hero.getHero().addItem(this.item)) {
+            this.despawn();
+            return true;
+        }
+        return false;
     }
 }
 
@@ -76,18 +103,18 @@ class Gate extends WorldObject {
 
     public Gate(Point2D position, Area currentArea) {
         super(position, 3, 1, currentArea, Level.gridSize*3);
-        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"));
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"), dimension.getWidth(), dimension.getHeight(), false, false);
     }
 
     @Override
-    public void interact() {
-        if (!isHeroInRange()) return;
-
+    public boolean interact() {
+        if (!isHeroInRange()) return false;
+        return false;
     }
 
     @Override
     public void reloadImages() {
-        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"));
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"), dimension.getWidth(), dimension.getHeight(), false, false);
     }
 
 }

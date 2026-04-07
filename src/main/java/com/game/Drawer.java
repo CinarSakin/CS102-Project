@@ -3,189 +3,18 @@ package com.game;
 import com.game.App.GameLayer;
 import com.game.Projectile.ProjectileType;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 
 public class Drawer {
     public static int gridSize = Level.gridSize;
     private static double wallOffset = Area.getImage(1).getHeight() - Area.getImage(0).getHeight();
 
-    private static Rectangle hpBar;
-    private static Rectangle defBar;
-    private static ImageView[] consIcons = new ImageView[3];
-    private static ImageView ghostIcon;
+    public static void setupHUD() { HUD.setup(); }
 
-    public static void setupHUD() {
-        App.HUDlayer.getChildren().clear();
-
-        // --- GHOST ICON TO DRAG ---
-        ghostIcon = new ImageView();
-        ghostIcon.setVisible(false);
-        ghostIcon.setMouseTransparent(true);
-        ghostIcon.fitWidthProperty().bind(App.uiSizeBinding(40));
-        ghostIcon.fitHeightProperty().bind(App.uiSizeBinding(40));
-
-        // --- BARS and TALISMANS ---
-        VBox topLeftBox = new VBox();
-        topLeftBox.spacingProperty().bind(App.uiSizeBinding(10));
-        topLeftBox.setPickOnBounds(false);
-
-        StackPane.setAlignment(topLeftBox, Pos.TOP_LEFT);
-        topLeftBox.setMaxSize(javafx.scene.layout.Region.USE_PREF_SIZE, javafx.scene.layout.Region.USE_PREF_SIZE);
-        StackPane.setMargin(topLeftBox, new Insets(App.uiSize(20), 0, 0, App.uiSize(20)));
-
-        // Health bar
-        StackPane hpPane = new StackPane();
-        hpPane.setAlignment(Pos.CENTER_LEFT);
-        Rectangle hpBg = new Rectangle();
-        hpBg.setFill(Color.rgb(50, 50, 50, 0.8));
-        hpBg.widthProperty().bind(App.uiSizeBinding(200));
-        hpBg.heightProperty().bind(App.uiSizeBinding(20));
-        
-        hpBar = new Rectangle();
-        hpBar.setFill(Color.RED);
-        hpBar.heightProperty().bind(App.uiSizeBinding(20));
-        hpPane.getChildren().addAll(hpBg, hpBar);
-
-        // Armor bar
-        StackPane defPane = new StackPane();
-        defPane.setAlignment(Pos.CENTER_LEFT);
-        Rectangle defBg = new Rectangle();
-        defBg.setFill(Color.rgb(50, 50, 50, 0.8));
-        defBg.widthProperty().bind(App.uiSizeBinding(200));
-        defBg.heightProperty().bind(App.uiSizeBinding(15));
-        
-        defBar = new Rectangle();
-        defBar.setFill(Color.DODGERBLUE);
-        defBar.heightProperty().bind(App.uiSizeBinding(15));
-        defPane.getChildren().addAll(defBg, defBar);
-
-        // Talismans
-        HBox talismanBox = new HBox();
-        talismanBox.spacingProperty().bind(App.uiSizeBinding(5));
-        for (int i = 0; i < 3; i++) {
-            StackPane slot = createSlot(50, 40);
-            talismanBox.getChildren().add(slot);
-        }
-        topLeftBox.getChildren().addAll(hpPane, defPane, talismanBox);
-
-        // --- CONSUMABLES ---
-        VBox consBox = new VBox();
-        consBox.spacingProperty().bind(App.uiSizeBinding(10));
-        consBox.setPickOnBounds(false);
-
-        StackPane.setAlignment(consBox, Pos.CENTER_LEFT);
-        consBox.setMaxSize(javafx.scene.layout.Region.USE_PREF_SIZE, javafx.scene.layout.Region.USE_PREF_SIZE);
-        consBox.translateXProperty().bind(App.uiSizeBinding(20));
-
-        for (int i = 0; i < 3; i++) {
-            StackPane slot = createSlot(50, 40);
-            ImageView itemIcon = (ImageView) slot.getChildren().get(1);
-            consIcons[i] = itemIcon;
-            
-            final int index = i;
-            
-            itemIcon.setOnMousePressed(e -> {
-                if (e.getButton() == MouseButton.SECONDARY) {
-                    Hero.getHero().useConsumable(index); // right click to use
-                } else if (e.getButton() == MouseButton.PRIMARY && itemIcon.getImage() != null) {
-                    // left click drag
-                    ghostIcon.setImage(itemIcon.getImage());
-                    ghostIcon.setVisible(true);
-                    itemIcon.setOpacity(0.3);
-                }
-            });
-
-            itemIcon.setOnMouseDragged(e -> {
-                if (ghostIcon.isVisible()) {
-                    Point2D localCoord = App.HUDlayer.sceneToLocal(e.getSceneX(), e.getSceneY());
-                    ghostIcon.setTranslateX(localCoord.getX() - App.uiSize(20));
-                    ghostIcon.setTranslateY(localCoord.getY() - App.uiSize(20));
-                }
-            });
-
-            itemIcon.setOnMouseReleased(e -> {
-                if (ghostIcon.isVisible()) {
-                    ghostIcon.setVisible(false);
-                    itemIcon.setOpacity(1.0);
-
-                    if (e.getSceneX() > App.uiSize(100)) { 
-                        Point2D heroCenter = Hero.getHero().getDimension().getCenter();
-                        double camX = -heroCenter.getX() + (App.getScene().getWidth() / 2);
-                        double camY = -heroCenter.getY() + (App.getScene().getHeight() / 2);
-                        Hero.getHero().dropConsumable(index, e.getSceneX() - camX, e.getSceneY() - camY);
-                    }
-                }
-            });
-            consBox.getChildren().add(slot);
-        }
-
-        // --- WEAPONS ---
-        HBox weaponBox = new HBox();
-        weaponBox.setAlignment(Pos.BOTTOM_RIGHT);
-        weaponBox.spacingProperty().bind(App.uiSizeBinding(10));
-        weaponBox.setPickOnBounds(false);
-
-        StackPane.setAlignment(weaponBox, Pos.BOTTOM_RIGHT);
-        weaponBox.setMaxSize(javafx.scene.layout.Region.USE_PREF_SIZE, javafx.scene.layout.Region.USE_PREF_SIZE);
-        StackPane.setMargin(weaponBox, new Insets(0, App.uiSize(20), App.uiSize(20), 0));
-
-        StackPane secWeaponSlot = createSlot(60, 50); // other weapon
-        StackPane mainWeaponSlot = createSlot(90, 70); // held weapon
-        weaponBox.getChildren().addAll(secWeaponSlot, mainWeaponSlot);
-
-        // add all to HUDlayer
-        App.HUDlayer.getChildren().addAll(topLeftBox, consBox, weaponBox, ghostIcon);
-    }
-
-    public static void updateHUD() {
-        if (Hero.getHero() == null || hpBar == null) return;
-
-        // update bars
-        double hpPercent = Math.max(0, Hero.getHero().health / Hero.getHero().maxHealth);
-        hpBar.setWidth(App.uiSize(200) * hpPercent);
-
-        double defPercent = Math.max(0, Hero.getHero().armor / 100);
-        defBar.setWidth(App.uiSize(200) * defPercent);
-
-        // update consumable icons
-        for (int i = 0; i < 3; i++) {
-            if (Hero.getHero().consumables[i] != null) {
-                consIcons[i].setImage(Hero.getHero().consumables[i].image);
-            } else {
-                consIcons[i].setImage(null);
-            }
-        }
-
-        // TODO: other
-        
-    }
-    
-    // helper method for slots
-    private static StackPane createSlot(double bgSize, double iconSize) {
-        StackPane pane = new StackPane();
-        ImageView bg = new ImageView();
-        bg.imageProperty().bind(App.squareBtnDefaultProp);
-        bg.fitWidthProperty().bind(App.uiSizeBinding(bgSize));
-        bg.fitHeightProperty().bind(App.uiSizeBinding(bgSize));
-        
-        ImageView icon = new ImageView();
-        icon.fitWidthProperty().bind(App.uiSizeBinding(iconSize));
-        icon.fitHeightProperty().bind(App.uiSizeBinding(iconSize));
-        
-        pane.getChildren().addAll(bg, icon);
-        return pane;
-    }
+    public static void updateHUD() { HUD.update(); }
 
     public static void draw(Entity e){
         GraphicsContext gc;
@@ -198,16 +27,86 @@ public class Drawer {
 
         gc.save();
 
-        if (e.isFlipped()) { 
+        Image img = e.getImage();
+        if (img == null) { gc.restore(); return; }
+
+        if (e.isFlipped()) {
             gc.translate(e.getDimension().getX() + e.getDimension().getWidth(), e.getDimension().getY());
             gc.scale(-1, 1);
-            gc.drawImage(e.getImage(), 0, 0, e.getDimension().getWidth(), e.getDimension().getHeight());
+            gc.drawImage(img, 0, 0, e.getDimension().getWidth(), e.getDimension().getHeight());
         } else {
-            gc.drawImage(e.getImage(), e.getDimension().getX(), e.getDimension().getY());
+            gc.drawImage(img, e.getDimension().getX(), e.getDimension().getY(), e.getDimension().getWidth(), e.getDimension().getHeight());
         }
 
         gc.restore();
 
+    }
+
+    public static void drawHover(WorldObject w) {
+        GraphicsContext gc = App.getLayerGC(GameLayer.VFX);
+        Dimension d = w.getDimension();
+        
+        double x = d.getX() + d.getWidth() / 2;
+        double y = d.getY() - 20;
+
+        String actionText = "";
+        String itemInfo = "";
+
+        if (w instanceof Chest) {
+            Chest chest = (Chest) w;
+            if (!chest.open) {
+                actionText = "[E] INTERACT";
+                itemInfo = "Mystery Chest";
+            }
+        } 
+        else if (w instanceof DroppedItem) {
+            DroppedItem dropped = (DroppedItem) w;
+            actionText = "[E] GATHER";
+            itemInfo = dropped.item.name; // Item ismini gösterir
+        }
+
+        if (!actionText.isEmpty()) {
+            drawInfoBox(gc, x, y, actionText, itemInfo);
+        }
+    }
+
+    private static void drawInfoBox(GraphicsContext gc, double centerX, double bottomY, String action, String info) {
+        gc.save();
+
+        double pad = gridSize * 0.3;
+        double lineH = gridSize * 0.45;
+        double fontSize = gridSize * 0.5;
+        double smallSize = gridSize * 0.45;
+
+        int lines = info.isEmpty() ? 1 : 2;
+        double width = Math.max(action.length(), info.length()) * fontSize * 0.32 + pad * 2;
+        double height = lines * lineH + pad * 2;
+        double x = centerX - width / 2;
+        double y = bottomY - height - gridSize * 0.2;
+        double r = gridSize * 0.2;
+
+        gc.setFill(Color.rgb(20, 15, 45, 0.9));
+        gc.fillRoundRect(x, y, width, height, r, r);
+        gc.setStroke(Color.rgb(180, 160, 230, 0.9));
+        gc.setLineWidth(1.5);
+        gc.strokeRoundRect(x, y, width, height, r, r);
+
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.translate(centerX, 0);
+        gc.scale(0.8, 1);
+        gc.translate(-centerX, 0);
+
+        gc.setFont(javafx.scene.text.Font.font(App.fontPropSmall.get().getName(), fontSize));
+        gc.setFill(Color.GOLD);
+        gc.fillText(action, centerX, y + pad + lineH * 0.75);
+
+        if (!info.isEmpty()) {
+            gc.setFont(javafx.scene.text.Font.font(App.fontPropSmall.get().getName(), smallSize));
+            gc.setFill(Color.rgb(210, 200, 240, 1));
+            gc.fillText(info, centerX, y + pad + lineH * 1.75);
+        }
+
+        gc.restore();
     }
 
     public static void draw(Room r){

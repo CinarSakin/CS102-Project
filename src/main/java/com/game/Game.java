@@ -12,6 +12,11 @@ import javafx.scene.input.KeyCode;
 
 public class Game{
 
+    private double lastMouseX;
+    private double lastMouseY;
+    private double cameraX;
+    private double cameraY;    
+
     private static int levelCount = 1;
     private static char saveslot;
     private Level level;
@@ -40,7 +45,6 @@ public class Game{
 
             // draw everything
             renderGame();
-            Drawer.updateHUD();
         }
     };
 
@@ -97,6 +101,11 @@ public class Game{
 
         Scene scene = App.getScene();
 
+        scene.setOnMouseMoved(e -> {
+            lastMouseX = e.getX();
+            lastMouseY = e.getY();
+        });
+
         scene.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
             if (!activeKeys.contains(code)) {
@@ -142,9 +151,8 @@ public class Game{
     private void renderGame() {
 
         Point2D heroCenter = hero.getDimension().getCenter();
-        double camX = -heroCenter.getX() + (App.getScene().getWidth() / 2);
-        double camY = -heroCenter.getY() + (App.getScene().getHeight() / 2);
-
+        cameraX = -heroCenter.getX() + (App.getScene().getWidth() / 2);
+        cameraY = -heroCenter.getY() + (App.getScene().getHeight() / 2);
 
         for (App.GameLayer layer : App.GameLayer.values()) {
             // erasing old canvas and moving the "camera"
@@ -153,7 +161,7 @@ public class Game{
             gc.setTransform(1, 0, 0, 1, 0, 0);
             gc.clearRect(0, 0, c.getWidth(), c.getHeight());
             gc.save();
-            gc.translate(camX, camY);
+            gc.translate(cameraX, cameraY);
         }
 
         // drawing level containing entities and other objects
@@ -178,14 +186,30 @@ public class Game{
             }
         }
 
+        Point2D mouseInWorld = getMouseWorldPosition();
+        for (Area a : Level.getAreas()) {
+            for (Entity e : a.getEntities()) {
+                if (e instanceof WorldObject && ((WorldObject)e).isHeroInRange() && e.getDimension().contains(mouseInWorld)) {
+                    Drawer.drawHover((WorldObject)e);
+                    break;
+                }
+            }
+        }
+
         // moving camera back
         for (App.GameLayer layer : App.GameLayer.values()) {
             App.getLayerGC(layer).restore();
         }
 
-        // TODO: drawing hud
-        
+        // drawing hud
+        Drawer.updateHUD();
 
+    }
+
+    public Point2D getMouseWorldPosition() {
+        double worldX = lastMouseX - cameraX;
+        double worldY = lastMouseY - cameraY;
+        return new Point2D(worldX, worldY);
     }
 
     private void handleInput() {
@@ -211,9 +235,10 @@ public class Game{
                     if (e instanceof WorldObject) {
                         WorldObject wo = (WorldObject) e;
                         if (wo.isHeroInRange()) {
-                            wo.interact(); 
-                            hasInteracted = true;
-                            break;
+                            if (wo.interact()) {
+                                hasInteracted = true;
+                                break;
+                            }
                         }
                     }
                 }
