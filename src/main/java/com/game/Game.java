@@ -16,6 +16,7 @@ public class Game{
     private Level level;
     public static Hero hero;
 
+    private boolean isPaused = false;
     private long lastUpdate = 0;
 
     private final ArrayList<KeyCode> activeKeys = new ArrayList<>();
@@ -72,6 +73,21 @@ public class Game{
         Drawer.setupHUD();
 
         timer.start();
+
+        scene.setOnKeyPressed(event -> {
+            KeyCode code = event.getCode();
+            if (!activeKeys.contains(code)) {
+                activeKeys.add(code);
+            }
+            // Pause toggle on press, not hold
+            if (code == GameSettings.getKeyCode("menu")) {
+                isPaused = !isPaused;
+                if (isPaused){
+                    stopGame();
+                } 
+                else timer.start();
+            }
+        }); 
     }
 
     private void renderGame() {
@@ -158,11 +174,13 @@ public class Game{
                 activeKeys.remove(GameSettings.getKeyCode("interact")); 
             }
         }
+          
     }
 
     public void stopGame() {
         timer.stop();
         lastUpdate = 0;
+        App.drawMenu();
     }
 
     private void loadGame(char aSaveSlot) {
