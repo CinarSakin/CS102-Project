@@ -12,32 +12,32 @@ public class Sword extends Weapon {
             "/sprites/items/flaming_sword.png",
             "Flaming Sword",
             "It Burns.",
-            2.5,
-            20,
+            5,
+            10,
             .1
         ),
         ICY(
             "/sprites/items/icy_sword.png",
             "Icy Sword",
             "Freezes the enemies!",
-            3,
-            15,
+            5.5,
+            7.5,
             .1
         ),
         NORMAL(
             "/sprites/items/icy_sword.png",
             "Sword",
             "Just a regular sword.",
-            2,
-            7.5,
+            5,
+            5,
             -1
         ),
         STARTER(
             "/sprites/items/icy_sword.png",
             "Starter Sword",
             "",
-            1.5,
-            5,
+            4.5,
+            3,
             0
         );
 
@@ -90,7 +90,7 @@ public class Sword extends Weapon {
     
     @Override
     public void use() {
-        Point2D heroPos = Hero.getHero().getDimension().getPos();
+        Point2D heroPos = Hero.getHero().getDimension().getCenter();
     //    Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
 
         if (getIsOnCooldown()) {return;}
@@ -98,13 +98,15 @@ public class Sword extends Weapon {
         //Point2D offset = new Point2D(Drawer.gridSize/2, 0);
         //Point2D slashPos = heroPos.add(Hero.getHero().isFlipped() ? offset.multiply(-1) : offset);
         
-        double newX = Hero.getHero().lastDirrection.getX() >= 0 ? heroPos.getX()+ Drawer.gridSize/2: heroPos.getX()-Drawer.gridSize/2;
-        double newY = Hero.getHero().lastDirrection.getY() >= 0 ? heroPos.getY()+ Drawer.gridSize/2: heroPos.getY()-Drawer.gridSize/2;
+        Point2D lastDir = Hero.getHero().lastDirection;
+        double offsetX = lastDir.getX()>0 ? Drawer.gridSize : (lastDir.getX()<0 ? -Drawer.gridSize : 0);
+        double offsetY = lastDir.getY()>0 ? Drawer.gridSize : (lastDir.getY()<0 ? -Drawer.gridSize : 0);
 
-        Point2D slashPos = new Point2D(newX, newY);
-        new Projectile(
+        Point2D slashPos = heroPos.add(new Point2D(offsetX, offsetY));
+        Projectile p = new Projectile(
             Projectile.ProjectileType.SLASH, TargetType.ENEMIES, slashPos, Point2D.ZERO, attackSpeed, Hero.getHero().currentArea
         );
+        p.dimension.moveCenterTo(slashPos);
 
         /*
         ArrayList<LivingEntity> a = new ArrayList<>(Hero.getHero().currentArea.getLivingEntities());

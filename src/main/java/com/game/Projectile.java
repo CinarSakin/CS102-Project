@@ -97,12 +97,13 @@ public class Projectile extends Entity {
         }
 
         if (projType.equals(ProjectileType.SLASH)){
-            if (lifeTime > .5) {
+            if (lifeTime > .15) {
                 despawn(); return;
             }
             for (LivingEntity target : getTargets()){
                     if (!hitEntities.contains(target) && dimension.intersects(target.dimension)){
-                        target.getDamaged(10);
+                        Hero h = Hero.getHero();
+                        target.getDamaged(h.weapons[h.heldWeapon].damage);
                         hitEntities.add(target);
                     }                    
             }

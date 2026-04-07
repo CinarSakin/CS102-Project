@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -15,6 +16,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class HUD {
+
+    // minimap
+    private static Canvas mapCanvas;
+    private static boolean mapVisible = false;
+    private static final double MAP_PAD = 20;
 
     private static Rectangle hpBar;
     private static Rectangle defBar;
@@ -125,7 +131,27 @@ public class HUD {
         }
         weaponBox.getChildren().addAll(secWeaponSlot, mainWeaponSlot);
 
-        App.HUDlayer.getChildren().addAll(topLeftBox, consBox, weaponBox, ghostIcon);
+        // minimap canvas
+        mapCanvas = new Canvas(1, 1);
+        mapCanvas.setVisible(false);
+        StackPane.setAlignment(mapCanvas, Pos.CENTER);
+        mapCanvas.setMouseTransparent(true);
+
+        Runnable resizeMap = () -> {
+            double ratio = Level.rootLevelWidth / Level.rootLevelHeight;
+            double maxW  = App.getScene().getWidth()  * 0.7;
+            double maxH  = App.getScene().getHeight() * 0.57;
+            double w = Math.min(maxW, maxH * ratio);
+            double h = w / ratio;
+            if (h > maxH) {h = maxH; w = h * ratio;}
+            mapCanvas.setWidth(w);
+            mapCanvas.setHeight(h);
+        };
+        resizeMap.run();
+        App.getScene().widthProperty().addListener((obs, o, n)  -> resizeMap.run());
+        App.getScene().heightProperty().addListener((obs, o, n) -> resizeMap.run());
+
+        App.HUDlayer.getChildren().addAll(topLeftBox, consBox, weaponBox, ghostIcon, mapCanvas);
     }
 
     public static void update() {
@@ -156,6 +182,82 @@ public class HUD {
         for (int i = 0; i < 2; i++) {
             Weapon w = Hero.getHero().weapons[i];
             weaponIcons[i].setImage(w != null ? w.loadImageAtSize(weaponSizes[i]) : null);
+        }
+
+        drawMap();
+    }
+
+    public static boolean isMapVisible() {
+        return mapVisible;
+    }
+
+    public static void closeMap() {
+        mapVisible = false;
+        mapCanvas.setVisible(false);
+    }
+
+    public static void toggleMap() {
+        mapVisible = !mapVisible;
+        mapCanvas.setVisible(mapVisible);
+    }
+
+    private static void drawMap() {
+        if (!mapVisible || mapCanvas == null) return;
+
+        GraphicsContext gc = mapCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+
+        // background
+        gc.setFill(Color.rgb(10, 8, 25, 0.8));
+        gc.fillRoundRect(1, 1, mapCanvas.getWidth()-2, mapCanvas.getHeight()-2, 16, 16);
+        gc.setStroke(Color.rgb(180, 160, 230, 0.8));
+        gc.setLineWidth(2);
+        gc.strokeRoundRect(1, 1, mapCanvas.getWidth()-2, mapCanvas.getHeight()-2, 17, 17);
+
+        // level bounds
+        double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
+        for (Area area : Level.getAreas()) {
+            Dimension d = area.getDimension();
+            minX = Math.min(minX, d.getX());
+            minY = Math.min(minY, d.getY());
+            maxX = Math.max(maxX, d.getRightX());
+            maxY = Math.max(maxY, d.getBottomY());
+        }
+
+        double levelW = maxX - minX;
+        double levelH = maxY - minY;
+        double drawW = mapCanvas.getWidth()  - MAP_PAD * 2;
+        double drawH = mapCanvas.getHeight() - MAP_PAD * 2;
+        double scale = Math.min(drawW / levelW, drawH / levelH);
+
+        // draw areas
+        for (Area area : Level.getAreas()) {
+            Dimension d = area.getDimension();
+            double x = MAP_PAD + (d.getX() - minX) * scale;
+            double y = MAP_PAD + (d.getY() - minY) * scale;
+            double w = d.getWidth() * scale;
+            double h = d.getHeight() * scale;
+
+            gc.setFill(area instanceof Room
+                ? Color.rgb(60, 50, 100, 0.9)
+                : Color.rgb(40, 35, 70, 0.9));
+            gc.fillRect(x, y, w, h);
+            gc.setStroke(Color.rgb(140, 120, 200, 0.7));
+            gc.setLineWidth(1);
+            gc.strokeRect(x, y, w, h);
+        }
+
+        // draw hero position
+        Hero hero = Hero.getHero();
+        if (hero != null) {
+            Point2D hc = hero.getDimension().getCenter();
+            double hx = MAP_PAD + (hc.getX() - minX) * scale;
+            double hy = MAP_PAD + (hc.getY() - minY) * scale;
+            gc.setFill(Color.rgb(180, 180, 255, 0.8));
+            gc.fillRect(hx - 3, hy - 3, 6, 6);
+            gc.setStroke(Color.WHITE);
+            gc.strokeRect(hx - 5, hy - 5, 10, 10);
         }
     }
 

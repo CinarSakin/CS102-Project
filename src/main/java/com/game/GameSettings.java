@@ -32,6 +32,7 @@ public class GameSettings {
     public String keyAttack = "SPACE";
     public String keyInteract = "E";
     public String keyMenu = "ESCAPE";
+    public String keyMap = "M";
 
     // last window properties
     public double windowX = -1;
@@ -93,6 +94,7 @@ public class GameSettings {
             case "attack" -> instance.keyAttack = key;
             case "interact" -> instance.keyInteract = key;
             case "menu" -> instance.keyMenu = key;
+            case "map" -> instance.keyMap = key;
         }
     }
 
@@ -105,6 +107,7 @@ public class GameSettings {
             case "attack" -> instance.keyAttack;
             case "interact" -> instance.keyInteract;
             case "menu" -> instance.keyMenu;
+            case "map" -> instance.keyMap;
             default -> "";
         };
     }

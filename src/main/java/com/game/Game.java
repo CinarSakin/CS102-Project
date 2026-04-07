@@ -80,21 +80,18 @@ public class Game{
             
         scene.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
-            if (!activeKeys.contains(code)) {
-                activeKeys.add(code);
-            }
-            // Pause toggle on press, not hold
-            if (code == GameSettings.getKeyCode("menu")) {
+            boolean freshPress = !activeKeys.contains(code);
+            if (freshPress) activeKeys.add(code);
+            if (freshPress && code == GameSettings.getKeyCode("attack")) hero.attack();
+            if (freshPress && code == GameSettings.getKeyCode("menu")) {
+                HUD.closeMap();
                 isPaused = !isPaused;
-                if (isPaused){
-                    stopGame();
-                } 
-                else {
-                    timer.start();
-                    App.closePauseMenu.run();
-                }
+                if (isPaused) stopGame();
+                else {timer.start(); App.closePauseMenu.run();}
             }
-        }); 
+            if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
+                HUD.toggleMap();
+        });
     }
 
     public void startGame() {
@@ -131,21 +128,18 @@ public class Game{
 
         scene.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
-            if (!activeKeys.contains(code)) {
-                activeKeys.add(code);
-            }
-            // Pause toggle on press, not hold
-            if (code == GameSettings.getKeyCode("menu")) {
+            boolean freshPress = !activeKeys.contains(code);
+            if (freshPress) activeKeys.add(code);
+            if (freshPress && code == GameSettings.getKeyCode("attack")) hero.attack();
+            if (freshPress && code == GameSettings.getKeyCode("menu")) {
+                HUD.closeMap();
                 isPaused = !isPaused;
-                if (isPaused){
-                    stopGame();
-                } 
-                else {
-                    timer.start();
-                    App.closePauseMenu.run();
-                }
+                if (isPaused) stopGame();
+                else { timer.start(); App.closePauseMenu.run(); }
             }
-        }); 
+            if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
+                HUD.toggleMap();
+        });
     }
 
     private void renderGame() {
@@ -221,12 +215,8 @@ public class Game{
         if (activeKeys.contains(GameSettings.getKeyCode("down"))) velocity = velocity.add(0, 1);
         if (activeKeys.contains(GameSettings.getKeyCode("right"))) velocity = velocity.add(1, 0);
         hero.move(velocity.normalize());
-        hero.setLastDirrection(velocity);
+        hero.setLastDirection(velocity);
         
-        if (activeKeys.contains(GameSettings.getKeyCode("attack"))) {
-            hero.attack();
-            activeKeys.remove(GameSettings.getKeyCode("attack")); 
-        }
 
         if (activeKeys.contains(GameSettings.getKeyCode("interact"))) {
             boolean hasInteracted = false;
@@ -256,7 +246,7 @@ public class Game{
     public void stopGame() {
         timer.stop();
         lastUpdate = 0;
-        App.drawMenu();
+        App.drawPauseMenu();
     }
 
     public void unPauseTimer(){timer.start();}

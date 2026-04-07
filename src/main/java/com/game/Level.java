@@ -13,6 +13,10 @@ public class Level {
     public static Hero hero;
     public static boolean heroSetIn = false;
     
+    // root room boyutları (aspect ratio hesabı için)
+    public static double rootLevelWidth  = 4800;
+    public static double rootLevelHeight = 3600;
+
     // instance variables
     private transient ArrayList<Room> rooms = new ArrayList<Room>();
     public ArrayList<Area> areas = new ArrayList<Area>();
@@ -98,6 +102,8 @@ public class Level {
     //CONSTRUCTING METHODS
     private void generateLevel(){
         root = new Room(144, 144, 4800, 3600);
+        rootLevelWidth  = 4800;
+        rootLevelHeight = 3600;
         rooms = new ArrayList<>();
     //    rooms.add(root);
         

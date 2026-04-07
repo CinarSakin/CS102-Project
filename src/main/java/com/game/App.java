@@ -131,7 +131,7 @@ public class App extends Application {
             bytebounceFontFamily = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 1).getFamily();
 
             uiSizeProp.bind(Bindings.createDoubleBinding(
-                () -> Math.min(scene.getWidth() / 960.0, scene.getHeight() / 720.0) * UI_SCALE.get(),
+                () -> Math.min(scene.getWidth() / 720.0, scene.getHeight() / 720.0) * UI_SCALE.get(),
                 scene.widthProperty(), scene.heightProperty(), UI_SCALE
             ));
 
@@ -799,12 +799,11 @@ public class App extends Application {
 
     // ---- GETTER METHODS FOR OUTSIDE APP.JAVA ---- //
 
-     public static void drawMenu(){
+     public static void drawPauseMenu(){
         Button cont = createStyledButton("Continue", 0);
         Button settings = createStyledButton("Settings", 0);
         Button SaveNExt = createStyledButton("Save & Exit", 0);
         VBox menuBox = new VBox(uiSize(30),cont,settings,SaveNExt);//make the size smaler
-        
         
         menuBox.setAlignment(Pos.CENTER);
         menuBox.spacingProperty().bind(uiSizeBinding(10));
