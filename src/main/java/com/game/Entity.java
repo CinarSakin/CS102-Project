@@ -8,6 +8,7 @@ public abstract class Entity {
     protected Dimension dimension;
     protected transient AnimationManager animManager;
     public transient Image imageToDraw;
+    protected transient boolean isFlipped = false;
 
     public Entity(Dimension dimension, Area currentArea) {
         if (dimension == null) {
@@ -25,6 +26,10 @@ public abstract class Entity {
 
     public Image getImage() {
         return imageToDraw;
+    }
+
+    public Boolean isFlipped() {
+        return this.isFlipped;
     }
 
     public void setDimension(Dimension dimension) {

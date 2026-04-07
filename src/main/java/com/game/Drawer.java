@@ -189,17 +189,25 @@ public class Drawer {
 
     public static void draw(Entity e){
         GraphicsContext gc;
-        
+
         if (e instanceof Projectile && ((Projectile)e).getType() == ProjectileType.BOMB){
-            
             gc = App.getLayerGC(App.GameLayer.VFX);
         }else{
             gc = App.getLayerGC(App.GameLayer.ENTITIES);
         }
-        Image imgToDraw = e.getImage();
-        double rescale = gridSize / imgToDraw.getWidth();
-        gc.drawImage(imgToDraw, e.getDimension().getX(), e.getDimension().getY(),
-         imgToDraw.getWidth(), imgToDraw.getHeight());
+
+        gc.save();
+
+        if (e.isFlipped()) { 
+            gc.translate(e.getDimension().getX() + e.getDimension().getWidth(), e.getDimension().getY());
+            gc.scale(-1, 1);
+            gc.drawImage(e.getImage(), 0, 0, e.getDimension().getWidth(), e.getDimension().getHeight());
+        } else {
+            gc.drawImage(e.getImage(), e.getDimension().getX(), e.getDimension().getY());
+        }
+
+        gc.restore();
+
     }
 
     public static void draw(Room r){

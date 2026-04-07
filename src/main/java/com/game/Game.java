@@ -170,6 +170,10 @@ public class Game{
         try {
             level = Level.constructFromSave(aSaveSlot);
             System.out.println("[Load] Game loaded from slot: " + aSaveSlot);
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("[Load] No save found for slot " + aSaveSlot + ", starting new game.");
+            Level.resetLevel();
+            newGame(1);
         } catch (Exception e) {
             System.err.println("[Load] Failed to load save (slot " + aSaveSlot + "): " + e.getMessage());
             e.printStackTrace();

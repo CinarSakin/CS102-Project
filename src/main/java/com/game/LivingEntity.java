@@ -7,24 +7,66 @@ import javafx.scene.image.Image;
 
 public abstract class LivingEntity extends Entity {
     private double timeSinceLastAttack = 0;
+    private boolean isMovingThisFrame = false;
 
     public int maxHealth;
     public double health;
     public double armor;
     public double damage;
     public double walkSpeed;
-    public boolean isLookingRight = true;
     public double attackSpeed;
     public double attackRange;
     public double range = 8*Level.gridSize;
     public double fear;
     public LivingType lType;
     public ArrayList<Effect> effects = new ArrayList<>();
+    public transient ArrayList<LivingStateObject> currentStates = new ArrayList<LivingStateObject>();
 
     public static LivingType[] livingTypes = new LivingType[]{LivingType.WALKER, LivingType.BOMBER, LivingType.SKELETON};
 
-    enum LivingStates {
-        ATTACK, HEAL, TAKE_DAMAGE, DIE;
+    public class LivingStateObject {
+        public enum LivingState { // sort priority ascending
+            IDLE(.5, true),
+            WALKING(.4, true),
+            ATTACK(.3, false),
+            HEAL(.3, false),
+            TAKE_DAMAGE(.3, false),
+            DIE(.5, false);
+
+            public double animDuration;
+            public boolean isLooping;
+
+            private LivingState(double animDuration, boolean isLooping) {
+                this.animDuration = animDuration;
+                this.isLooping = isLooping;
+            }
+        }
+
+        public LivingState state;
+        private double elapsedTime = 0;
+
+        public LivingStateObject(LivingState state) {
+            this.state = state;
+            if (state.isLooping) {
+                if (currentStates.stream().anyMatch(s -> s.state == state)) return;
+            } else {
+                currentStates.removeIf(s -> s.state == state);
+            }
+            currentStates.add(this);
+        }
+
+        public void update(double dt) {
+            elapsedTime += dt;
+            if (state.isLooping) {
+                elapsedTime %= state.animDuration;
+            } else if (elapsedTime >= state.animDuration) {
+                currentStates.remove(this);
+            }
+        }
+
+        public double getElapsedTime() {
+            return elapsedTime;
+        }
     }
 
     public enum LivingType {
@@ -45,7 +87,6 @@ public abstract class LivingEntity extends Entity {
         private double attackSpeed;
         private double fear;
         private double attackRange;
-
         private Image imageToDraw;
 
         private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double attackRange) {
@@ -83,12 +124,26 @@ public abstract class LivingEntity extends Entity {
 
     @Override
     public void update(double dt) {
+        if (currentStates == null) currentStates = new ArrayList<>();
         timeSinceLastAttack += dt;
+
+        if (isMovingThisFrame) {
+            setLocomotionState(LivingStateObject.LivingState.WALKING);
+        } else {
+            setLocomotionState(LivingStateObject.LivingState.IDLE);
+        }
+        isMovingThisFrame = false;
+
+        for (LivingStateObject s : new ArrayList<>(currentStates)) {
+            s.update(dt);
+        }
 
         for (Effect effe : effects) {
             if(effe != null)effe.affectEntity();
             //animManager.setCurrentAnim(effe.getEffectType());
         }
+
+        AnimationManager.updateImage(this);
     }
 
     public boolean canAttack() {
@@ -100,11 +155,12 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void updateLookDirection(double dx) {
-        if (dx > 0) isLookingRight = true;
-        else if (dx < 0) isLookingRight = false;
+        if (dx > 0) isFlipped = false;
+        else if (dx < 0) isFlipped = true;
     }
 
     public void move(double dx, double dy) {
+        if (dx != 0 || dy != 0) isMovingThisFrame = true;
         updateLookDirection(dx);
 
         if (dx != 0) {
@@ -146,16 +202,19 @@ public abstract class LivingEntity extends Entity {
                Dimension.findAreaAt(new Point2D(dimension.getRightX(), dimension.getBottomY())) != null;
     }
 
-    private Point2D getLeadingPoint(double dx, double dy) {
-        double lx = (dx >= 0) ? dimension.getRightX() : dimension.getX();
-        double ly = (dy >= 0) ? dimension.getBottomY() : dimension.getY();
-        return new Point2D(lx, ly);
-    }
-
     public void follow(LivingEntity targetEntity) {
         Point2D direction = findTargetDirection(targetEntity);
 
         move(direction.multiply(walkSpeed));
+    }
+
+    public void setLocomotionState(LivingStateObject.LivingState state) {
+        if (state == LivingStateObject.LivingState.WALKING) {
+            currentStates.removeIf(s -> s.state == LivingStateObject.LivingState.IDLE);
+        } else if (state == LivingStateObject.LivingState.IDLE) {
+            currentStates.removeIf(s -> s.state == LivingStateObject.LivingState.WALKING);
+        }
+        new LivingStateObject(state);
     }
 
     public void attack() {}
@@ -172,10 +231,11 @@ public abstract class LivingEntity extends Entity {
 
     public void getDamaged(double damage){
         this.health = Math.max(this.health-damage, 0);
-        // + take_damage animation
+        new LivingStateObject(LivingStateObject.LivingState.TAKE_DAMAGE);
 
         if (this.health == 0){
-            AnimationManager.updateImage(this, LivingStates.DIE);
+            new LivingStateObject(LivingStateObject.LivingState.DIE);
+            AnimationManager.updateImage(this);
             // if hero > lose the game
             // if enemy > despawn
             if (this.lType != LivingType.HERO) {

@@ -54,7 +54,7 @@ public class Projectile extends Entity {
     public enum TargetType {HERO, ENEMIES, ALL}
 
     public Projectile(ProjectileType projType, TargetType target, Point2D position, Point2D velocity, double speed, Area currentArea) {
-        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()), (Room)(currentArea));
+        super(new Dimension(position.getX(), position.getY(), projType.size.getX(), projType.size.getY()), currentArea);
         this.projType = projType;
         this.velocity = velocity.normalize();
         this.speed = projType.speed * speed;
@@ -131,8 +131,8 @@ public class Projectile extends Entity {
     public ArrayList<? extends LivingEntity> getTargets() {
         return switch (this.targetType) {
             case HERO -> new ArrayList<>(List.of(Hero.getHero()));
-            case ENEMIES -> currentArea.getEnemies();
-            case ALL -> currentArea.getLivingEntities();
+            case ENEMIES -> new ArrayList<>(currentArea.getEnemies());
+            case ALL -> new ArrayList<>(currentArea.getLivingEntities());
             default -> new ArrayList<>();
         };
     }

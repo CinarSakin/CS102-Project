@@ -5,20 +5,12 @@ import com.game.Projectile.ProjectileType;
 import com.game.Projectile.TargetType;
 
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
 
 public class Enemy extends LivingEntity {
     
     
     public Enemy(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(lType, position, currentArea, diffMulti);
-    //    this.targetEntity = targetEntity;
-        switch (lType) {
-            case WALKER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/monster_idle.png"), Level.gridSize, 0, true, false);
-            case BOMBER -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/bomber.png"), Level.gridSize, 0, true, false);
-            case SKELETON -> this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
-        }
-
     }
     // @Override // if you can implement like this it will be easier.
     // public Enemy(int type, Point2D pos,LivingEntity tarEntity, double diffMulti){
@@ -27,17 +19,16 @@ public class Enemy extends LivingEntity {
     
     @Override
     public void update(double dt) {
-        super.update(dt);
-        
         if (!inAttackRange() && inRange()) {
             super.follow(Hero.getHero());
-        }
-        else {
+        } else {
             if (canAttack() && inAttackRange()) {
                 attack();
                 resetAttack();
             }
         }
+
+        super.update(dt);
     }
 
     @Override
@@ -77,16 +68,7 @@ public class Enemy extends LivingEntity {
     
     @Override
     public void reloadImages() {
-        switch (lType) {
-            case WALKER -> imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/monster_idle.png"), Level.gridSize, 0, true, false);
-            case BOMBER -> imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/bomber.png"), Level.gridSize, 0, true, false);
-            case SKELETON -> imageToDraw = new Image(getClass().getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
-            default -> {}
-        }
-    }
-
-    public void setCanAttack(boolean canAttack) {
-        this.canAttack = canAttack;
+        AnimationManager.updateImage(this);
     }
 
     public boolean inRange(){

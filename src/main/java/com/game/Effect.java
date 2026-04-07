@@ -11,13 +11,13 @@ public class Effect {
         FEAR {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
-                ((Enemy)targetEntity).flee(); // could be nice if it was applicable to hero too
+                if (targetEntity instanceof Enemy) ((Enemy)targetEntity).flee();
             }
         },
         TIRE { // for cooldowns and stun
             @Override
             public void affectEntity(LivingEntity targetEntity) {
-                ((Enemy)targetEntity).setCanAttack(false);
+            //    ((Enemy)targetEntity).setCanAttack(false);
             }
         },
         STUN {

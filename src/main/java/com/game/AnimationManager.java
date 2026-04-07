@@ -1,24 +1,21 @@
 package com.game;
 
-import com.game.Effect.EffectType;
-import com.game.LivingEntity.LivingType;
-import com.game.Projectile.ProjectileType;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import com.game.LivingEntity.LivingStateObject;
 
 import javafx.scene.image.Image;
 
 public class AnimationManager {
 
-    private static final int ANIM_DELAY = 500;
+    private static final Map<String, Image> imageCache = new HashMap<>();
 
-    private int speed = 0;
-    private transient LivingEntity livingEntity;
-    private Animats Animat;
+ //   private Animats Animat;
 
-    private Image currentImage = livingEntity.getImage();
-    private Image imageToChange = livingEntity.getImage();
-
-    private Anim effectAnim, idleAnim, walkRAnim, walkLAnim, attackAnim, dieAnim;
-
+    /*
     enum Animats {
         HERO(
             new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
@@ -66,71 +63,60 @@ public class AnimationManager {
         private Animats(Anim... animations) {
             this.animations = animations;
         }
-    }
-
-    public static void updateImage(LivingEntity livingEntity, LivingEntity.LivingStates state) {
-        // TODO
-        String r = livingEntity.isLookingRight ? "" : "_flipped";
-        livingEntity.imageToDraw = loadImage(livingEntity.lType.name()+"_"+state.name()+r+".png");
-    }
-    public static void updateImage(Projectile proj) {
-        proj.imageToDraw = loadImage(proj.getType().name()+".png");
-    }
-
-    public static Image loadImage(String name) {
-        return new Image(AnimationManager.class.getResourceAsStream(name));
-    }
-
-/*
-    public AnimationManager(LivingEntity livingEntity) {
-        this.livingEntity = livingEntity;
-        this.Animat = Animats.valueOf(livingEntity.lType.name());
-
-        idleAnim = Animat.animations[0];
-        walkRAnim = Animat.animations[1];
-        walkLAnim = Animat.animations[2];
-        attackAnim = Animat.animations[3];
-        dieAnim = Animat.animations[4];
-
-        currentImage = idleAnim.currentFrame;
-    }
-
-    private AnimationManager(Animats Anim) {
-        effectAnim = Anim.animations[0];
-
-        currentImage = effectAnim.currentFrame;
-    }
-
-    public AnimationManager(Projectile.ProjectileType projType) {
-        this(Animats.valueOf(projType.name()));
-    }
-    public AnimationManager(Effect.EffectType effectType) {
-        this(Animats.valueOf(effectType.name()));
     } */
 
-    // todo constructor and enums for world objects
+    public static void updateImage(LivingEntity livingEntity) {
+        double w = livingEntity.getDimension().getWidth();
+        double h = livingEntity.getDimension().getHeight();
 
-    public void update(double dt) {
-        if (dt > ANIM_DELAY) {
-            imageToChange = currentImage;
-        }
-    }
-
-    public void setCurrentImage(LivingEntity livingEntity, LivingEntity.LivingStates state) { // for non-looping animations
-        Anim animToPlay = idleAnim;
-        switch (state.name()) {
-            case "ATTACK" -> animToPlay = attackAnim;
-            case "DIE" -> animToPlay = dieAnim;
+        if (livingEntity.currentStates == null) livingEntity.currentStates = new java.util.ArrayList<>();
+        if (livingEntity.currentStates.isEmpty()) {
+            livingEntity.imageToDraw = loadImage("entities/error.png",w ,h);
+            return;
         }
 
-        currentImage = animToPlay.currentFrame;
+        LivingStateObject highest = livingEntity.currentStates.stream()
+            .max(Comparator.comparingInt(s -> s.state.ordinal()))
+            .orElse(null);
+
+        if (highest == null) {
+            livingEntity.imageToDraw = loadImage("entities/error.png", w, h);
+            return;
+        }
+
+        String stateName;
+        double ratio = highest.getElapsedTime() / highest.state.animDuration;
+
+        switch (highest.state) {
+            case WALKING:
+                if (ratio < 0.25) {
+                    stateName = "idle2"; //walk1
+                } else if (ratio < 0.5) {
+                    stateName = "idle";
+                } else if (ratio < 0.75) {
+                    stateName = "idle3"; //walk2
+                } else {
+                    stateName = "idle";
+                }
+                break;
+            default:
+                stateName = highest.state.name().toLowerCase(Locale.ENGLISH);
+                break;
+        }
+
+        livingEntity.imageToDraw = loadImage("entities/" + livingEntity.lType.name().toLowerCase(java.util.Locale.ENGLISH) + "_" + stateName + ".png", w, h);
     }
 
-    /* public static void setCurrentImage(Effect.EffectType effectType) {
-        currentImage = Animats.valueOf(effectType.name()).animations[0];
+    public static Image loadImage(String name, double width, double height) {
+        if (imageCache.containsKey(name)) return imageCache.get(name);
+
+        var stream = AnimationManager.class.getResourceAsStream("/sprites/" + name);
+        if (stream == null) stream = AnimationManager.class.getResourceAsStream("/sprites/entities/error.png");
+        if (stream == null) return null;
+
+        Image image = new Image(stream, width, height, false, true);
+        imageCache.put(name, image);
+        return image;
     }
 
-    public static  void setCurrentImage(Projectile.ProjectileType projType) {
-        currentImage = Animats.valueOf(projType.name()).animations[0];
-    } */
 }

@@ -1,12 +1,9 @@
 package com.game;
 
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
 
 public class Hero extends LivingEntity {
     public static Hero currentHero;
-    private static Image idle_right = new Image(Hero.class.getResourceAsStream("/sprites/entities/hero_idle.png"), Level.gridSize, 0, true, false);
-    private static Image idle_left = new Image(Hero.class.getResourceAsStream("/sprites/entities/hero_idle_flipped.png"), Level.gridSize, 0, true, false);
 
     public static final int TALISMAN_AMOUNT = 3;
     public static final int CONSUMABLE_AMOUNT = 3;
@@ -21,19 +18,13 @@ public class Hero extends LivingEntity {
         currentHero = this; 
         weapons[0] = starterSword;
         this.heldWeapon = 0;
-
-        // for now to try
-        imageToDraw = idle_right;
     }
 
-    public void move(Point2D velocity) {
-        
-        // Only update position if the new coordinates are within bounds
-        super.move(velocity.multiply(walkSpeed));
-
-        
+    public void move(Point2D direction) {
+        super.move(direction.multiply(walkSpeed));
     }
 
+    /*
     public void checkEntityCollisions() {
         for (Room room : Level.getRooms()) {
             for (Entity e : room.getEntities()) {
@@ -41,26 +32,21 @@ public class Hero extends LivingEntity {
                     // if (e instanceof Consumable) {
                     //     // Trigger pickup logic
                     //     ((Consumable) e).onPickup(this); 
-                } else if (e instanceof Projectile) {
-                    this.getDamaged(10);//TODO: change the damage later.
-                }
+
             }
         }
     }
+        */
     
 
     @Override
     public void update(double dt) {
-        
         super.update(dt);
-        
-        checkEntityCollisions();
 
-        imageToDraw = isLookingRight ? idle_right : idle_left;
+    //    checkEntityCollisions();
 
         if (this.health <= 0) {
-            AnimationManager.updateImage(this, LivingStates.DIE);
-            // Oyun bitiş ekranını tetikle
+            // TODO: Oyun bitiş ekranını tetikle
         }
     }
 
