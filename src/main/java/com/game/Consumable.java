@@ -50,5 +50,18 @@ public class Consumable extends Item {
         
         return new Consumable(ConsumableType.APPLE); 
     }
+
+    public void use(){
+        if (this.consumableType == ConsumableType.APPLE) {
+            new Effect(Effect.EffectType.HEAL, 3000, Hero.getHero()).startEffect();
+        } else if (this.consumableType == ConsumableType.STRENGTH_POTION) {
+            new Effect(Effect.EffectType.DMG_UP, 2000, Hero.getHero()).startEffect();
+        } else if (this.consumableType == ConsumableType.HEALTH_POTION) {
+            new Effect(Effect.EffectType.STRONG_HEAL, 0, Hero.getHero()).startEffect();
+        } else { // starter sword
+
+        }
+    }
     
+    public ConsumableType getConsumableType(){return this.consumableType;}
 }

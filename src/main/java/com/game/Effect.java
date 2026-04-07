@@ -43,7 +43,10 @@ public class Effect {
         },
 
         HEAL {
-            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.health += 10; }
+            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.heal(30);}
+        },
+        STRONG_HEAL{
+            @Override public void affectEntity(LivingEntity targetEntity) {targetEntity.heal(30);}
         },
         SPEED_UP{
             @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.walkSpeed += 10; }
