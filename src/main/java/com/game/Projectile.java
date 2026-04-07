@@ -14,12 +14,12 @@ public class Projectile extends Entity {
 
     public enum ProjectileType {
         SLASH(
-            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            3, new Point2D(36, 48)
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/slash1.png")),
+            0, new Point2D(36, 48)
         ),
         BOMB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            3, new Point2D(48, 48)
+            3, new Point2D(48,48)
         ),  
         ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
@@ -51,6 +51,8 @@ public class Projectile extends Entity {
     private double lifeTime = 0;
     private TargetType targetType;
 
+    private ArrayList<LivingEntity> hitEntities = new ArrayList<LivingEntity>();
+
     public enum TargetType {HERO, ENEMIES, ALL}
 
     public Projectile(ProjectileType projType, TargetType target, Point2D position, Point2D velocity, double speed, Area currentArea) {
@@ -60,6 +62,12 @@ public class Projectile extends Entity {
         this.speed = projType.speed * speed;
         this.targetType = target;
         this.imageToDraw = projType.image;
+
+        if (projType == ProjectileType.SLASH) {
+            if (Math.random() < .5) {
+                imageToDraw = new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/slash2.png"));
+            }
+        }
     }
 
     public void update(double dt) {
@@ -89,11 +97,13 @@ public class Projectile extends Entity {
         }
 
         if (projType.equals(ProjectileType.SLASH)){
+            if (lifeTime > .3) {
+                despawn(); return;
+            }
             for (LivingEntity target : getTargets()){
-                    double dist = target.getDimension().distanceTo(dimension);
-                    if (dist < 14){
-                        target.getDamaged(10); // damage range from 50 to 15
-                        this.despawn();
+                    if (!hitEntities.contains(target) && dimension.intersects(target.dimension)){
+                        target.getDamaged(10);
+                        hitEntities.add(target);
                     }                    
             }
         }
@@ -105,8 +115,8 @@ public class Projectile extends Entity {
 
                 for (LivingEntity target : getTargets()){
                     double dist = target.getDimension().distanceTo(dimension);
-                    if (dist < 14){
-                        target.getDamaged(300/(dist+6)); // damage range from 50 to 15
+                    if (dist < Level.gridSize*2){
+                        target.getDamaged(Level.gridSize*15/(dist+Level.gridSize/2)); // damage range from 30 to 6
                         new Effect(EffectType.FEAR, 1000, target).startEffect();
                         new Effect(EffectType.BURN, 1000, target).startEffect();
                     }                    

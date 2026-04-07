@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.game.LivingEntity.LivingStateObject;
+import com.game.Projectile.ProjectileType;
 
 import javafx.scene.image.Image;
 

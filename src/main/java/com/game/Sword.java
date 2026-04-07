@@ -1,5 +1,9 @@
 package com.game;
 
+import java.util.ArrayList;
+
+import com.game.Projectile.TargetType;
+
 import javafx.geometry.Point2D;
 public class Sword extends Weapon {
     public static final Sword STARTER_SWORD = new Sword(SwordType.STARTER, 0);
@@ -10,24 +14,24 @@ public class Sword extends Weapon {
             "/sprites/items/flaming_sword.png",
             "Flaming Sword",
             "It Burns.",
-            1.5,
-            10,
+            2.5,
+            20,
             .1
         ),
         ICY(
             "/sprites/items/icy_sword.png",
             "Icy Sword",
             "Freezes the enemies!",
-            1.5,
-            10,
+            3,
+            15,
             .1
         ),
         NORMAL(
             "/sprites/items/icy_sword.png",
             "Sword",
             "Just a regular sword.",
-            1,
-            10,
+            2,
+            7.5,
             -1
         ),
         STARTER(
@@ -35,8 +39,8 @@ public class Sword extends Weapon {
             "Starter Sword",
             "",
             1.5,
-            10,
-            1
+            5,
+            0
         );
 
         public final String imagePath;
@@ -88,15 +92,21 @@ public class Sword extends Weapon {
     
     @Override
     public void use() {
-        Dimension heroDim = Hero.getHero().getDimension();
-        Point2D heroPos = heroDim.getPos();
-        Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
+        Point2D heroPos = Hero.getHero().getDimension().getPos();
+    //    Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
 
-        if (getIsOnCooldown()) {
-            return;
-        }
+        if (getIsOnCooldown()) {return;}
 
-        for (LivingEntity target : Hero.getHero().currentArea.getLivingEntities()) {
+        Point2D offset = new Point2D(Level.gridSize/2, 0);
+        Point2D slashPos = heroPos.add(Hero.getHero().isFlipped() ? offset.multiply(-1) : offset);
+
+        new Projectile(
+            Projectile.ProjectileType.SLASH, TargetType.ENEMIES, slashPos, Point2D.ZERO, attackSpeed, Hero.getHero().currentArea
+        );
+
+        /*
+        ArrayList<LivingEntity> a = new ArrayList<>(Hero.getHero().currentArea.getLivingEntities());
+        for (LivingEntity target : a) {
             if (target != Hero.getHero() && target.getDimension().intersects(hitBox)) {
                 target.getDamaged(this.damage);
 
@@ -115,7 +125,8 @@ public class Sword extends Weapon {
 
                 }
             }
-        }
-        startCooldown();
+        } */
+
+        resetTimer();
     }
 }

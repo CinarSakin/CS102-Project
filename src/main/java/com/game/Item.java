@@ -10,8 +10,7 @@ public abstract class Item {
     public String name;
     public String description;
     public double cooldownDuration;
-    private double cooldownTimer;
-    private boolean isOnCooldown;
+    public double timeSinceLastUse;
 
     public Item(String imagePath, String name, String description, double cooldownDuration) {
         this.imagePath = imagePath;
@@ -40,19 +39,12 @@ public abstract class Item {
         return sizedCache.get(key);
     }
 
-    public void updateCooldown(double time) {
-        if (isOnCooldown) {
-            cooldownTimer -= time;
-            if (cooldownTimer <= 0) {
-                cooldownTimer = 0;
-                isOnCooldown = false;
-            }
-        }
+    public void updateTimer(double dt){
+        timeSinceLastUse += dt;
     }
 
-    protected void startCooldown() {
-        isOnCooldown = true;
-        cooldownTimer = cooldownDuration;
+    public void resetTimer() {
+        timeSinceLastUse = 0;
     }
 
     public Effect applyEffect(LivingEntity target) {
@@ -60,12 +52,8 @@ public abstract class Item {
         return new Effect(Effect.EffectType.BURN, 0, target); // to silence the compiler
     }
 
-    public double getCooldownTimer() {
-        return cooldownTimer;
-    }
-
     public boolean getIsOnCooldown() {
-        return isOnCooldown;
+        return timeSinceLastUse < cooldownDuration;
     }
 
     public static Item randomItem(double luckFactor) {

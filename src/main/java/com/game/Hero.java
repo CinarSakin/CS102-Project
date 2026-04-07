@@ -31,7 +31,9 @@ public class Hero extends LivingEntity {
     @Override
     public void update(double dt) {
         super.update(dt);
-
+        if(weapons[heldWeapon] != null){
+            weapons[heldWeapon].updateTimer(dt);
+        }
         if (health <= 0 && !isDead) {
             isDead = true;
             PauseTransition delay = new PauseTransition(Duration.seconds(2));
@@ -62,7 +64,7 @@ public class Hero extends LivingEntity {
     }
 
     public void dropWeapon(int index, double x, double y) {
-        if (weapons[index] == null) return;
+        if (weapons[0] == null || weapons[1] == null) return;
         dropItem(weapons[index], x, y);
         weapons[index] = null;
         if (heldWeapon == index) heldWeapon = 1 - index;

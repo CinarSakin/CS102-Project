@@ -224,6 +224,7 @@ public class Game{
         
         if (activeKeys.contains(GameSettings.getKeyCode("attack"))) {
             hero.attack();
+            activeKeys.remove(GameSettings.getKeyCode("attack")); 
         }
 
         if (activeKeys.contains(GameSettings.getKeyCode("interact"))) {
