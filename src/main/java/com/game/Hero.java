@@ -1,5 +1,7 @@
 package com.game;
 
+import com.game.Projectile.ProjectileType;
+
 import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
@@ -46,7 +48,9 @@ public class Hero extends LivingEntity {
 
     @Override
     public void attack() {
-        weapons[heldWeapon].use();
+        if (canAttack()) {
+            weapons[heldWeapon].use();
+        }
     }
 
     public void useConsumable(int index) {

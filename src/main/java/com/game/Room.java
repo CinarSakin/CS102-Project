@@ -28,7 +28,7 @@ public class Room extends Area {
     public Room(double x1, double y1, double width, double height, int newType){
         super(new Dimension(x1, y1, width, height));
         if(newType == 0)type = RoomType.PORTAL;
-        if(newType == 1)type = RoomType.LOOT;
+        if(newType == 1)type = RoomType.BOSS;
         if(newType == 2)type = RoomType.LOOT;
         if(newType == 3)type = RoomType.NORMAL;
         if(newType == 4)type = RoomType.NORMAL; 
@@ -126,6 +126,8 @@ public class Room extends Area {
                 break;
             case BOSS:
                 //Create a boss in the middle of the room which can or cannot move according to the move patern of its
+                //new Boss(new Point2D(this.getDimension().getWidth()/2, this.getDimension().getHeight()/2), this, dif);
+                new Enemy(LivingEntity.LivingType.BOSS , new Point2D(this.getDimension().getWidth()/2, this.getDimension().getHeight()/2), this, dif);
                 
                 break;
                 

@@ -14,18 +14,11 @@ public class Effect {
                 if (targetEntity instanceof Enemy) ((Enemy)targetEntity).flee();
             }
         },
-        TIRE { // for cooldowns and stun
-            @Override
-            public void affectEntity(LivingEntity targetEntity) {
-            //    ((Enemy)targetEntity).setCanAttack(false);
-            }
-        },
         STUN {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
                 targetEntity.walkSpeed = 0; 
                 targetEntity.attackSpeed = 0;
-                TIRE.affectEntity(targetEntity);
             }
         },
         BURN {

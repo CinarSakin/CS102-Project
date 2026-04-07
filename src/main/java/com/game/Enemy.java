@@ -8,7 +8,6 @@ import javafx.geometry.Point2D;
 
 public class Enemy extends LivingEntity {
     
-    
     public Enemy(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(lType, position, currentArea, diffMulti);
     }
@@ -44,10 +43,6 @@ public class Enemy extends LivingEntity {
                 break;
             case WALKER:
                 new Projectile(ProjectileType.SLASH, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
-                break;
-            // more enemies
-            
-            case HERO:
                 break;
         }
     }

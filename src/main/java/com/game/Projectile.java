@@ -22,15 +22,15 @@ public class Projectile extends Entity {
             3, new Point2D(48,48)
         ),  
         ARROW(
-            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/arrow.png")),
             5, new Point2D(48, 24)
         ), 
         FLAMING_ARROW(
-            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/flaming_arrow.png")),
             5, new Point2D(48, 24)
         ),
         BOSS_ORB(
-            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/boss_orb.png")),
             2, new Point2D(64, 64)
         );
 
@@ -126,7 +126,7 @@ public class Projectile extends Entity {
         }
 
         else if (projType.equals(ProjectileType.BOSS_ORB)) {
-
+            speed = speed*1.2;
         }
 
         else { // arrow

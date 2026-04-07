@@ -13,6 +13,58 @@ public class AnimationManager {
 
     private static final Map<String, Image> imageCache = new HashMap<>();
 
+ //   private Animats Animat;
+
+    /*
+    enum Animats {
+        HERO(
+            new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKR),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKL),
+            new Anim(LivingType.HERO, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.HERO, Anim.AnimStates.DIE)
+        ),
+        WALKER(
+            new Anim(LivingType.WALKER, Anim.AnimStates.IDLE),
+            new Anim(LivingType.WALKER, Anim.AnimStates.WALKR),
+            new Anim(LivingType.WALKER, Anim.AnimStates.WALKL),
+            new Anim(LivingType.WALKER, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.WALKER, Anim.AnimStates.DIE)
+        ),
+        BOMBER(
+            new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKR),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKL),
+            new Anim(LivingType.HERO, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.HERO, Anim.AnimStates.DIE)
+        ),
+        SKELETON(
+            new Anim(LivingType.HERO, Anim.AnimStates.IDLE),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKR),
+            new Anim(LivingType.HERO, Anim.AnimStates.WALKL),
+            new Anim(LivingType.HERO, Anim.AnimStates.ATTACK),
+            new Anim(LivingType.HERO, Anim.AnimStates.DIE)
+        ),
+        
+        // particle effects
+        // projectiles
+        BOMB(new Anim(ProjectileType.BOMB)), // explosion
+        SLASH(new Anim(ProjectileType.SLASH)),
+
+        // effects
+        STUN(new Anim(EffectType.STUN)),
+        BURN(new Anim(EffectType.BURN)),
+        FREEZE(new Anim(EffectType.FREEZE)),
+        TIRE(new Anim(EffectType.TIRE)),
+        HEAL(new Anim(EffectType.HEAL)),
+        ;
+        
+        private Anim[] animations;
+        private Animats(Anim... animations) {
+            this.animations = animations;
+        }
+    } */
+
     public static void updateImage(LivingEntity livingEntity) {
         double w = livingEntity.getDimension().getWidth();
         double h = livingEntity.getDimension().getHeight();
