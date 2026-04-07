@@ -31,7 +31,7 @@ public abstract class LivingEntity extends Entity {
             ATTACK(.3, false),
             HEAL(.3, false),
             TAKE_DAMAGE(.3, false),
-            DIE(.5, false);
+            DIE(2, true);
 
             public double animDuration;
             public boolean isLooping;
@@ -73,8 +73,7 @@ public abstract class LivingEntity extends Entity {
         HERO(new Point2D(48, 48), 100, 0, 10, 5, 0.8, 0, 0),
         WALKER(new Point2D(24, 24), 10, 0, 2, 4, 0.9, 1, .5*Level.gridSize),
         BOMBER(new Point2D(36,36), 50, 10, 20, 3, 0.2, 1, 1.5*Level.gridSize),
-        SKELETON(new Point2D(96, 96), 75, 5, 1, 3, 0.3, 1, 4*Level.gridSize),
-        ;
+        SKELETON(new Point2D(96, 96), 75, 5, 1, 3, 0.3, 1, 4*Level.gridSize);
 
         void attack(LivingEntity targetEntity) {}
 
@@ -104,7 +103,6 @@ public abstract class LivingEntity extends Entity {
 
     public LivingEntity(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(new Dimension(position.getX(), position.getY(), lType.size.getX(), lType.size.getY()), currentArea);
-
         this.maxHealth = (int)(lType.maxHealth * diffMulti);
         this.health = this.maxHealth;
         this.armor = lType.armor * diffMulti;
@@ -138,7 +136,7 @@ public abstract class LivingEntity extends Entity {
             s.update(dt);
         }
 
-        for (Effect effe : effects) {
+        for (Effect effe : new ArrayList<>(effects)) {
             if(effe != null)effe.affectEntity();
             //animManager.setCurrentAnim(effe.getEffectType());
         }

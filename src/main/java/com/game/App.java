@@ -64,6 +64,7 @@ public class App extends Application {
     private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
     public static StackPane HUDlayer = new StackPane();
     private static Canvas[] layers = new Canvas[GameLayer.values().length];
+    private static Background bgFill;
 
     public static final DoubleProperty UI_SCALE = new SimpleDoubleProperty(1.0); // load from save
     public static final DoubleProperty uiSizeProp = new SimpleDoubleProperty(1.0);
@@ -108,7 +109,7 @@ public class App extends Application {
             GameSettings settings = SaveManager.loadSettings();
             UI_SCALE.set(settings.uiScale);
 
-            Background bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
+            bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
             
             StackPane root = new StackPane();
             root.setBackground(bgFill);
@@ -615,6 +616,42 @@ public class App extends Application {
 
 
     // ---- MAIN METHODS ---- //
+
+    static boolean gameOverShown = false;
+
+    public static void showGameOver() {
+        if (gameOverShown) return;
+        gameOverShown = true;
+
+        activeGame.stopGame();
+
+        StackPane overlay = new StackPane();
+        overlay.setBackground(bgFill);
+        overlay.setOpacity(0);
+
+        Text text = new Text("GAME OVER");
+        text.fontProperty().bind(fontPropBig);
+        text.setFill(Color.WHITE);
+
+        Button menuBtn = createStyledButton("MAIN MENU", 0);
+        menuBtn.setOnAction(e -> {
+            gameOverShown = false;
+            gamePane.getChildren().remove(overlay);
+            gamePane.setVisible(false);
+            menuPane.setVisible(true);
+        });
+
+        VBox box = new VBox(uiSize(30), text, menuBtn);
+        box.setAlignment(Pos.CENTER);
+        overlay.getChildren().add(box);
+
+        gamePane.getChildren().add(overlay);
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(0.5), overlay);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+    }
 
     private void onSlotClicked(char saveSlot) {
         menuPane.setVisible(false);

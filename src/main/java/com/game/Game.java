@@ -184,6 +184,7 @@ public class Game{
     }
 
     private void loadGame(char aSaveSlot) {
+        App.gameOverShown = false;
         Level.resetLevel();
         try {
             level = Level.constructFromSave(aSaveSlot);

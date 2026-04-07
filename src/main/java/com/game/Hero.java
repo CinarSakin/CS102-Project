@@ -1,9 +1,12 @@
 package com.game;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
+import javafx.util.Duration;
 
 public class Hero extends LivingEntity {
     public static Hero currentHero;
+    private boolean isDead = false;
 
     public static final int TALISMAN_AMOUNT = 3;
     public static final int CONSUMABLE_AMOUNT = 3;
@@ -43,10 +46,11 @@ public class Hero extends LivingEntity {
     public void update(double dt) {
         super.update(dt);
 
-    //    checkEntityCollisions();
-
-        if (this.health <= 0) {
-            // TODO: Oyun bitiş ekranını tetikle
+        if (health <= 0 && !isDead) {
+            isDead = true;
+            PauseTransition delay = new PauseTransition(Duration.seconds(2));
+            delay.setOnFinished(e -> App.showGameOver());
+            delay.play();
         }
     }
 
