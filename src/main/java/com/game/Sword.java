@@ -27,7 +27,7 @@ public class Sword extends Weapon {
             .1
         ),
         NORMAL(
-            "/sprites/items/icy_sword.png",
+            "/sprites/items/sword.png",
             "Sword",
             "Just a regular sword.",
             5,
@@ -35,7 +35,7 @@ public class Sword extends Weapon {
             -1
         ),
         STARTER(
-            "/sprites/items/icy_sword.png",
+            "/sprites/items/starter_sword.png",
             "Starter Sword",
             "",
             4.5,
@@ -100,7 +100,7 @@ public class Sword extends Weapon {
         //Point2D offset = new Point2D(Drawer.gridSize/2, 0);
         //Point2D slashPos = heroPos.add(Hero.getHero().isFlipped() ? offset.multiply(-1) : offset);
         
-        Point2D lastDir = Hero.getHero().lastDirection;
+        Point2D lastDir = Hero.getHero().lastDirection.multiply(.75);
         double offsetX = lastDir.getX()>0 ? Drawer.gridSize : (lastDir.getX()<0 ? -Drawer.gridSize : 0);
         double offsetY = lastDir.getY()>0 ? Drawer.gridSize : (lastDir.getY()<0 ? -Drawer.gridSize : 0);
 

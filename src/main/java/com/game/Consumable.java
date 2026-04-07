@@ -3,9 +3,9 @@ package com.game;
 public class Consumable extends Item {
 
     public enum ConsumableType {
-        HEALTH_POTION(null, "Health Potion", "Regenerates your health.", 0.15),
-        STRENGTH_POTION(null, "Strength Potion", "Powers you up.", 0.20),
-        APPLE("/sprites/projectiles/bomb.png", "Apple", "Apple.", -1);
+        HEALTH_POTION("/sprites/items/green_potion.png", "Health Potion", "Regenerates your health.", 0.15),
+        STRENGTH_POTION("/sprites/items/strength_potion.png", "Strength Potion", "Powers you up.", 0.20),
+        APPLE("/sprites/items/apple.png", "Apple", "Apple.", -1);
 
         public final String imagePath;
         public final String name;

@@ -90,11 +90,11 @@ public class AnimationManager {
         switch (highest.state) {
             case WALKING:
                 if (ratio < 0.25) {
-                    stateName = "idle2"; //walk1
+                    stateName = "walk1";
                 } else if (ratio < 0.5) {
                     stateName = "idle";
                 } else if (ratio < 0.75) {
-                    stateName = "idle3"; //walk2
+                    stateName = "walk2";
                 } else {
                     stateName = "idle";
                 }

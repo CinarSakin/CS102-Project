@@ -17,7 +17,7 @@ public class Hero extends LivingEntity {
     public Consumable[] consumables = new Consumable[CONSUMABLE_AMOUNT];
     public Weapon[] weapons = new Weapon[2];
     public int heldWeapon;
-    public Point2D lastDirection;
+    public Point2D lastDirection = Point2D.ZERO;
 
     public Hero(Point2D position, Sword starterSword, double diffMulti, Area currentArea) {
         super(LivingType.HERO, position, currentArea, diffMulti);

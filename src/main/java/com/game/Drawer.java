@@ -30,12 +30,24 @@ public class Drawer {
         Image img = e.getImage();
         if (img == null) { gc.restore(); return; }
 
-        if (e.isFlipped()) {
-            gc.translate(e.getDimension().getX() + e.getDimension().getWidth(), e.getDimension().getY());
+        double x = e.getDimension().getX();
+        double y = e.getDimension().getY();
+        double w = e.getDimension().getWidth();
+        double h = e.getDimension().getHeight();
+
+        if (e instanceof Projectile) {
+            double angle = ((Projectile) e).getDrawAngle();
+            double cx = x + w / 2;
+            double cy = y + h / 2;
+            gc.translate(cx, cy);
+            gc.rotate(angle);
+            gc.drawImage(img, -w / 2, -h / 2, w, h);
+        } else if (e.isFlipped()) {
+            gc.translate(x + w, y);
             gc.scale(-1, 1);
-            gc.drawImage(img, 0, 0, e.getDimension().getWidth(), e.getDimension().getHeight());
+            gc.drawImage(img, 0, 0, w, h);
         } else {
-            gc.drawImage(img, e.getDimension().getX(), e.getDimension().getY(), e.getDimension().getWidth(), e.getDimension().getHeight());
+            gc.drawImage(img, x, y, w, h);
         }
 
         gc.restore();

@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 
 public class Projectile extends Entity {
 
-    public final double EXPLODE_TIMER = 3;
+    public final double EXPLODE_TIMER = 2;
 
     public enum ProjectileType {
         SLASH(
@@ -23,11 +23,11 @@ public class Projectile extends Entity {
         ),  
         ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/arrow.png")),
-            5, new Point2D(48, 24)
+            5, new Point2D(40, 16)
         ), 
         FLAMING_ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/flaming_arrow.png")),
-            5, new Point2D(48, 24)
+            5, new Point2D(40, 16)
         ),
         BOSS_ORB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/boss_orb.png")),
@@ -110,18 +110,19 @@ public class Projectile extends Entity {
         }
 
         else if (projType.equals(ProjectileType.BOMB)){
-            speed = Math.max(speed*.95-.03, 0); // slows down
+            speed = Math.max(speed*.97-.01, 0); // slows down
             if (lifeTime > EXPLODE_TIMER){
                 //AnimationManager.updateImage(this);
 
                 for (LivingEntity target : getTargets()){
                     double dist = target.getDimension().distanceTo(dimension);
                     if (dist < Level.gridSize*2){
-                        target.getDamaged(Level.gridSize*15/(dist+Level.gridSize/2)); // damage range from 30 to 6
-                        new Effect(EffectType.FEAR, 1000, target).startEffect();
-                        new Effect(EffectType.BURN, 1000, target).startEffect();
+                        target.getDamaged(Level.gridSize*15/(dist+Level.gridSize)); // damage range from 15 to 5
+                    //    new Effect(EffectType.FEAR, 1000, target).startEffect();
+                    //    new Effect(EffectType.BURN, 1000, target).startEffect();
                     }                    
                 }
+                despawn();
             }
         }
 
@@ -152,6 +153,11 @@ public class Projectile extends Entity {
         double lx = (velocity.getX() >= 0) ? dimension.getRightX() : dimension.getX();
         double ly = (velocity.getY() >= 0) ? dimension.getBottomY() : dimension.getY();
         return new Point2D(lx, ly);
+    }
+
+    public double getDrawAngle() {
+        if (velocity.equals(Point2D.ZERO)) return 0;
+        return Math.toDegrees(Math.atan2(velocity.getY(), velocity.getX()));
     }
 
     public double getLifeTime() {

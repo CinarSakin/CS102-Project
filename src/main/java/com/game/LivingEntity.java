@@ -16,7 +16,7 @@ public abstract class LivingEntity extends Entity {
     public double walkSpeed;
     public double attackSpeed;
     public double attackRange;
-    public double range = 8*Level.gridSize;
+    public double range = 11*Level.gridSize;
     public double fear;
     public LivingType lType;
     public ArrayList<Effect> effects = new ArrayList<>();
@@ -71,12 +71,11 @@ public abstract class LivingEntity extends Entity {
 
     public enum LivingType {
         HERO(new Point2D(48, 48), 100, 0, 10, 5, 0.8, 0, 0),
-        WALKER(new Point2D(48, 48), 10, 0, 2, 4, 0.9, 1, 0.5*Level.gridSize),
-        BOMBER(new Point2D(64,64), 50, 10, 20, 3, 0.2, 1, 2*Level.gridSize),
-        SKELETON(new Point2D(48, 48), 75, 5, 1, 3, 0.3, 1, 7*Level.gridSize),
+        WALKER(new Point2D(48, 48), 10, 0, 2, 4, 0.75, 1, 1*Level.gridSize),
+        BOMBER(new Point2D(48,84), 50, 10, 20, 3, 0.15, 1, 3*Level.gridSize),
+        SKELETON(new Point2D(48, 48), 75, 5, 1, 3, 0.3, 1, 8*Level.gridSize),
 
-        BOSS(new Point2D(64, 64), 100, 10, 35, 1, 0.2, 0, 7*Level.gridSize),
-        ;
+        BOSS(new Point2D(64, 64), 100, 10, 35, 1, 0.2, 0, 7*Level.gridSize);
 
         void attack(LivingEntity targetEntity) {}
 
