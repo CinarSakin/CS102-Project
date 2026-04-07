@@ -62,6 +62,7 @@ public class App extends Application {
     private static Stage stage;
     private static StackPane menuPane, gamePane; // holders of menus/layers
     private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
+    private static GridPane slotGrid;
     public static StackPane HUDlayer = new StackPane();
     private static Canvas[] layers = new Canvas[GameLayer.values().length];
     private static Background bgFill;
@@ -404,76 +405,12 @@ public class App extends Application {
             saveTitle.fontProperty().bind(fontPropMedium);
             saveTitle.setTextFill(Color.WHITE);
 
-            GridPane slotGrid = new GridPane();
+            slotGrid = new GridPane();
             slotGrid.setAlignment(Pos.CENTER);
             slotGrid.vgapProperty().bind(uiSizeBinding(30));
             slotGrid.hgapProperty().bind(uiSizeBinding(30));
 
-            for (int i = 0; i < 6; i++) {
-                char slotChar = (char)(i + 65);
-                boolean saveExists = SaveManager.saveExists(slotChar);;
-                Button slotBtn = new Button();
-                slotBtn.setBackground(Background.EMPTY);
-                slotBtn.setPadding(Insets.EMPTY);
-
-                Label slotLabel = new Label(("SLOT " + slotChar).toUpperCase());
-                slotLabel.fontProperty().bind(fontPropSmall);
-                slotLabel.setTextFill(Color.rgb(187, 174, 232, 1));
-
-                Label slotInfo = new Label(saveExists ? "* CONTINUE *" : "* EMPTY *");
-                slotInfo.fontProperty().bind(fontPropSmall);
-                slotInfo.setTextFill(Color.rgb(219, 218, 220, 1));
-
-                VBox slotTextBox = new VBox(slotLabel, slotInfo);
-                slotTextBox.setAlignment(Pos.CENTER);
-
-                Button deleteBtn = createStyledButton("X", 2, 0.5);
-                deleteBtn.setVisible(saveExists);
-
-                StackPane slotPane = new StackPane(slotTextBox);
-                slotPane.setCursor(Cursor.HAND);
-
-                slotPane.prefWidthProperty().bind(uiSizeBinding(220));
-                slotPane.prefHeightProperty().bind(uiSizeBinding(160));
-
-                if (saveExists) {
-                    StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
-                    slotPane.getChildren().add(deleteBtn);
-                }
-
-                slotPane.setBackground(new Background(new BackgroundFill(
-                    Color.rgb(30, 20, 60, 0.95), new CornerRadii(15), Insets.EMPTY
-                )));
-
-                slotPane.setOnMouseEntered(e -> {
-                    slotPane.setScaleX(1.03);
-                    slotPane.setScaleY(1.03);
-                });
-
-                slotPane.setOnMouseExited(e -> {
-                    slotPane.setScaleX(1.0);
-                    slotPane.setScaleY(1.0);
-                });
-
-                slotPane.setOnMousePressed(e -> {
-                    slotPane.setScaleX(0.97);
-                    slotPane.setScaleY(0.97);
-                });
-
-                slotPane.setOnMouseReleased(e -> {
-                    slotPane.setScaleX(1.0);
-                    slotPane.setScaleY(1.0);
-                    onSlotClicked(slotChar); // converts slot index to abcdef
-                });
-
-                deleteBtn.setOnAction(e -> {
-                    // ToDo (Delete Button)
-                    SaveManager.deleteSave(slotChar);
-                    slotInfo.setText("* EMPTY *");
-                    deleteBtn.setVisible(false);
-                });
-                slotGrid.add(slotPane, i % 3, i / 3);
-            }
+            updateSaveSlots();
             
             VBox saveLayout = new VBox();
             saveLayout.spacingProperty().bind(uiSizeBinding(35));
@@ -653,7 +590,7 @@ public class App extends Application {
         fade.play();
     }
 
-    private void onSlotClicked(char saveSlot) {
+    private static void onSlotClicked(char saveSlot) {
         menuPane.setVisible(false);
 
         activeGame = new Game(saveSlot);
@@ -784,6 +721,56 @@ public class App extends Application {
         fadeIn.play();
     }
 
+    private static void updateSaveSlots() {
+        slotGrid.getChildren().clear();
+        for (int i = 0; i < 6; i++) {
+            char slotChar = (char) (i + 65);
+            boolean saveExists = SaveManager.saveExists(slotChar);
+            
+            Label slotLabel = new Label(("SLOT " + slotChar).toUpperCase());
+            slotLabel.fontProperty().bind(fontPropSmall);
+            slotLabel.setTextFill(Color.rgb(187, 174, 232, 1));
+    
+            Label slotInfo = new Label(saveExists ? "* CONTINUE *" : "* EMPTY *");
+            slotInfo.fontProperty().bind(fontPropSmall);
+            slotInfo.setTextFill(Color.rgb(219, 218, 220, 1));
+    
+            VBox slotTextBox = new VBox(slotLabel, slotInfo);
+            slotTextBox.setAlignment(Pos.CENTER);
+    
+            Button deleteBtn = createStyledButton("X", 2, 0.5);
+            deleteBtn.setVisible(saveExists);
+            deleteBtn.setOnAction(e -> {
+                SaveManager.deleteSave(slotChar);
+                updateSaveSlots();
+            });
+    
+            StackPane slotPane = new StackPane(slotTextBox);
+            slotPane.setCursor(Cursor.HAND);
+            slotPane.prefWidthProperty().bind(uiSizeBinding(220));
+            slotPane.prefHeightProperty().bind(uiSizeBinding(160));
+            slotPane.setBackground(new Background(new BackgroundFill(
+                Color.rgb(30, 20, 60, 0.95), new CornerRadii(15), Insets.EMPTY
+            )));
+    
+            if (saveExists) {
+                StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
+                slotPane.getChildren().add(deleteBtn);
+            }
+    
+            slotPane.setOnMouseEntered(e -> { slotPane.setScaleX(1.03); slotPane.setScaleY(1.03); });
+            slotPane.setOnMouseExited(e -> { slotPane.setScaleX(1.0); slotPane.setScaleY(1.0); });
+            slotPane.setOnMousePressed(e -> { slotPane.setScaleX(0.97); slotPane.setScaleY(0.97); });
+            slotPane.setOnMouseReleased(e -> {
+                slotPane.setScaleX(1.0);
+                slotPane.setScaleY(1.0);
+                onSlotClicked(slotChar);
+            });
+    
+            slotGrid.add(slotPane, i % 3, i / 3);
+        }
+    }
+
     public static double uiSize(double s) {
         return uiSizeProp.get() * s;
     }
@@ -822,6 +809,7 @@ public class App extends Application {
         SaveNExt.setOnAction(event -> {
             if(activeGame != null)
                 activeGame.saveCurrentGame();
+            updateSaveSlots();
             gamePane.getChildren().remove(pauseMenuPane);
             gamePane.setVisible(false);
             menuPane.setVisible(true);
