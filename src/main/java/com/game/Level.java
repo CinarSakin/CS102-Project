@@ -128,17 +128,6 @@ public class Level {
         this.areas.addAll(Room.getHHalls());
         this.areas.addAll(Room.getVHalls());
 
-
-        // for (Room r : rooms) {
-        //     if (r.type == Room.RoomType.PORTAL) {
-        //         if(heroSetIn)break;
-        //         Dimension newDim = new Dimension((r.getX1()+r.getWidth())/2-hero.getDimension().getWidth()/2,
-        //             (r.getY1()+r.getHeight())/2 - hero.getDimension().getHeight(),
-        //             hero.getDimension().getWidth(),hero.getDimension().getHeight());
-        //         hero.setDimension(newDim);
-                
-        //     }
-        // }
     }
 
 
@@ -213,6 +202,10 @@ public class Level {
             a.update(dt);
         }
     }    
+    public static boolean isCleared(){
+        if(currentLevel == null)return true;
+        return false;
+    }
 
     //GETTER,SETTERS
     public static Level getLevel() {

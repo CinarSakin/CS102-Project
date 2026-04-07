@@ -26,20 +26,6 @@ public class Hero extends LivingEntity {
     public void move(Point2D direction) {
         super.move(direction.multiply(walkSpeed));
     }
-
-    /*
-    public void checkEntityCollisions() {
-        for (Room room : Level.getRooms()) {
-            for (Entity e : room.getEntities()) {
-                if (this.getDimension().intersects(e.getDimension())) {
-                    // if (e instanceof Consumable) {
-                    //     // Trigger pickup logic
-                    //     ((Consumable) e).onPickup(this); 
-
-            }
-        }
-    }
-        */
     
 
     @Override
