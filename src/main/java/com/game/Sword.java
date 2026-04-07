@@ -96,15 +96,20 @@ public class Sword extends Weapon {
             return;
         }
 
-        for (LivingEntity target : heroDim.getArea().getLivingEntities()) {
+        for (LivingEntity target : Hero.getHero().currentArea.getLivingEntities()) {
             if (target != Hero.getHero() && target.getDimension().intersects(hitBox)) {
                 target.getDamaged(this.damage);
 
+                
+
                 if (this.swordType == SwordType.FLAMING) {
+                    new Projectile(Projectile.ProjectileType.SLASH, Projectile.TargetType.ENEMIES, heroPos, new Point2D(0, 0), attackSpeed, Hero.getHero().currentArea);
                     new Effect(Effect.EffectType.BURN, 3000, target).startEffect();
                 } else if (this.swordType == SwordType.ICY) {
+                    new Projectile(Projectile.ProjectileType.SLASH, Projectile.TargetType.ENEMIES, heroPos, new Point2D(0, 0), attackSpeed, Hero.getHero().currentArea);
                     new Effect(Effect.EffectType.FREEZE, 2000, target).startEffect();
                 } else if (this.swordType == SwordType.NORMAL) {
+                    new Projectile(Projectile.ProjectileType.SLASH, Projectile.TargetType.ENEMIES, heroPos, new Point2D(0, 0), attackSpeed, Hero.getHero().currentArea);
                     
                 } else { // starter sword
 

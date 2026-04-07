@@ -139,8 +139,8 @@ public class Room extends Area {
 
     //EXTRA METHODS
     private Point2D randomPos(){
-        int x = (int)(dim.getX() + Math.random()*dim.getWidth()+1);
-        int y = (int)(dim.getY() + Math.random()*dim.getHeight()+1);
+        int x = (int)(dim.getX() + Math.random()*dim.getWidth()-Drawer.gridSize);
+        int y = (int)(dim.getY() + Math.random()*dim.getHeight()-Drawer.gridSize);
         return new Point2D(x, y);
         //TODO: make a random dimension, convertes it to a point inside the room for enemy to spawn in that position
     }

@@ -15,23 +15,23 @@ public class Projectile extends Entity {
     public enum ProjectileType {
         SLASH(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            3, new Point2D(8, 8)
+            3, new Point2D(36, 48)
         ),
         BOMB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            3, new Point2D(16, 16)
+            3, new Point2D(48, 48)
         ),  
         ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            5, new Point2D(12, 12)
+            5, new Point2D(48, 24)
         ), 
         FLAMING_ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            5, new Point2D(12, 12)
+            5, new Point2D(48, 24)
         ),
         BOSS_ORB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            2, new Point2D(20, 20)
+            2, new Point2D(64, 64)
         );
 
         private Image image;
