@@ -26,7 +26,9 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -41,6 +43,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -51,9 +54,6 @@ import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import javafx.scene.layout.HBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ContentDisplay;
 
 public class App extends Application {
 
@@ -646,9 +646,9 @@ public class App extends Application {
     }
 
     // type 0: long, 1: short, 2: square
-    private Button createStyledButton(String label, int type) {return createStyledButton(label, type, 1.0);}
+    private static Button createStyledButton(String label, int type) {return createStyledButton(label, type, 1.0);}
 
-    private Button createStyledButton(String label, int type, double baseScale){
+    private static Button createStyledButton(String label, int type, double baseScale){
         ObjectProperty<Image> defProp = type == 0 ? longBtnDefaultProp : type == 1 ? shortBtnDefaultProp : squareBtnDefaultProp;
         ObjectProperty<Image> pressProp = type == 0 ? longBtnPressedProp : type == 1 ? shortBtnPressedProp : squareBtnPressedProp;
 
@@ -759,8 +759,18 @@ public class App extends Application {
         return new Image(getClass().getResourceAsStream(name), 0, height, true, false);
     }
 
-
     // ---- GETTER METHODS FOR OUTSIDE APP.JAVA ---- //
+
+    public static void drawMenu(){
+        Button cont = createStyledButton("Continue", 1);
+        Button settings = createStyledButton("Settings", 1);
+        Button SaveNExt = createStyledButton("Save and Exit", 1);
+        VBox menuBox = new VBox(cont,settings,SaveNExt);
+        menuBox.setAlignment(Pos.CENTER);
+        menuBox.spacingProperty().bind(uiSizeBinding(15));
+        StackPane menuPanel = new StackPane();
+        App.HUDlayer.getChildren().add(menuPanel);
+    }
 
     public static Scene getScene() {return scene;}
     public static Stage getStage() {return stage;}

@@ -170,7 +170,7 @@ public class Drawer {
         // TODO: other
         
     }
-
+    
     // helper method for slots
     private static StackPane createSlot(double bgSize, double iconSize) {
         StackPane pane = new StackPane();

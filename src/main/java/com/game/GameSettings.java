@@ -31,6 +31,7 @@ public class GameSettings {
     public String keyRight = "D";
     public String keyAttack = "SPACE";
     public String keyInteract = "E";
+    public String keyMenu = "ESCAPE";
 
     // last window properties
     public double windowX = -1;
@@ -91,6 +92,7 @@ public class GameSettings {
             case "right" -> instance.keyRight = key;
             case "attack" -> instance.keyAttack = key;
             case "interact" -> instance.keyInteract = key;
+            case "menu" -> instance.keyMenu = key;
         }
     }
 
@@ -102,6 +104,7 @@ public class GameSettings {
             case "right" -> instance.keyRight;
             case "attack" -> instance.keyAttack;
             case "interact" -> instance.keyInteract;
+            case "menu" -> instance.keyMenu;
             default -> "";
         };
     }
@@ -138,6 +141,7 @@ public class GameSettings {
         instance.keyRight = "D";
         instance.keyAttack = "SPACE";
         instance.keyInteract = "E";
+        instance.keyMenu = "ESCAPE";
     }
 
     public static void resetAll() {

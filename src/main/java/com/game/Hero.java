@@ -90,7 +90,6 @@ public class Hero extends LivingEntity {
     //incremented getHero()
     public static Hero getHero() {
         return currentHero;
-       
     }
     public void setImage(){
         //seting image iplementation...
