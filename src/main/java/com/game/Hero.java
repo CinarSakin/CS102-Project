@@ -51,6 +51,8 @@ public class Hero extends LivingEntity {
 
     public void useConsumable(int index) {
         // TODO
+        consumables[index].use();
+        consumables[index] = null;
     }
 
     public void dropConsumable(int index, double x, double y) {

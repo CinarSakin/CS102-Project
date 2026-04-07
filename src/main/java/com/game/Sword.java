@@ -103,7 +103,8 @@ public class Sword extends Weapon {
 
         Point2D slashPos = new Point2D(newX, newY);
         new Projectile(
-            Projectile.ProjectileType.SLASH, TargetType.ENEMIES, slashPos, Point2D.ZERO, attackSpeed, Hero.getHero().currentArea
+            Projectile.ProjectileType.SLASH, TargetType.ENEMIES, slashPos,
+                Point2D.ZERO, attackSpeed, Hero.getHero().currentArea
         );
 
         /*
