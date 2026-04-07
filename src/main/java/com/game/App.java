@@ -798,15 +798,34 @@ public class App extends Application {
 
     // ---- GETTER METHODS FOR OUTSIDE APP.JAVA ---- //
 
-    public static void drawMenu(){
-        Button cont = createStyledButton("Continue", 1);
-        Button settings = createStyledButton("Settings", 1);
-        Button SaveNExt = createStyledButton("Save and Exit", 1);
-        VBox menuBox = new VBox(cont,settings,SaveNExt);
+     public static void drawMenu(){
+        Button cont = createStyledButton("Continue", 0);
+        Button settings = createStyledButton("Settings", 0);
+        Button SaveNExt = createStyledButton("Save & Exit", 0);
+        VBox menuBox = new VBox(uiSize(30),cont,settings,SaveNExt);//make the size smaler
+        
+        
         menuBox.setAlignment(Pos.CENTER);
-        menuBox.spacingProperty().bind(uiSizeBinding(15));
-        StackPane menuPanel = new StackPane();
-        App.HUDlayer.getChildren().add(menuPanel);
+        menuBox.spacingProperty().bind(uiSizeBinding(10));
+        StackPane pauseMenuPane = new StackPane(menuBox);
+        StackPane.setAlignment(pauseMenuPane, Pos.CENTER);
+        pauseMenuPane.setBackground(new Background(new BackgroundFill(
+            Color.rgb(30, 20, 60, 0.3), new CornerRadii(15), Insets.EMPTY
+        )));
+        pauseMenuPane.prefWidthProperty().bind(uiSizeBinding(150));
+        pauseMenuPane.prefHeightProperty().bind(uiSizeBinding(220));
+        
+        gamePane.getChildren().add(pauseMenuPane);
+        cont.setOnAction(e -> {
+            Game.isPaused = false;
+        });
+        SaveNExt.setOnAction(event -> {
+            if(activeGame != null)
+                activeGame.saveCurrentGame();
+            gamePane.getChildren().remove(pauseMenuPane);
+            gamePane.setVisible(false);
+            menuPane.setVisible(true);
+        });
     }
 
     public static Scene getScene() {return scene;}

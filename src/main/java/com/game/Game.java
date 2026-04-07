@@ -16,7 +16,7 @@ public class Game{
     private Level level;
     public static Hero hero;
 
-    private boolean isPaused = false;
+    public static boolean isPaused = false;
     private long lastUpdate = 0;
 
     private final ArrayList<KeyCode> activeKeys = new ArrayList<>();
