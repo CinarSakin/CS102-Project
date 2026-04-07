@@ -97,7 +97,7 @@ public class Projectile extends Entity {
         }
 
         if (projType.equals(ProjectileType.SLASH)){
-            if (lifeTime > .3) {
+            if (lifeTime > .5) {
                 despawn(); return;
             }
             for (LivingEntity target : getTargets()){

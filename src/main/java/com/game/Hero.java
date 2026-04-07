@@ -15,6 +15,7 @@ public class Hero extends LivingEntity {
     public Consumable[] consumables = new Consumable[CONSUMABLE_AMOUNT];
     public Weapon[] weapons = new Weapon[2];
     public int heldWeapon;
+    public Point2D lastDirrection;
 
     public Hero(Point2D position, Sword starterSword, double diffMulti, Area currentArea) {
         super(LivingType.HERO, position, currentArea, diffMulti);
@@ -23,6 +24,7 @@ public class Hero extends LivingEntity {
         this.heldWeapon = 0;
     }
 
+    @Override
     public void move(Point2D direction) {
         super.move(direction.multiply(walkSpeed));
     }
@@ -109,5 +111,10 @@ public class Hero extends LivingEntity {
     }
     public void setImage(){
         //seting image iplementation...
+    }
+    public void setLastDirrection(Point2D direction){
+        if (direction.magnitude() > 0) {
+            this.lastDirrection = direction.normalize();
+        }
     }
 }

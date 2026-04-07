@@ -221,6 +221,7 @@ public class Game{
         if (activeKeys.contains(GameSettings.getKeyCode("down"))) velocity = velocity.add(0, 1);
         if (activeKeys.contains(GameSettings.getKeyCode("right"))) velocity = velocity.add(1, 0);
         hero.move(velocity.normalize());
+        hero.setLastDirrection(velocity);
         
         if (activeKeys.contains(GameSettings.getKeyCode("attack"))) {
             hero.attack();

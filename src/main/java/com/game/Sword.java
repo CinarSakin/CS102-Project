@@ -1,7 +1,5 @@
 package com.game;
 
-import java.util.ArrayList;
-
 import com.game.Projectile.TargetType;
 
 import javafx.geometry.Point2D;
@@ -97,9 +95,13 @@ public class Sword extends Weapon {
 
         if (getIsOnCooldown()) {return;}
 
-        Point2D offset = new Point2D(Level.gridSize/2, 0);
-        Point2D slashPos = heroPos.add(Hero.getHero().isFlipped() ? offset.multiply(-1) : offset);
+        //Point2D offset = new Point2D(Drawer.gridSize/2, 0);
+        //Point2D slashPos = heroPos.add(Hero.getHero().isFlipped() ? offset.multiply(-1) : offset);
+        
+        double newX = Hero.getHero().lastDirrection.getX() >= 0 ? heroPos.getX()+ Drawer.gridSize/2: heroPos.getX()-Drawer.gridSize/2;
+        double newY = Hero.getHero().lastDirrection.getY() >= 0 ? heroPos.getY()+ Drawer.gridSize/2: heroPos.getY()-Drawer.gridSize/2;
 
+        Point2D slashPos = new Point2D(newX, newY);
         new Projectile(
             Projectile.ProjectileType.SLASH, TargetType.ENEMIES, slashPos, Point2D.ZERO, attackSpeed, Hero.getHero().currentArea
         );
