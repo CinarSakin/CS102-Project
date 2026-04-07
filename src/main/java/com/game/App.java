@@ -66,6 +66,7 @@ public class App extends Application {
     public static StackPane HUDlayer = new StackPane();
     private static Canvas[] layers = new Canvas[GameLayer.values().length];
     private static Background bgFill;
+    private static boolean qualifiedUser = true;
 
     public static final DoubleProperty UI_SCALE = new SimpleDoubleProperty(1.0); // load from save
     public static final DoubleProperty uiSizeProp = new SimpleDoubleProperty(1.0);
@@ -443,7 +444,11 @@ public class App extends Application {
             exitSettingsBtn.setOnAction(e -> changeMenu(mainMenu));
 
             standardBtn.setOnAction(e -> changeMenu(saveMenu));
-            infiniteBtn.setOnAction(e -> headShake(infiniteBtn));
+            infiniteBtn.setOnAction(e -> {
+                if(qualifiedUser){startInfinite();}
+                else headShake(infiniteBtn);
+                
+            });
             exitGamemodeBtn.setOnAction(e -> changeMenu(mainMenu));
 
             exitSavesBtn.setOnAction(e -> changeMenu(gamemodeMenu));
@@ -598,6 +603,13 @@ public class App extends Application {
         activeGame = new Game(saveSlot);
         activeGame.startGame();
 
+        gamePane.setVisible(true);
+    }
+
+    private static void startInfinite(){
+        menuPane.setVisible(false);
+        activeGame = new Game('z');
+        activeGame.startInfinite();
         gamePane.setVisible(true);
     }
 

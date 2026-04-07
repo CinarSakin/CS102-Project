@@ -12,6 +12,7 @@ import javafx.scene.input.KeyCode;
 
 public class Game{
 
+    private static int levelCount = 1;
     private static char saveslot;
     private Level level;
     public static Hero hero;
@@ -45,6 +46,51 @@ public class Game{
 
     public Game(char aChar) {
         saveslot = aChar;
+    }
+
+    public void startInfinite(){
+        //TODO
+        Scene scene = App.getScene();
+
+        scene.setOnKeyPressed(event -> {
+            KeyCode code = event.getCode();
+            if (!activeKeys.contains(code)) {
+                activeKeys.add(code);
+            }
+        });
+
+        scene.setOnKeyReleased(event -> {
+            activeKeys.remove(event.getCode());
+        });
+
+        for (App.GameLayer layer : App.GameLayer.values()) {
+            Canvas c = App.getLayerCanvas(layer);
+            c.widthProperty().bind(scene.widthProperty());
+            c.heightProperty().bind(scene.heightProperty());
+        }
+        Drawer.setupHUD();
+        while(!Hero.isDead){
+            newGame(levelCount);
+            timer.start();
+        }
+            
+        scene.setOnKeyPressed(event -> {
+            KeyCode code = event.getCode();
+            if (!activeKeys.contains(code)) {
+                activeKeys.add(code);
+            }
+            // Pause toggle on press, not hold
+            if (code == GameSettings.getKeyCode("menu")) {
+                isPaused = !isPaused;
+                if (isPaused){
+                    stopGame();
+                } 
+                else {
+                    timer.start();
+                    App.closePauseMenu.run();
+                }
+            }
+        }); 
     }
 
     public void startGame() {

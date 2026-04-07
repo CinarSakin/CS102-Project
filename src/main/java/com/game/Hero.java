@@ -6,7 +6,7 @@ import javafx.util.Duration;
 
 public class Hero extends LivingEntity {
     public static Hero currentHero;
-    private boolean isDead = false;
+    public static boolean isDead = false;
 
     public static final int TALISMAN_AMOUNT = 3;
     public static final int CONSUMABLE_AMOUNT = 3;

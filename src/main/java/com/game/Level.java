@@ -89,7 +89,7 @@ public class Level {
         currentLevel = null;
     }
 
-    public static Level constructNew(int levelCount) {
+    public static Level constructNew(int levelCount) {//TODO: fix the construction because it gives a level every time.
         if (getLevel() != null) throw new IllegalStateException("There is already a Level instance!");
         new Level(levelCount);
         return currentLevel;
