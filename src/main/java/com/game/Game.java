@@ -19,7 +19,7 @@ public class Game{
     public static boolean isPaused = false;
     private long lastUpdate = 0;
 
-    private final ArrayList<KeyCode> activeKeys = new ArrayList<>();
+    public final ArrayList<KeyCode> activeKeys = new ArrayList<>();
 
     private final AnimationTimer timer = new AnimationTimer() {
         @Override
@@ -85,7 +85,10 @@ public class Game{
                 if (isPaused){
                     stopGame();
                 } 
-                else timer.start();
+                else {
+                    timer.start();
+                    App.closePauseMenu.run();
+                }
             }
         }); 
     }
@@ -182,6 +185,8 @@ public class Game{
         lastUpdate = 0;
         App.drawMenu();
     }
+
+    public void unPauseTimer(){timer.start();}
 
     private void loadGame(char aSaveSlot) {
         App.gameOverShown = false;

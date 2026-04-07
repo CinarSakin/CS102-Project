@@ -83,6 +83,8 @@ public class App extends Application {
     public static final ObjectProperty<Font> fontPropBig = new SimpleObjectProperty<>();
     private String bytebounceFontFamily;
 
+    public static Runnable closePauseMenu;
+
     private void reloadUI() {
         if (scene == null) return;
 
@@ -816,8 +818,20 @@ public class App extends Application {
         pauseMenuPane.prefHeightProperty().bind(uiSizeBinding(220));
         
         gamePane.getChildren().add(pauseMenuPane);
+
+        closePauseMenu = () -> {
+            gamePane.getChildren().remove(pauseMenuPane);
+            activeGame.unPauseTimer();
+        };
         cont.setOnAction(e -> {
-            Game.isPaused = false;
+            closePauseMenu.run();
+        });
+        gamePane.setOnKeyPressed(e -> {
+            if (activeGame.activeKeys.contains(GameSettings.getKeyCode("menu"))){
+                Game.isPaused = true;
+                gamePane.getChildren().remove(pauseMenuPane);
+                activeGame.unPauseTimer();
+            }
         });
         SaveNExt.setOnAction(event -> {
             if(activeGame != null)
