@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mongodb.client.model.Sorts.descending;
@@ -53,18 +54,29 @@ public class LeaderboardManager {
     public static List<LeaderboardEntry> getTopScores(int limit) {
         List<LeaderboardEntry> entries = new ArrayList<>();
         if (!MongoManager.isConnected()) return entries;
-        try (MongoCursor<Document> cursor = getCollection()
-                .find().sort(descending("score")).limit(limit).iterator()) {
+        List<Document> pipeline = Arrays.asList(
+            new Document("$sort", new Document("score", -1)),
+            new Document("$group", new Document("_id", "$playerName")
+                .append("score",         new Document("$first", "$score"))
+                .append("enemiesKilled", new Document("$first", "$enemiesKilled"))
+                .append("bossKilled",    new Document("$first", "$bossKilled"))
+                .append("levelsCleared", new Document("$first", "$levelsCleared"))
+                .append("chestsOpened",  new Document("$first", "$chestsOpened"))
+                .append("timePassed",    new Document("$first", "$timePassed"))),
+            new Document("$sort", new Document("score", -1)),
+            new Document("$limit", limit)
+        );
+        try (MongoCursor<Document> cursor = getCollection().aggregate(pipeline).iterator()) {
             while (cursor.hasNext()) {
                 Document doc = cursor.next();
                 entries.add(new LeaderboardEntry(
-                        doc.getString("playerName"),
+                        doc.getString("_id"),
                         doc.getInteger("score",         0),
                         doc.getInteger("enemiesKilled", 0),
                         doc.getInteger("bossKilled",    0),
                         doc.getInteger("levelsCleared", 0),
                         doc.getInteger("chestsOpened",  0),
-                        doc.getInteger("timePassed", 0)
+                        doc.getInteger("timePassed",    0)
                 ));
             }
         }

@@ -1,5 +1,6 @@
 package com.game;
 
+import java.util.List;
 import java.util.Locale;
 
 import javafx.animation.FadeTransition;
@@ -31,6 +32,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
@@ -52,6 +54,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -66,7 +69,7 @@ public class App extends Application {
     private static Scene scene;
     private static Stage stage;
     private static StackPane menuPane, gamePane; // holders of menus/layers
-    private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu;
+    private static StackPane mainMenu, settingsMenu, saveMenu, gamemodeMenu, leaderboardMenu;
     private static GridPane slotGrid;
     public static StackPane HUDlayer = new StackPane();
     private static Canvas[] layers = new Canvas[GameLayer.values().length];
@@ -135,6 +138,7 @@ public class App extends Application {
 
             Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
             scene = new Scene(root, screenBounds.getWidth() * .75, screenBounds.getHeight() * .75);
+            scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
             bytebounceFontFamily = Font.loadFont(getClass().getResourceAsStream("/ByteBounce.ttf"), 1).getFamily();
 
@@ -367,6 +371,51 @@ public class App extends Application {
             
             settingsMenu = new StackPane(settingsBgRegion, settingsMenuContainer);
 
+            // leaderboard menu
+            Button exitLeaderboardBtn = createStyledButton("GO BACK", 1);
+            Label leaderboardTitle = new Label("LEADERBOARD");
+            leaderboardTitle.fontProperty().bind(fontPropSmall);
+            leaderboardTitle.setTextFill(Color.WHITE);
+
+            VBox leaderboardContent = new VBox();
+            leaderboardContent.setSpacing(8);
+            leaderboardContent.setPadding(new Insets(16));
+            leaderboardContent.setAlignment(Pos.TOP_CENTER);
+            leaderboardContent.setStyle("-fx-background-color: rgba(42, 20, 80, 0.3);");
+
+            Label loadingLabel = new Label("Loading...");
+            loadingLabel.setTextFill(Color.WHITE);
+            loadingLabel.fontProperty().bind(fontPropSmall);
+            leaderboardContent.getChildren().add(loadingLabel);
+
+            ScrollPane leaderboardScroll = new ScrollPane(leaderboardContent);
+            leaderboardScroll.setFitToWidth(true);
+            leaderboardScroll.setStyle("-fx-control-inner-background: transparent; -fx-background: transparent; -fx-padding: 0;");
+
+            VBox leaderboardContainer = new VBox(leaderboardTitle, leaderboardScroll);
+            leaderboardContainer.setAlignment(Pos.TOP_CENTER);
+            leaderboardContainer.setSpacing(16);
+            leaderboardContainer.setPadding(new Insets(18));
+            leaderboardContainer.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
+            VBox.setVgrow(leaderboardScroll, Priority.ALWAYS);
+
+            StackPane.setAlignment(exitLeaderboardBtn, Pos.BOTTOM_RIGHT);
+            uiSizeProp.addListener((obs, old, val) -> {
+                StackPane.setMargin(exitLeaderboardBtn, new Insets(0, uiSize(20), uiSize(25), 0));
+            });
+            StackPane.setMargin(exitLeaderboardBtn, new Insets(0, uiSize(20), uiSize(25), 0));
+
+            Region leaderboardBgRegion = new Region();
+            leaderboardBgRegion.backgroundProperty().bind(textureBackground);
+            leaderboardBgRegion.setPrefWidth(Double.MAX_VALUE);
+            leaderboardBgRegion.setPrefHeight(Double.MAX_VALUE);
+
+            leaderboardMenu = new StackPane(leaderboardBgRegion, leaderboardContainer, exitLeaderboardBtn);
+            leaderboardMenu.setPrefWidth(Double.MAX_VALUE);
+            leaderboardMenu.setPrefHeight(Double.MAX_VALUE);
+
+            exitLeaderboardBtn.setOnAction(e -> changeMenu(mainMenu));
+
             resetControlsBtn.setOnAction(e -> {
                 GameSettings.resetControls();
                 for (int i = 0; i < controlActions.length; i++) {
@@ -460,7 +509,56 @@ public class App extends Application {
             // button functions
             playBtn.setOnAction(e -> changeMenu(gamemodeMenu));
             settingsBtn.setOnAction(e -> changeMenu(settingsMenu));
-            leaderboardBtn.setOnAction(e -> headShake(leaderboardBtn));
+            leaderboardBtn.setOnAction(e -> {
+                leaderboardContent.getChildren().clear();
+                new Thread(() -> {
+                    List<LeaderboardManager.LeaderboardEntry> entries = LeaderboardManager.getTopScores(10);
+                    Platform.runLater(() -> {
+                        if (entries.isEmpty()) {
+                            Label noDataLabel = new Label("No scores yet");
+                            noDataLabel.setTextFill(Color.WHITE);
+                            noDataLabel.fontProperty().bind(fontPropSmall);
+                            leaderboardContent.getChildren().add(noDataLabel);
+                        } else {
+                            int rank = 1;
+                            for (LeaderboardManager.LeaderboardEntry entry : entries) {
+                                String rankHex;
+                                if (rank == 1) rankHex = "#FFD700";
+                                else if (rank == 2) rankHex = "#dfeeff";
+                                else if (rank == 3) rankHex = "#cd965f";
+                                else rankHex = "#b8b8b8";
+
+                                HBox entryRow = new HBox();
+                                entryRow.setAlignment(Pos.CENTER_LEFT);
+                                entryRow.setPadding(new Insets(6, 12, 6, 12));
+                                entryRow.setMaxWidth(Double.MAX_VALUE);
+                                entryRow.setStyle("-fx-border-color: white; -fx-border-width: 0 0 1 0;");
+
+                                Label rankLabel = new Label(rank + ".");
+                                rankLabel.setStyle("-fx-text-fill: " + rankHex + ";");
+                                rankLabel.fontProperty().bind(fontPropSmall);
+                                rankLabel.prefWidthProperty().bind(uiSizeBinding(45));
+
+                                Label nameLabel = new Label(entry.playerName());
+                                nameLabel.setStyle("-fx-text-fill: " + rankHex + ";");
+                                nameLabel.fontProperty().bind(fontPropSmall);
+
+                                Region spacer = new Region();
+                                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                                Label scoreLabel = new Label(String.valueOf(entry.score()));
+                                scoreLabel.setStyle("-fx-text-fill: #b39ddb;");
+                                scoreLabel.fontProperty().bind(fontPropSmall);
+
+                                entryRow.getChildren().addAll(rankLabel, nameLabel, spacer, scoreLabel);
+                                leaderboardContent.getChildren().add(entryRow);
+                                rank++;
+                            }
+                        }
+                    });
+                }).start();
+                changeMenu(leaderboardMenu);
+            });
             exitBtn.setOnAction(e ->
                 primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))
             );
@@ -524,7 +622,7 @@ public class App extends Application {
             });
 
             // adding menus to the menuPane
-            menuPane.getChildren().addAll(gamemodeMenu, saveMenu, settingsMenu);
+            menuPane.getChildren().addAll(gamemodeMenu, saveMenu, settingsMenu, leaderboardMenu);
             for (Node n : menuPane.getChildren()) {
                 if (n != mainMenu) {
                     n.setVisible(false);
