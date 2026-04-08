@@ -77,13 +77,12 @@ public abstract class LivingEntity extends Entity {
         BOMBER(new Point2D(48,84), 42, 3, 15, 3.5, 0.15, 1, 3*Level.gridSize),
         SKELETON(new Point2D(48, 48), 21, 2, 1, 3.5, 0.3, 1, 5*Level.gridSize),
 
-        BOSS(new Point2D(80, 80), 100, 10, 25, 1.25, 0.2, 0, 7*Level.gridSize);
+        BOSS(new Point2D(80, 80), 150, 0, 25, 2, 0.5, 0, 8*Level.gridSize);
 
         void attack(LivingEntity targetEntity) {}
 
         public Point2D size;
         private int maxHealth;
-        private double health;
         private double armor;
         private double damage;
         private double walkSpeed;
@@ -95,7 +94,6 @@ public abstract class LivingEntity extends Entity {
         private LivingType(Point2D size, int maxHealth, double armor, double damage, double walkSpeed, double attackSpeed, double fear, double attackRange) {
             this.size = size;
             this.maxHealth = maxHealth;
-            this.health = maxHealth;
             this.armor = armor;
             this.damage = damage;
             this.walkSpeed = walkSpeed;
@@ -108,7 +106,7 @@ public abstract class LivingEntity extends Entity {
     public LivingEntity(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(new Dimension(position.getX(), position.getY(), lType.size.getX(), lType.size.getY()), currentArea);
         this.maxHealth = (int)(lType.maxHealth * diffMulti);
-        this.health = this.maxHealth* (1+(diffMulti/10));
+        this.health = this.maxHealth;
         this.armor = lType.armor * (1+(diffMulti/10));
         this.damage = lType.damage * (1+(diffMulti/10));
         this.walkSpeed = lType.walkSpeed;
@@ -300,8 +298,8 @@ public abstract class LivingEntity extends Entity {
 
     public void getDamaged(double damage){
         if (damage > armor) {
+            health = Math.max(health-damage+armor, 0);
             armor = 0;
-            health -= Math.max(damage-armor, 0);
         } else {
             armor -= damage;
         }

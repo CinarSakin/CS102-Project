@@ -41,8 +41,8 @@ public abstract class Entity {
 
     // MOVEMENT
     public Point2D findTargetDirection(Entity targetEntity) { // direction from this to targetEntity
-        Point2D targetPosition = targetEntity.dimension.getPos();
-        return targetPosition.subtract( this.dimension.getPos()).normalize();
+        Point2D targetPosition = targetEntity.dimension.getCenter();
+        return targetPosition.subtract( this.dimension.getCenter()).normalize();
     }
 
     // COLLISION
