@@ -208,7 +208,7 @@ public class HUD {
         iconCache.computeIfAbsent(path, p -> new java.util.HashMap<>())
                  .computeIfAbsent(key, k -> {
                      var stream = HUD.class.getResourceAsStream(path);
-                     return stream != null ? new Image(stream, k, k, true, false) : null;
+                     return stream != null ? new Image(stream, k, k, true, true) : null;
                  });
         return iconCache.get(path).get(key);
     }

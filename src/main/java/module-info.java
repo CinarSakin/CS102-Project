@@ -7,6 +7,10 @@ module com.game {
 
     requires com.google.gson;
 
+    requires org.mongodb.driver.sync.client;
+    requires org.mongodb.driver.core;
+    requires org.mongodb.bson;
+
     opens com.game to javafx.graphics, javafx.fxgl.all, javafx.controls, com.google.gson;
     exports com.game;
 }
