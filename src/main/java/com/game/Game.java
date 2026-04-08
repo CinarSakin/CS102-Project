@@ -281,7 +281,7 @@ public class Game{
     }
 
     public void saveCurrentGame() {
-        if (this.level != null) {
+        if (level != null && type == 0) { // if standart mode
             SaveManager.saveLevel(this.level, saveslot);
         }
     }

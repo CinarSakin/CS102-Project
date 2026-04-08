@@ -122,12 +122,12 @@ public class Level {
         while(!rooms.get(bossIndex).setBossRoom()){bossIndex = (int) (Math.random()*rooms.size());}
         bossRoom = rooms.get(bossIndex);
 
-        if(Game.hero == null){
+        if (Game.hero == null){
             Game.hero = new Hero(
                 startingRoom.getDimension().getCenter().subtract(new Point2D(8, 8)),
                 Sword.STARTER_SWORD, 1, startingRoom
             );
-        }else hero.getDimension().moveCenterTo(startingRoom.getDimension().getCenter());
+        } else Game.hero.getDimension().moveCenterTo(startingRoom.getDimension().getCenter());
 
         for (Room r : rooms) {
             r.spawnEntities();
@@ -220,8 +220,8 @@ public class Level {
     public static void endLevel(){
         if(Game.getType() == 0)Game.endGame();
         else{
-            Game.level = constructNew(levelNo++);
             currentLevel = null;
+            Game.level = constructNew(levelNo++);
             
         }
     }
