@@ -28,11 +28,11 @@ public abstract class LivingEntity extends Entity {
 
     public class LivingStateObject {
         public enum LivingState { // sort priority ascending
+            TAKE_DAMAGE(.25, false),
+            HEAL(.3, false),
             IDLE(.5, true),
             WALKING(.4, true),
             ATTACK(.3, false),
-            HEAL(.3, false),
-            TAKE_DAMAGE(.3, false),
             DIE(2, true);
 
             public double animDuration;
@@ -296,7 +296,7 @@ public abstract class LivingEntity extends Entity {
 
     public void heal(double healAmount) {
         this.health = Math.min(this.health+healAmount, this.maxHealth);
-        // + heal animation
+        new LivingStateObject(LivingStateObject.LivingState.HEAL);
     }
 
     public void getDamaged(double damage){

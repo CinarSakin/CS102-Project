@@ -1,10 +1,16 @@
 package com.game;
 
+import java.util.Comparator;
+
 import com.game.App.GameLayer;
+import com.game.LivingEntity.LivingStateObject;
+import com.game.LivingEntity.LivingStateObject.LivingState;
 import com.game.Projectile.ProjectileType;
 
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -27,6 +33,34 @@ public class Drawer {
         }
 
         gc.save();
+
+        if (e instanceof LivingEntity) {
+            LivingEntity le = (LivingEntity) e;
+            if (le.currentStates != null) {
+                for (LivingStateObject ls : le.currentStates) {
+                    if (ls.state == LivingState.HEAL) {
+                        Lighting greenTint = new Lighting();
+                        greenTint.setSurfaceScale(0.0); 
+                        greenTint.setDiffuseConstant(1.2); 
+                        greenTint.setSpecularConstant(0.0); 
+                        greenTint.setSpecularExponent(0.0); 
+                        greenTint.setLight(new Light.Distant(45, 45, Color.rgb(148, 255, 171)));
+                        gc.setEffect(greenTint);
+                        break;
+                    }
+                    else if (ls.state == LivingState.TAKE_DAMAGE) {
+                        Lighting redTint = new Lighting();
+                        redTint.setSurfaceScale(0.0); 
+                        redTint.setDiffuseConstant(1.2); 
+                        redTint.setSpecularConstant(0.0); 
+                        redTint.setSpecularExponent(0.0); 
+                        redTint.setLight(new Light.Distant(45, 45, Color.rgb(255, 107, 107)));
+                        gc.setEffect(redTint);
+                        break;
+                    }
+                }
+            }
+        }
 
         Image img = e.getImage();
         if (img == null) { gc.restore(); return; }
