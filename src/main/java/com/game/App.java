@@ -52,10 +52,10 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -871,6 +871,7 @@ public class App extends Application {
 
     private static void startInfinite(){
         menuPane.setVisible(false);
+        activeGame = null;
         activeGame = new Game('X');
         activeGame.setType(1);
         activeGame.startInfinite();
