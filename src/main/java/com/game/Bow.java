@@ -2,6 +2,8 @@ package com.game;
 
 import java.util.ArrayList;
 
+import com.game.Effect.EffectType;
+import com.game.Projectile.ProjectileType;
 import com.game.Projectile.TargetType;
 
 import javafx.geometry.Point2D;
@@ -15,7 +17,7 @@ public class Bow extends Weapon{
             "/sprites/items/bow.png",
             "Flaming Sword",
             "It Burns.",
-            5,
+            4,
             12,
             .1
         ),
@@ -23,7 +25,7 @@ public class Bow extends Weapon{
             "/sprites/items/bow.png",
             "Bow",
             "Just a regular sword.",
-            5,
+            3.5,
             8,
             -1
         ),
@@ -31,7 +33,7 @@ public class Bow extends Weapon{
             "/sprites/items/bow.png",
             "Starter Sword",
             "",
-            4.5,
+            3,
             7,
             0
         );
@@ -85,40 +87,20 @@ public class Bow extends Weapon{
     
     @Override
     public void use() {
-        Point2D heroPos = Hero.getHero().getDimension().getCenter();
-    //    Dimension hitBox = new Dimension(heroPos.getX() + 20, heroPos.getY(), 30, 30);
-
         if (getIsOnCooldown()) {return;}
 
-        //Point2D offset = new Point2D(Drawer.gridSize/2, 0);
-        //Point2D slashPos = heroPos.add(Hero.getHero().isFlipped() ? offset.multiply(-1) : offset);
-        
         Point2D lastDir = Hero.getHero().lastDirection.multiply(.75);
         double offsetX = lastDir.getX()>0 ? Drawer.gridSize : (lastDir.getX()<0 ? -Drawer.gridSize : 0);
         double offsetY = lastDir.getY()>0 ? Drawer.gridSize : (lastDir.getY()<0 ? -Drawer.gridSize : 0);
 
-        Point2D slashPos = heroPos.add(new Point2D(offsetX, offsetY));
-        Projectile p = new Projectile(
-            Projectile.ProjectileType.ARROW, TargetType.ENEMIES, slashPos, Point2D.ZERO, attackSpeed, Hero.getHero().currentArea
-        );
-        p.dimension.moveCenterTo(slashPos);
+        ProjectileType projType = 
+            bowType == BowType.NORMAL ? ProjectileType.ARROW :
+            bowType == BowType.FLAMING ? ProjectileType.FLAMING_ARROW :
+            ProjectileType.ICY_ARROW;
 
-        ArrayList<LivingEntity> a = new ArrayList<>(Hero.getHero().currentArea.getLivingEntities());
-        for (LivingEntity target : a) {
-            if (target != Hero.getHero() && target.getDimension().intersects(p.getDimension())) {
-                
-
-                if (this.bowType == BowType.FLAMING) {
-                    new Effect(Effect.EffectType.BURN, 3000, target).startEffect();
-                } else if (this.bowType == BowType.ICY) {
-                    new Effect(Effect.EffectType.FREEZE, 2000, target).startEffect();
-                } else if (this.bowType == BowType.NORMAL) {
-                    
-                } else { // starter sword
-
-                }
-            }
-        }
+        Point2D pos = Hero.getHero().getDimension().getCenter().add(new Point2D(offsetX, offsetY));
+        Projectile p = new Projectile(projType, TargetType.ENEMIES, pos, lastDir, 1, Hero.getHero().currentArea);
+        p.dimension.moveCenterTo(pos);
 
         resetTimer();
     }

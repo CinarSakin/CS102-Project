@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.game.Effect.EffectType;
+import com.game.Sword.SwordType;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -23,11 +24,15 @@ public class Projectile extends Entity {
         ),  
         ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/arrow.png")),
-            5, new Point2D(40, 16)
+            4.5, new Point2D(40, 16)
         ), 
         FLAMING_ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/flaming_arrow.png")),
             5, new Point2D(40, 16)
+        ),
+        ICY_ARROW(
+            new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/icy_arrow.png")),
+            5.5, new Point2D(40, 16)
         ),
         BOSS_ORB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/boss_orb.png")),
@@ -97,13 +102,22 @@ public class Projectile extends Entity {
         }
 
         if (projType.equals(ProjectileType.SLASH)){
-            if (lifeTime > .15) {
-                despawn(); return;
-            }
+            if (lifeTime > .15) {despawn(); return;}
+
+            Hero h = Hero.getHero();
+            Weapon heldWeapon = h.weapons[h.heldWeapon];
+            if (!(heldWeapon instanceof Sword)) return;
+            Sword heldSword = (Sword) heldWeapon;
+
             for (LivingEntity target : getTargets()){
                     if (!hitEntities.contains(target) && dimension.intersects(target.dimension)){
-                        Hero h = Hero.getHero();
-                        target.getDamaged(h.weapons[h.heldWeapon].damage);
+                        target.getDamaged(heldWeapon.damage);
+                        if (heldSword.swordType.equals(SwordType.FLAMING)) {
+                            target.setEffect(EffectType.BURN, 2);
+                        }
+                        else if (heldSword.swordType.equals(SwordType.ICY)) {
+                            target.setEffect(EffectType.FREEZE, 2);
+                        }
                         hitEntities.add(target);
                     }                    
             }
@@ -133,7 +147,17 @@ public class Projectile extends Entity {
         else { // arrow
             for (LivingEntity target : getTargets()){
                 if (dimension.intersects(target.dimension)) {
-                    target.getDamaged(10);
+                    target.getDamaged(
+                        projType.equals(ProjectileType.FLAMING_ARROW) ? 10 :
+                        projType.equals(ProjectileType.ICY_ARROW) ? 8.5 : 5
+                    );
+                    if (projType.equals(ProjectileType.FLAMING_ARROW)) {
+                        target.setEffect(EffectType.BURN, 2);
+                    }
+                    else if (projType.equals(ProjectileType.ICY_ARROW)) {
+                        target.setEffect(EffectType.FREEZE, 2);
+
+                    }
                     this.despawn();
                 }
             }

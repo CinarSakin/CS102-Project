@@ -2,6 +2,8 @@ package com.game;
 
 import java.util.ArrayList;
 
+import com.game.Effect.EffectType;
+
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
@@ -127,6 +129,7 @@ public abstract class LivingEntity extends Entity {
         if (currentStates == null) currentStates = new ArrayList<>();
         timeSinceLastAttack += dt;
 
+        // animation
         if (isMovingThisFrame) {
             setLocomotionState(LivingStateObject.LivingState.WALKING);
         } else {
@@ -138,12 +141,63 @@ public abstract class LivingEntity extends Entity {
             s.update(dt);
         }
 
-        for (Effect effe : new ArrayList<>(effects)) {
-            if(effe != null)effe.affectEntity();
-            //animManager.setCurrentAnim(effe.getEffectType());
+        AnimationManager.updateImage(this);
+
+        // effects
+        for (Effect effect : new ArrayList<>(effects)) {
+            effect.update(dt);
         }
 
-        AnimationManager.updateImage(this);
+        // reset and then apply effects
+        walkSpeed = getLivingType().walkSpeed;
+        damage = getLivingType().damage;
+
+        for (Effect e : new ArrayList<Effect>(effects)){
+            switch (e.getEffectType()) {
+                case STUN:
+                    walkSpeed *= 0;
+                    attackSpeed *= 0.1;
+                case FREEZE:
+                    walkSpeed *= .2;
+                    attackSpeed *= 0.2;
+                case FEAR:
+                    walkSpeed *= -1;
+                case SPEED_UP:
+                    walkSpeed *= 1.5;
+                case ATK_SPEED_UP:
+                    attackSpeed *= 1.5;
+                case DMG_UP:
+                    damage *= 1.5;
+            }
+        }
+
+    }
+
+    public void addEffect(EffectType effectType, double duration) {
+        for (Effect e : effects) {
+            if (e.getEffectType() == effectType) {
+                e.remainingDuration += duration;
+                return;
+            }
+        }
+        effects.add(new Effect(this, effectType, duration));
+    }
+
+    public void setEffect(EffectType effectType, double duration) {
+        for (Effect e : effects) {
+            if (e.getEffectType() == effectType) {
+                e.remainingDuration = duration;
+                return;
+            }
+        }
+        effects.add(new Effect(this, effectType, duration));
+    }
+
+    private boolean hasEffect(EffectType type) {
+        for (Effect e : effects) {
+            if (e.getEffectType() == type) return true;
+        }
+        return false;
     }
 
     public boolean canAttack() {

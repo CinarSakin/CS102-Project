@@ -7,7 +7,7 @@ import com.game.Projectile.TargetType;
 import javafx.geometry.Point2D;
 public class Sword extends Weapon {
     public static final Sword STARTER_SWORD = new Sword(SwordType.STARTER, 2);
-    private SwordType swordType;
+    public SwordType swordType;
 
     public enum SwordType {
         FLAMING(
@@ -109,23 +109,6 @@ public class Sword extends Weapon {
             Projectile.ProjectileType.SLASH, TargetType.ENEMIES, slashPos, Point2D.ZERO, attackSpeed, Hero.getHero().currentArea
         );
         p.dimension.moveCenterTo(slashPos);
-
-        ArrayList<LivingEntity> a = new ArrayList<>(Hero.getHero().currentArea.getLivingEntities());
-        for (LivingEntity target : a) {
-            if (target != Hero.getHero() && target.getDimension().intersects(p.getDimension())) {
-                
-
-                if (this.swordType == SwordType.FLAMING) {
-                    new Effect(Effect.EffectType.BURN, 3000, target).startEffect();
-                } else if (this.swordType == SwordType.ICY) {
-                    new Effect(Effect.EffectType.FREEZE, 2000, target).startEffect();
-                } else if (this.swordType == SwordType.NORMAL) {
-                    
-                } else { // starter sword
-
-                }
-            }
-        }
 
         resetTimer();
     }
