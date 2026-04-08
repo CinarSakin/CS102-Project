@@ -578,13 +578,13 @@ public class App extends Application {
         Text enemies = new Text("Enemies Killed: " + a.getEnemiesKilled() + " X100");
         enemies.fontProperty().bind(fontPropSmall);
         enemies.setFill(Color.WHITE);
-        Text chests = new Text("Chest: " + a.getEnemiesKilled() + " X10");
+        Text chests = new Text("Chest: " + a.getChestsOpened() + " X10");
         chests.fontProperty().bind(fontPropSmall);
         chests.setFill(Color.WHITE);
-        Text boss = new Text("Enemies Killed: " + a.getEnemiesKilled() + " X500");
+        Text boss = new Text("Boss' Killed: " + a.getBossKilled() + " X500");
         boss.fontProperty().bind(fontPropSmall);
         boss.setFill(Color.WHITE);
-        Text level = new Text("Enemies Killed: " + a.getEnemiesKilled() + " X500");
+        Text level = new Text("Levels Cleared: " + a.getLevelsCleared() + " X500");
         level.fontProperty().bind(fontPropSmall);
         level.setFill(Color.WHITE);
         VBox scorePane = new VBox(time,score,dash,enemies,chests,boss,level);
