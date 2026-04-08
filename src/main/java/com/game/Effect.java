@@ -21,18 +21,10 @@ public class Effect {
                 targetEntity.getDamaged(3);
             }
         },
-        FREEZE(2) {
-            @Override
-            public void affectEntity(LivingEntity targetEntity) {
-                targetEntity.getDamaged(5);
-            }
-        },
+        FREEZE(-1) {},
 
         HEAL(2) {
             @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.heal(10);}
-        },
-        STRONG_HEAL(1){
-            @Override public void affectEntity(LivingEntity targetEntity) {targetEntity.heal(30);}
         },
         SPEED_UP(-1){
             @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.walkSpeed += 10; }
@@ -58,6 +50,7 @@ public class Effect {
         this.targetEntity = targetEntity;
         this.effectType = effectType;
         this.remainingDuration = duration;
+        this.timeSinceLastEffect = effectType.affectInterval;
     }
 
     public void update(double dt) {

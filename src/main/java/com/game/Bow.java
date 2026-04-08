@@ -91,18 +91,17 @@ public class Bow extends Weapon{
     public void use() {
         if (getIsOnCooldown()) {return;}
 
-        Point2D lastDir = Hero.getHero().lastDirection.multiply(.5);
-        double offsetX = lastDir.getX()>0 ? Drawer.gridSize : (lastDir.getX()<0 ? -Drawer.gridSize : 0);
-        double offsetY = lastDir.getY()>0 ? Drawer.gridSize : (lastDir.getY()<0 ? -Drawer.gridSize : 0);
+        Point2D lastDir = Hero.getHero().lastDirection;
+        Point2D spawnPos = Hero.getHero().getDimension().getCenter()
+            .add(lastDir.multiply(Drawer.gridSize/4));
 
-        ProjectileType projType = 
+        ProjectileType projType =
             bowType == BowType.NORMAL ? ProjectileType.ARROW :
             bowType == BowType.FLAMING ? ProjectileType.FLAMING_ARROW :
             ProjectileType.ICY_ARROW;
 
-        Point2D pos = Hero.getHero().getDimension().getCenter().add(new Point2D(offsetX, offsetY));
-        Projectile p = new Projectile(projType, TargetType.ENEMIES, pos, lastDir, 1, Hero.getHero().currentArea);
-        p.dimension.moveCenterTo(pos);
+        Projectile p = new Projectile(projType, TargetType.ENEMIES, spawnPos, lastDir, 1, Hero.getHero().currentArea);
+        p.dimension.moveCenterTo(spawnPos);
 
         resetTimer();
     }

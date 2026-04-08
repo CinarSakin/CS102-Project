@@ -38,7 +38,7 @@ public class Boss extends Enemy {
         for (int i = ATTACK_PROJECTILE_NUMBER/2; i < ATTACK_PROJECTILE_NUMBER; i++) {
             direction = targetPos.subtract(this.dimension.getPos().subtract(new Point2D(0, i))).normalize();
 
-            new Projectile(Projectile.ProjectileType.ARROW, Projectile.TargetType.HERO, dimension.getPos(), direction, 0.2, currentArea);
+            new Projectile(Projectile.ProjectileType.ARROW, Projectile.TargetType.HERO, dimension.getPos(), direction, 1.5, currentArea);
         }
     }
 

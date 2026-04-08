@@ -22,31 +22,31 @@ public class Hero extends LivingEntity {
         super(LivingType.HERO, position, currentArea, diffMulti);
         currentHero = this; 
         weapons[0] = starterSword;
-        weapons[1] = new Bow(BowType.FLAMING, 1);
+        weapons[1] = new Bow(BowType.ICY, 1);
         this.heldWeapon = 0;
     }
     
     @Override
     public void update(double dt) {
         super.update(dt);
-        if(weapons[heldWeapon] != null){
-            weapons[heldWeapon].updateTimer(dt);
+        for (Weapon w : weapons) {
+            if (w != null) w.updateTimer(dt);
         }
         if (health <= 0 && !isDead) {
             isDead = true;
+            walkSpeed = 0;
             PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
             delay.setOnFinished(e -> App.showGameOver());
             delay.play();
         }
+        if (isDead) walkSpeed = 0;
         GameStats.getInstance().timePassed += dt;
     }
 
     @Override
     public void attack() {
-        if (canAttack() && weapons[0] != null) {
-            weapons[0].use();return;
-        }else if(canAttack()&&weapons[1] != null){
-            weapons[1].use();return;
+        if (canAttack() && weapons[heldWeapon] != null) {
+            weapons[heldWeapon].use();
         }
     }
 

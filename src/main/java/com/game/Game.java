@@ -117,7 +117,7 @@ public class Game{
             }
             if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
                 HUD.toggleMap();
-            if (activeKeys.contains(GameSettings.getKeyCode("swap")))hero.changeWeapon();
+            if (freshPress && code == GameSettings.getKeyCode("swap")) hero.changeWeapon();
         });
     }
 
@@ -185,7 +185,7 @@ public class Game{
             }
             if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
                 HUD.toggleMap();
-            if (activeKeys.contains(GameSettings.getKeyCode("swap")))hero.changeWeapon();
+            if (freshPress && code == GameSettings.getKeyCode("swap")) hero.changeWeapon();
         });
     }
 
