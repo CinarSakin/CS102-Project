@@ -167,7 +167,7 @@ public class HUD {
         double hpPercent = Math.max(0, Hero.getHero().health / Hero.getHero().maxHealth);
         hpBar.setWidth(App.uiSize(200) * hpPercent);
 
-        double defPercent = Math.max(0, Hero.getHero().armor / 100);
+        double defPercent = Math.max(0, Hero.getHero().armor / 30);
         defBar.setWidth(App.uiSize(200) * defPercent);
 
         for (int i = 0; i < 3; i++) {
