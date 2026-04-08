@@ -180,7 +180,9 @@ public class Game{
 
 
         for (Area a : Level.getAreas()) {
-            a.getEntities().sort(Comparator.comparingDouble(e -> e.getDimension().getY()));
+            a.getEntities().sort(
+                Comparator.comparingDouble(e -> e.getDimension().getBottomY())
+            );
             for (Entity e : a.getEntities()) {
                 Drawer.draw(e);
             }
@@ -189,9 +191,12 @@ public class Game{
         Point2D mouseInWorld = getMouseWorldPosition();
         for (Area a : Level.getAreas()) {
             for (Entity e : a.getEntities()) {
-                if (e instanceof WorldObject && ((WorldObject)e).isHeroInRange() && e.getDimension().contains(mouseInWorld)) {
-                    Drawer.drawHover((WorldObject)e);
-                    break;
+                if (e instanceof WorldObject && e.getDimension().contains(mouseInWorld)) {
+                    WorldObject w = (WorldObject) e;
+                    if (w.interactable && w.isHeroInRange()) {
+                        Drawer.drawHover((WorldObject)e);
+                        break;
+                    }
                 }
             }
         }
@@ -231,9 +236,9 @@ public class Game{
                 ArrayList<Entity> entitiesCopy = new ArrayList<>(area.getEntities());
                 for (Entity e : entitiesCopy) {
                     if (e instanceof WorldObject) {
-                        WorldObject wo = (WorldObject) e;
-                        if (wo.isHeroInRange()) {
-                            if (wo.interact()) {
+                        WorldObject w = (WorldObject) e;
+                        if (w.interactable && w.isHeroInRange()) {
+                            if (w.interact()) {
                                 hasInteracted = true;
                                 break;
                             }

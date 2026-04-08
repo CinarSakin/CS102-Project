@@ -114,10 +114,7 @@ public class Room extends Area {
                 }
                 break;
             case LOOT:
-                int lootCount = (int)(Math.random()*3);
-                for(int i = 0; i < lootCount; i++){
-                    new Chest(this.getDimension().getCenter(), this, Item.randomItem(1)); // loots will be added inside a predefined(?) places in the room
-                }
+                new Chest(this.getDimension().getCenter(), this, Item.randomItem(1));
                 break;
             case PUZZLE:
                 //EREN KOZAN TODO:MAKE A PUZZLE GENERATION

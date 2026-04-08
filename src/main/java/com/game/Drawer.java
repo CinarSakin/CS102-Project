@@ -3,6 +3,7 @@ package com.game;
 import com.game.App.GameLayer;
 import com.game.Projectile.ProjectileType;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -61,24 +62,8 @@ public class Drawer {
         double x = d.getX() + d.getWidth() / 2;
         double y = d.getY() - 20;
 
-        String actionText = "";
-        String itemInfo = "";
-
-        if (w instanceof Chest) {
-            Chest chest = (Chest) w;
-            if (!chest.open) {
-                actionText = "[E] INTERACT";
-                itemInfo = "Mystery Chest";
-            }
-        } 
-        else if (w instanceof DroppedItem) {
-            DroppedItem dropped = (DroppedItem) w;
-            actionText = "[E] GATHER";
-            itemInfo = dropped.item.name; // Item ismini gösterir
-        }
-
-        if (!actionText.isEmpty()) {
-            drawInfoBox(gc, x, y, actionText, itemInfo);
+        if (!w.actionText.isEmpty()) {
+            drawInfoBox(gc, x, y, "["+GameSettings.getKeyBinding("interact")+"] "+w.actionText, w.info);
         }
     }
 

@@ -5,16 +5,19 @@ import javafx.scene.image.Image;
 
 public abstract class WorldObject extends Entity {
     
-    public boolean interacted;
+    public boolean interactable = true;
     public double interactRadius;
+    public String actionText;
+    public String info;
 
-    public WorldObject(Point2D position, double width, double height, Area currentArea, double interactRadius) {
+    public WorldObject(Point2D position, double width, double height, Area currentArea, double interactRadius, String actionText, String info) {
         super(
             new Dimension(position.getX()-width*Level.gridSize/2, position.getY()-height*Level.gridSize/2,
             width*Level.gridSize, height*Level.gridSize), currentArea
         );
         this.interactRadius = interactRadius;
-        this.interacted = false;
+        this.actionText = actionText;
+        this.info = info;
     }
 
     public abstract boolean interact();
@@ -35,7 +38,7 @@ class Chest extends WorldObject {
     public boolean unlocked;
 
     public Chest(Point2D position, Area currentArea, Item item) {
-        super(position, 1, 1, currentArea, Level.gridSize*4);
+        super(position, 1, 1, currentArea, Level.gridSize*4, "INTERACT", "Mystery Chest");
         this.item = item;
         this.open = false;
         this.unlocked = false;
@@ -45,10 +48,11 @@ class Chest extends WorldObject {
 
     @Override
     public boolean interact() {
-        if (!isHeroInRange() || open) return false;
+        if (!isHeroInRange() || !interactable) return false;
         this.open = true;
+        this.interactable = false;
         reloadImages();
-        new DroppedItem(this.dimension.getCenter().add(new Point2D(0, Level.gridSize)), currentArea, item);
+        new DroppedItem(this.dimension.getCenter().add(0, Level.gridSize), currentArea, item);
         return true;
     }
 
@@ -66,7 +70,7 @@ class DroppedItem extends WorldObject {
     public Item item;
 
     public DroppedItem(Point2D position, Area currentArea, Item item) {
-        super(position, .8, .8, currentArea, Level.gridSize*2);
+        super(position, .8, .8, currentArea, Level.gridSize*2, "GATHER ITEM", item.name);
         this.item = item;
         reloadImages();
     }
@@ -94,7 +98,7 @@ class DroppedItem extends WorldObject {
 class Gate extends WorldObject {
 
     public Gate(Point2D position, Area currentArea) {
-        super(position, 3, 1, currentArea, Level.gridSize*3);
+        super(position, 3, 1, currentArea, Level.gridSize*3, "INTERACT", "Gate");
         this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"), dimension.getWidth(), dimension.getHeight(), false, false);
     }
 
@@ -114,7 +118,7 @@ class Gate extends WorldObject {
 class Portal extends WorldObject {
     
     public Portal(Point2D position, Area currentArea) {
-        super(position, 1.5, 1.83, currentArea, Level.gridSize*3);
+        super(position.subtract(0, Level.gridSize*1.8), 2.5, 3, currentArea, Level.gridSize*3, "GO THROUGH", "Portal");
         reloadImages();
     }
 
