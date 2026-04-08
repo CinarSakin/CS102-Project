@@ -788,7 +788,7 @@ public class App extends Application {
         menuPane.setMouseTransparent(true);
         for (Node n : menuPane.getChildren()) {
             if (n.isVisible()) {
-                FadeTransition fadeOut = new FadeTransition(Duration.seconds(.5), n);
+                FadeTransition fadeOut = new FadeTransition(Duration.seconds(.4), n);
                 fadeOut.setToValue(0);
                 fadeOut.setInterpolator(Interpolator.EASE_OUT);
                 fadeOut.setOnFinished(e -> n.setVisible(false));
@@ -796,16 +796,16 @@ public class App extends Application {
             }
         }
         menu.setVisible(true);
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(.5), menu);
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(.4), menu);
         fadeIn.setInterpolator(Interpolator.EASE_IN);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
-        fadeIn.setDelay(Duration.seconds(.5));
+        fadeIn.setDelay(Duration.seconds(.4));
         fadeIn.setOnFinished(e -> menuPane.setMouseTransparent(false));
         fadeIn.play();
     }
 
-    private static void updateSaveSlots() {
+    public static void updateSaveSlots() {
         slotGrid.getChildren().clear();
         for (int i = 0; i < 6; i++) {
             char slotChar = (char) (i + 65);

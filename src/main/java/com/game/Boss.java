@@ -38,7 +38,7 @@ public class Boss extends Enemy {
         for (int i = ATTACK_PROJECTILE_NUMBER/2; i < ATTACK_PROJECTILE_NUMBER; i++) {
             direction = targetPos.subtract(this.dimension.getPos().subtract(new Point2D(0, i))).normalize();
 
-            new Projectile(Projectile.ProjectileType.ARROW, Projectile.TargetType.HERO, dimension.getPos(), direction, 2, currentArea);
+            new Projectile(Projectile.ProjectileType.ARROW, Projectile.TargetType.HERO, dimension.getPos(), direction, 1.5, currentArea);
         }
     }
 
@@ -46,7 +46,7 @@ public class Boss extends Enemy {
         Point2D direction = findTargetDirection(Hero.getHero());
 
         for (int i = 0; i < ATTACK_PROJECTILE_NUMBER; i++) {
-            new Projectile(Projectile.ProjectileType.BOSS_ORB, Projectile.TargetType.HERO, dimension.getPos(), direction, 2, currentArea);
+            new Projectile(Projectile.ProjectileType.BOSS_ORB, Projectile.TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
         }
     }
 
@@ -63,8 +63,8 @@ public class Boss extends Enemy {
         for (int i = 0; i < 10; i++) {
             int j = -i;
 
-            this.move(i, j);
-            this.move(i, -j);
+            this.moveBy(i, j);
+            this.moveBy(i, -j);
         }
     }
 }

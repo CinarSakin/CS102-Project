@@ -119,7 +119,7 @@ class Gate extends WorldObject {
 class Portal extends WorldObject {
     
     public Portal(Point2D position, Area currentArea) {
-        super(position.subtract(0, Level.gridSize*1.8), 2.5, 3, currentArea, Level.gridSize*3, "GO THROUGH", "Portal");
+        super(position.subtract(0, Level.gridSize*1.8), 2.4, 3, currentArea, Level.gridSize*3, "GO THROUGH", "Portal");
         reloadImages();
     }
 
@@ -127,7 +127,6 @@ class Portal extends WorldObject {
     public boolean interact() {
         if (!isHeroInRange()) return false;
         GameStats.getInstance().levelsCleared++;
-        System.out.println("ben buranın hakimi");
         Level.endLevel();
         return true;
     }

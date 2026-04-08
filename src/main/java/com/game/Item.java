@@ -56,7 +56,10 @@ public abstract class Item {
         double categoryRoll = Math.random();
 
         if (categoryRoll <= .2) { // 20% -> weapon
-            return Sword.randomSword(luckFactor);
+            if (categoryRoll <= .09) {
+                return Bow.randomBow(luckFactor); // 9% -> bow
+            }
+            return Sword.randomSword(luckFactor); // 11% -> sword
         } 
         
         else if (categoryRoll <= .5) { // 30% -> talisman

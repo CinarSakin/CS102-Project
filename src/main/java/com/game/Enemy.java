@@ -49,8 +49,7 @@ public class Enemy extends LivingEntity {
 
     public void flee() {
         Point2D direction = findTargetDirection(Hero.getHero()).multiply(-1);
-
-        move(direction.multiply(walkSpeed));
+        moveByDirection(direction);
     }
 
     @Override

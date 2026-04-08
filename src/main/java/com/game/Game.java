@@ -107,6 +107,7 @@ public class Game{
 
     public static void endGame(){
         App.drawGameEnding();
+        SaveManager.deleteSave(saveslot);
     }
 
     private void renderGame() {
@@ -186,7 +187,7 @@ public class Game{
         if (activeKeys.contains(GameSettings.getKeyCode("left"))) velocity = velocity.add(-1, 0);
         if (activeKeys.contains(GameSettings.getKeyCode("down"))) velocity = velocity.add(0, 1);
         if (activeKeys.contains(GameSettings.getKeyCode("right"))) velocity = velocity.add(1, 0);
-        hero.move(velocity.normalize());
+        hero.moveByDirection(velocity.normalize());
         hero.setLastDirection(velocity);
         
 

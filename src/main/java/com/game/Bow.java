@@ -1,15 +1,11 @@
 package com.game;
 
-import java.util.ArrayList;
-
-import com.game.Effect.EffectType;
 import com.game.Projectile.ProjectileType;
 import com.game.Projectile.TargetType;
 
 import javafx.geometry.Point2D;
 
 public class Bow extends Weapon{
-    public static final Bow STARTER_SWORD = new Bow(BowType.STARTER, 0);
     private BowType bowType;
 
     public enum BowType {
@@ -21,6 +17,14 @@ public class Bow extends Weapon{
             12,
             .1
         ),
+        ICY(
+            "/sprites/items/bow.png",
+            "Icy Sword",
+            "Freezes the enemies.",
+            3.7,
+            15,
+            .1
+        ),
         NORMAL(
             "/sprites/items/bow.png",
             "Bow",
@@ -28,14 +32,6 @@ public class Bow extends Weapon{
             3.5,
             8,
             -1
-        ),
-        STARTER(
-            "/sprites/items/bow.png",
-            "Starter Sword",
-            "",
-            3,
-            7,
-            0
         );
 
         public final String imagePath;
@@ -60,25 +56,23 @@ public class Bow extends Weapon{
         this.bowType = swordType;
     }
 
-    public static Bow randomSword(double luckFactor) {
+    public static Bow randomBow(double luckFactor) {
         double roll = Math.random();
         double cumulativeChance = 0.0;
 
         for (BowType type : BowType.values()) {
-            if(type!=BowType.STARTER){
-                double actualChance = type.baseChance;
+            double actualChance = type.baseChance;
 
-                if (type.baseChance != -1) {
-                    actualChance = type.baseChance * luckFactor;
-                } else {
-                    actualChance = 1.0 - cumulativeChance; 
-                }
+            if (type.baseChance != -1) {
+                actualChance = type.baseChance * luckFactor;
+            } else {
+                actualChance = 1.0 - cumulativeChance; 
+            }
 
-                cumulativeChance += actualChance;
+            cumulativeChance += actualChance;
 
-                if (roll <= cumulativeChance) {
-                    return new Bow(type, .75+Level.levelNo/4);
-                }
+            if (roll <= cumulativeChance) {
+                return new Bow(type, .75+Level.levelNo/4);
             }
         }
         
@@ -89,7 +83,7 @@ public class Bow extends Weapon{
     public void use() {
         if (getIsOnCooldown()) {return;}
 
-        Point2D lastDir = Hero.getHero().lastDirection.multiply(.75);
+        Point2D lastDir = Hero.getHero().lastDirection.multiply(.5);
         double offsetX = lastDir.getX()>0 ? Drawer.gridSize : (lastDir.getX()<0 ? -Drawer.gridSize : 0);
         double offsetY = lastDir.getY()>0 ? Drawer.gridSize : (lastDir.getY()<0 ? -Drawer.gridSize : 0);
 

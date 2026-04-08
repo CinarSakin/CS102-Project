@@ -16,27 +16,27 @@ public class Projectile extends Entity {
     public enum ProjectileType {
         SLASH(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/slash1.png")),
-            0, new Point2D(36, 48)
+            1.5, new Point2D(36, 48)
         ),
         BOMB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/bomb.png")),
-            3, new Point2D(48,48)
+            7, new Point2D(48,48)
         ),  
         ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/arrow.png")),
-            4.5, new Point2D(40, 16)
+            9, new Point2D(40, 16)
         ), 
         FLAMING_ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/flaming_arrow.png")),
-            5, new Point2D(40, 16)
+            10, new Point2D(40, 16)
         ),
         ICY_ARROW(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/icy_arrow.png")),
-            5.5, new Point2D(40, 16)
+            11, new Point2D(40, 16)
         ),
         BOSS_ORB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/boss_orb.png")),
-            2, new Point2D(64, 64)
+            5, new Point2D(64, 64)
         );
 
         private Image image;
@@ -77,7 +77,7 @@ public class Projectile extends Entity {
 
     public void update(double dt) {
         
-        dimension.moveBy(velocity.multiply(speed));
+        dimension.moveBy(velocity.multiply(speed*dt*Level.gridSize));
         
         Point2D center = dimension.getCenter();
         Area areaAtCenter = Dimension.findAreaAt(center);

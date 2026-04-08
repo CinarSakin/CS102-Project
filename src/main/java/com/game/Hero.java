@@ -25,13 +25,7 @@ public class Hero extends LivingEntity {
         weapons[1] = new Bow(BowType.FLAMING, 1);
         this.heldWeapon = 0;
     }
-
-    @Override
-    public void move(Point2D direction) {
-        super.move(direction.multiply(walkSpeed));
-    }
     
-
     @Override
     public void update(double dt) {
         super.update(dt);
@@ -49,7 +43,7 @@ public class Hero extends LivingEntity {
 
     @Override
     public void attack() {
-        if (canAttack()) {
+        if (canAttack() && weapons[heldWeapon] != null) {
             weapons[heldWeapon].use();
         }
     }
@@ -73,7 +67,7 @@ public class Hero extends LivingEntity {
     }
 
     public void dropWeapon(int index, double x, double y) {
-        if (weapons[0] == null || weapons[1] == null) return;
+        if (weapons[index] == null) return;
         dropItem(weapons[index], x, y);
         weapons[index] = null;
         if (heldWeapon == index) heldWeapon = 1 - index;

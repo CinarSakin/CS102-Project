@@ -5,8 +5,9 @@ import com.game.Effect.EffectType;
 public class Consumable extends Item {
 
     public enum ConsumableType {
-        HEALTH_POTION("/sprites/items/green_potion.png", "Health Potion", "Regenerates your health.", 0.15),
+        HEALTH_POTION("/sprites/items/health_potion.png", "Health Potion", "Regenerates your health.", 0.15),
         STRENGTH_POTION("/sprites/items/strength_potion.png", "Strength Potion", "Powers you up.", 0.20),
+        SPEED_POTION("/sprites/items/speed_potion.png", "Speed Potion", "Makes you faster.", 0.20),
         APPLE("/sprites/items/apple.png", "Apple", "Apple.", -1);
 
         public final String imagePath;

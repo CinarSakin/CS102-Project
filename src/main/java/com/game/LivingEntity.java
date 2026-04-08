@@ -72,12 +72,12 @@ public abstract class LivingEntity extends Entity {
     }
 
     public enum LivingType {
-        HERO(new Point2D(48, 48), 100, 0, 10, 5, 0.8, 0, 0),
-        WALKER(new Point2D(48, 48), 21, 5, 2, 4, 0.75, 1, 1*Level.gridSize),
-        BOMBER(new Point2D(48,84), 42, 10, 15, 3, 0.15, 1, 3*Level.gridSize),
-        SKELETON(new Point2D(48, 48), 21, 0, 1, 3, 0.3, 1, 8*Level.gridSize),
+        HERO(new Point2D(48, 48), 100, 0, 10, 7, 0.8, 0, 0),
+        WALKER(new Point2D(48, 48), 21, 5, 2, 5, 0.75, 1, 1*Level.gridSize),
+        BOMBER(new Point2D(48,84), 42, 10, 15, 3.5, 0.15, 1, 3*Level.gridSize),
+        SKELETON(new Point2D(48, 48), 21, 0, 1, 3.5, 0.3, 1, 8*Level.gridSize),
 
-        BOSS(new Point2D(64, 64), 100, 10, 25, 1, 0.2, 0, 7*Level.gridSize);
+        BOSS(new Point2D(64, 64), 100, 10, 25, 1.25, 0.2, 0, 7*Level.gridSize);
 
         void attack(LivingEntity targetEntity) {}
 
@@ -149,25 +149,32 @@ public abstract class LivingEntity extends Entity {
         }
 
         // reset and then apply effects
-        walkSpeed = getLivingType().walkSpeed;
+        walkSpeed = getLivingType().walkSpeed*dt*Level.gridSize;
         damage = getLivingType().damage;
 
-        for (Effect e : new ArrayList<Effect>(effects)){
+        double defaultSpeed = getLivingType().walkSpeed * dt * Level.gridSize;
+        for (Effect e : new ArrayList<Effect>(effects)) {
             switch (e.getEffectType()) {
                 case STUN:
-                    walkSpeed *= 0;
+                    walkSpeed = 0;
                     attackSpeed *= 0.1;
+                    break;
                 case FREEZE:
-                    walkSpeed *= .2;
+                    walkSpeed = defaultSpeed / 5.0;
                     attackSpeed *= 0.2;
+                    break;
                 case FEAR:
                     walkSpeed *= -1;
+                    break;
                 case SPEED_UP:
                     walkSpeed *= 1.5;
+                    break;
                 case ATK_SPEED_UP:
                     attackSpeed *= 1.5;
+                    break;
                 case DMG_UP:
                     damage *= 1.5;
+                    break;
             }
         }
 
@@ -213,7 +220,7 @@ public abstract class LivingEntity extends Entity {
         else if (dx < 0) isFlipped = true;
     }
 
-    public void move(double dx, double dy) {
+    public void moveBy(double dx, double dy) {
         if (dx != 0 || dy != 0) isMovingThisFrame = true;
         updateLookDirection(dx);
 
@@ -242,10 +249,19 @@ public abstract class LivingEntity extends Entity {
             currentArea.register(this);
         }
     }
-    
-    public void move(Point2D velocity) {
-        move(velocity.getX(), velocity.getY());
+
+    public void moveBy(Point2D velocity) {
+        moveBy(velocity.getX(), velocity.getY());
     }
+
+    public void moveByDirection(double dx, double dy) {
+        moveBy(dx*walkSpeed, dy*walkSpeed);
+    }
+
+    public void moveByDirection(Point2D direction) {
+        moveByDirection(direction.getX(), direction.getY());
+    }
+    
 
     public boolean isValidPosition() {
         double footTopY = dimension.getBottomY() - (dimension.getHeight() * 0.3);
@@ -259,7 +275,7 @@ public abstract class LivingEntity extends Entity {
     public void follow(LivingEntity targetEntity) {
         Point2D direction = findTargetDirection(targetEntity);
 
-        move(direction.multiply(walkSpeed));
+        moveByDirection(direction);
     }
 
     public void setLocomotionState(LivingStateObject.LivingState state) {

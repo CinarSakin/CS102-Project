@@ -40,18 +40,6 @@ public abstract class Entity {
     }
 
     // MOVEMENT
-    public void move(double dx, double dy) {
-        if (dimension.insideOf(currentArea.getDimension())) {
-            dimension.moveBy(dx, dy);
-        }
-    }
-
-    public void move(Point2D velocity) {
-        if (dimension.insideOf(currentArea.getDimension())) {
-            dimension.moveBy(velocity);
-        }
-    }
-
     public Point2D findTargetDirection(Entity targetEntity) { // direction from this to targetEntity
         Point2D targetPosition = targetEntity.dimension.getPos();
         return targetPosition.subtract( this.dimension.getPos()).normalize();

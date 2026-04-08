@@ -44,12 +44,13 @@ public class Effect {
             @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.damage += 10; }
         };
 
-        public double cooldown;
+        /** Seconds between each affectEntity() call. -1 means affectEntity is never called. */
+        public double affectInterval;
 
-        private EffectType(double affectCooldown) {
-            this.cooldown = affectCooldown;
+        private EffectType(double affectInterval) {
+            this.affectInterval = affectInterval;
         }
-        
+
         void affectEntity(LivingEntity targetEntity){};
     }
 
@@ -68,7 +69,7 @@ public class Effect {
 
         timeSinceLastEffect += dt;
         
-        if (effectType.cooldown != -1 && timeSinceLastEffect >= effectType.cooldown) {
+        if (effectType.affectInterval != -1 && timeSinceLastEffect >= effectType.affectInterval) {
             effectType.affectEntity(targetEntity);
             timeSinceLastEffect = 0;
         }

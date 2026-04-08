@@ -158,6 +158,7 @@ public class SaveManager {
         File file = new File(getSaveDirectory(), "save" + slot + ".json");
         if (file.exists()) {
             file.delete();
+            App.updateSaveSlots();
         }
     }
 
