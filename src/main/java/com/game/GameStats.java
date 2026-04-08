@@ -8,12 +8,13 @@ public class GameStats {
     public int bossKilled = 0;
     public int levelsCleared = 0;
     public int chestsOpened = 0;
+    public int puzzlesCompleted = 0;
 
     //instance
     public static GameStats instance = new GameStats();
 
     public int calculateScore(){
-        return LeaderboardManager.computeScore(enemiesKilled, bossKilled, levelsCleared, chestsOpened);
+        return LeaderboardManager.computeScore(enemiesKilled, bossKilled, levelsCleared, chestsOpened, puzzlesCompleted);
     }
 
     public static GameStats getInstance(){return instance;}
@@ -22,4 +23,5 @@ public class GameStats {
     public int getBossKilled(){return bossKilled;}
     public int getLevelsCleared(){return levelsCleared;}
     public int getChestsOpened(){return chestsOpened;}
+    public int getPuzzlesCompleted(){return puzzlesCompleted;}
 }

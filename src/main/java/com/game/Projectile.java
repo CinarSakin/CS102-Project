@@ -109,17 +109,25 @@ public class Projectile extends Entity {
             if (!(heldWeapon instanceof Sword)) return;
             Sword heldSword = (Sword) heldWeapon;
 
-            for (LivingEntity target : getTargets()){
-                    if (!hitEntities.contains(target) && dimension.intersects(target.dimension)){
-                        target.getDamaged(heldWeapon.damage);
-                        if (heldSword.swordType.equals(SwordType.FLAMING)) {
-                            target.setEffect(EffectType.BURN, 3);
-                        }
-                        else if (heldSword.swordType.equals(SwordType.ICY)) {
-                            target.setEffect(EffectType.FREEZE, 3);
-                        }
-                        hitEntities.add(target);
-                    }                    
+            if (targetType == TargetType.HERO) {
+                if (!hitEntities.contains(Hero.getHero()) && dimension.intersects(Hero.getHero().dimension)){
+                    Hero.getHero().getDamaged(5);
+                    hitEntities.add(Hero.getHero());
+                }
+            }
+            else {
+                for (LivingEntity target : getTargets()){
+                        if (!hitEntities.contains(target) && dimension.intersects(target.dimension)){
+                            target.getDamaged(heldWeapon.damage);
+                            if (heldSword.swordType.equals(SwordType.FLAMING)) {
+                                target.setEffect(EffectType.BURN, 3);
+                            }
+                            else if (heldSword.swordType.equals(SwordType.ICY)) {
+                                target.setEffect(EffectType.FREEZE, 3);
+                            }
+                            hitEntities.add(target);
+                        }                    
+                }
             }
         }
 

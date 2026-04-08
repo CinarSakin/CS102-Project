@@ -731,12 +731,13 @@ public class App extends Application {
         sep.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
         sep.setPadding(new Insets(1, 0, 1, 0));
 
-        HBox enemies = scoreRow("Enemies Killed", a.getEnemiesKilled(), 100);
-        HBox chests  = scoreRow("Chests Opened",  a.getChestsOpened(),  50);
-        HBox boss    = scoreRow("Bosses Killed",   a.getBossKilled(),    50);
-        HBox level   = scoreRow("Levels Cleared",  a.getLevelsCleared(), 300);
+        HBox enemies = scoreRow("Enemies Killed", a.getEnemiesKilled(), LeaderboardManager.ENEMY_SLAIN_POINTS);
+        HBox chests  = scoreRow("Chests Opened", a.getChestsOpened(), LeaderboardManager.CHESTS_OPENED_POINTS);
+        HBox puzzles  = scoreRow("Puzzles Completed", a.getPuzzlesCompleted(), LeaderboardManager.CHESTS_OPENED_POINTS);
+        HBox boss    = scoreRow("Bosses Killed", a.getBossKilled(), LeaderboardManager.BOSS_SLAIN_POINTS);
+        HBox level   = scoreRow("Levels Cleared", a.getLevelsCleared(), LeaderboardManager.LEVELS_CLEARED_POINTS);
 
-        VBox scorePane = new VBox(6, time, score, sep, enemies, chests, boss, level);
+        VBox scorePane = new VBox(6, time, score, sep, enemies, chests, puzzles, boss, level);
         scorePane.setMaxWidth(Double.MAX_VALUE);
         return scorePane;
     }

@@ -224,6 +224,7 @@ public class Room extends Area {
                             }
                         }
                         pressMap.remove(a);
+                        GameStats.getInstance().puzzlesCompleted++;
                     } else {
                         for (Plate p : presses) {
                             p.interactable = true;
