@@ -2,6 +2,8 @@ package com.game;
 
 import java.util.ArrayList;
 
+import com.game.LivingEntity.LivingType;
+
 import javafx.geometry.Point2D;
 
 
@@ -108,7 +110,8 @@ public class Room extends Area {
             case NORMAL:
                 double enemyCount = max(5,(int)(Math.random()*MAXIMUM_ENEMIES));
                 for(int i = 0; i < enemyCount; i++ ){
-                    new Enemy(LivingEntity.RandomType(), randomPos(), this, dif);
+                    LivingType type = LivingEntity.RandomType() ;
+                    new Enemy(type, randomPos(type.size.getX(), type.size.getY()*.3), this, dif);
                     //add enemies in random points inside of the room
                     //If needed an enemys array can be added for less confision while updateing
                 }
@@ -136,12 +139,12 @@ public class Room extends Area {
 
 
     //EXTRA METHODS
-    private Point2D randomPos(){
-        int x = (int)(dim.getX() + Math.random()*dim.getWidth()-Drawer.gridSize);
-        int y = (int)(dim.getY() + Math.random()*dim.getHeight()-Drawer.gridSize);
+    private Point2D randomPos(double hitboxX, double hitboxY){
+        int x = (int)(dim.getX() + Math.random()*(dim.getWidth()-hitboxX-Level.gridSize) + Level.gridSize);
+        int y = (int)(dim.getY() + Math.random()*(dim.getHeight()-hitboxY-Level.gridSize*2) + hitboxY + Level.gridSize);
         return new Point2D(x, y);
-        //TODO: make a random dimension, convertes it to a point inside the room for enemy to spawn in that position
     }
+
     private static double random(double a, double b){
         return Math.random()*(b-a)+a;
     }

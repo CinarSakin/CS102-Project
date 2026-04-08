@@ -81,7 +81,7 @@ public abstract class LivingEntity extends Entity {
 
         void attack(LivingEntity targetEntity) {}
 
-        private Point2D size;
+        public Point2D size;
         private int maxHealth;
         private double health;
         private double armor;
