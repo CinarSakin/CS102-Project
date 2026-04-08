@@ -56,8 +56,8 @@ public class Enemy extends LivingEntity {
     @Override
     public void getDamaged(double damage) {
         super.getDamaged(damage);
-        if (0.15 < Math.random()*fear && inAttackRange()) {
-            new Effect(EffectType.FEAR, (long)fear*100, this).startEffect();
+        if (0.15 > Math.random()*fear && inAttackRange()) {
+            this.setEffect(EffectType.FEAR, 1.5);
         }
     }
     

@@ -1,5 +1,7 @@
 package com.game;
 
+import com.game.Effect.EffectType;
+
 public class Consumable extends Item {
 
     public enum ConsumableType {
@@ -53,11 +55,11 @@ public class Consumable extends Item {
 
     public void use(){
         if (this.consumableType == ConsumableType.APPLE) {
-            new Effect(Effect.EffectType.HEAL, 3000, Hero.getHero()).startEffect();
+            Hero.getHero().heal(25);
         } else if (this.consumableType == ConsumableType.STRENGTH_POTION) {
-            new Effect(Effect.EffectType.DMG_UP, 2000, Hero.getHero()).startEffect();
+            Hero.getHero().addEffect(EffectType.DMG_UP, 30);
         } else if (this.consumableType == ConsumableType.HEALTH_POTION) {
-            new Effect(Effect.EffectType.STRONG_HEAL, 0, Hero.getHero()).startEffect();
+            Hero.getHero().addEffect(EffectType.HEAL, 10);
         } else { // starter sword
 
         }

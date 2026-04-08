@@ -1,5 +1,7 @@
 package com.game;
 
+import com.game.Bow.BowType;
+
 import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
@@ -20,6 +22,7 @@ public class Hero extends LivingEntity {
         super(LivingType.HERO, position, currentArea, diffMulti);
         currentHero = this; 
         weapons[0] = starterSword;
+        weapons[1] = new Bow(BowType.FLAMING, 1);
         this.heldWeapon = 0;
     }
 

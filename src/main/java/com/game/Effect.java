@@ -1,83 +1,81 @@
 package com.game;
 
 public class Effect {
-    private transient AnimationManager animManager;
 
     private EffectType effectType;
-    private long remainingDuration;
+    public double remainingDuration;
+    public double timeSinceLastEffect = 0;
     private transient LivingEntity targetEntity;
 
     public enum EffectType {
-        FEAR {
+        FEAR(-1) {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
                 if (targetEntity instanceof Enemy) ((Enemy)targetEntity).flee();
             }
         },
-        STUN {
+        STUN(-1),
+        BURN(1) {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
-                targetEntity.walkSpeed = 0; 
-                targetEntity.attackSpeed = 0;
+                targetEntity.getDamaged(3);
             }
         },
-        BURN {
+        FREEZE(2) {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
                 targetEntity.getDamaged(5);
             }
         },
-        FREEZE {
-            @Override
-            public void affectEntity(LivingEntity targetEntity) {
-                //targetEntity.walkSpeed += -1;bunun zamanlı olması lazım yoksa düşman geriye doğru sonsuz hıza ulaşıyor.
-                //targetEntity.attackSpeed += -1;
-            }
-        },
 
-        HEAL {
-            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.heal(30);}
+        HEAL(2) {
+            @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.heal(10);}
         },
-        STRONG_HEAL{
+        STRONG_HEAL(1){
             @Override public void affectEntity(LivingEntity targetEntity) {targetEntity.heal(30);}
         },
-        SPEED_UP{
+        SPEED_UP(-1){
             @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.walkSpeed += 10; }
         },
-        ATK_SPEED_UP{
+        ATK_SPEED_UP(-1){
             @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.attackSpeed += 10; }
         },
-        DMG_UP{
+        DMG_UP(-1){
             @Override public void affectEntity(LivingEntity targetEntity) { targetEntity.damage += 10; }
-        },
-        ;
+        };
 
-        abstract void affectEntity(LivingEntity targetEntity);
+        public double cooldown;
+
+        private EffectType(double affectCooldown) {
+            this.cooldown = affectCooldown;
+        }
+        
+        void affectEntity(LivingEntity targetEntity){};
     }
 
-    public Effect(EffectType effectType, long remainingDuration, LivingEntity targetEntity) {
-        this.effectType = effectType;
-        this.remainingDuration = remainingDuration ;
+    public Effect(LivingEntity targetEntity, EffectType effectType, double duration) {
         this.targetEntity = targetEntity;
+        this.effectType = effectType;
+        this.remainingDuration = duration;
     }
 
-    public void startEffect() {
-        affectEntity();
-        targetEntity.effects.add(this);
+    public void update(double dt) {
+        remainingDuration -= dt;
+        if (remainingDuration < 0) {
+            this.targetEntity.effects.remove(this);
+            return;
+        }
+
+        timeSinceLastEffect += dt;
+        
+        if (effectType.cooldown != -1 && timeSinceLastEffect >= effectType.cooldown) {
+            effectType.affectEntity(targetEntity);
+            timeSinceLastEffect = 0;
+        }
+
     }
 
-    public void affectEntity() {
-        effectType.affectEntity(targetEntity);
-        remainingDuration += -100;
-
-        if (remainingDuration < 0) { stopEffect(); }
-    }
-
-    public void stopEffect() {
-        targetEntity.effects.remove(this);
-    }
-
-    public long getRemainingDuration() {
+    public double getRemainingDuration() {
         return remainingDuration;
     }
 

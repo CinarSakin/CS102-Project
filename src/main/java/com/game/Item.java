@@ -47,11 +47,6 @@ public abstract class Item {
         timeSinceLastUse = 0;
     }
 
-    public Effect applyEffect(LivingEntity target) {
-        // ToDo
-        return new Effect(Effect.EffectType.BURN, 0, target); // to silence the compiler
-    }
-
     public boolean getIsOnCooldown() {
         return timeSinceLastUse < cooldownDuration;
     }
