@@ -234,10 +234,9 @@ public class Game{
             }
         }
 
-        Point2D mouseInWorld = getMouseWorldPosition();
         for (Area a : Level.getAreas()) {
             for (Entity e : a.getEntities()) {
-                if (e instanceof WorldObject && e.getDimension().contains(mouseInWorld)) {
+                if (e instanceof WorldObject && e.getDimension().contains(getMouseWorldPosition())) {
                     WorldObject w = (WorldObject) e;
                     if (w.interactable && w.isHeroInRange()) {
                         Drawer.drawHover((WorldObject)e);
@@ -292,7 +291,7 @@ public class Game{
             for (Area area : Level.getAreas()) {
                 ArrayList<Entity> entitiesCopy = new ArrayList<>(area.getEntities());
                 for (Entity e : entitiesCopy) {
-                    if (e instanceof WorldObject) {
+                    if (e instanceof WorldObject  && e.getDimension().contains(getMouseWorldPosition())) {
                         WorldObject w = (WorldObject) e;
                         if (w.interactable && w.isHeroInRange()) {
                             if (w.interact()) {
