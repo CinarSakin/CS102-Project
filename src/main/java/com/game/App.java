@@ -878,6 +878,8 @@ public class App extends Application {
         activeGame = null;
         activeGame = new Game('X');
         activeGame.setType(1);
+        Hero.isDead = false;
+        gameOverShown = false;
         activeGame.startInfinite();
         gamePane.setVisible(true);
     }

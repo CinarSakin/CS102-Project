@@ -113,10 +113,10 @@ public class Projectile extends Entity {
                     if (!hitEntities.contains(target) && dimension.intersects(target.dimension)){
                         target.getDamaged(heldWeapon.damage);
                         if (heldSword.swordType.equals(SwordType.FLAMING)) {
-                            target.setEffect(EffectType.BURN, 2);
+                            target.setEffect(EffectType.BURN, 3);
                         }
                         else if (heldSword.swordType.equals(SwordType.ICY)) {
-                            target.setEffect(EffectType.FREEZE, 2);
+                            target.setEffect(EffectType.FREEZE, 3);
                         }
                         hitEntities.add(target);
                     }                    
@@ -132,8 +132,6 @@ public class Projectile extends Entity {
                     double dist = target.getDimension().distanceTo(dimension);
                     if (dist < Level.gridSize*2){
                         target.getDamaged(Level.gridSize*15/(dist+Level.gridSize)); // damage range from 15 to 5
-                    new Effect(target, EffectType.FEAR, 1000);
-                    new Effect(target, EffectType.BURN, 1000);
                     }                    
                 }
                 despawn();
@@ -158,10 +156,10 @@ public class Projectile extends Entity {
                         projType.equals(ProjectileType.ICY_ARROW) ? 8.5 : 5
                     );
                     if (projType.equals(ProjectileType.FLAMING_ARROW)) {
-                        target.setEffect(EffectType.BURN, 2);
+                        target.setEffect(EffectType.BURN, 3);
                     }
                     else if (projType.equals(ProjectileType.ICY_ARROW)) {
-                        target.setEffect(EffectType.FREEZE, 2);
+                        target.setEffect(EffectType.FREEZE, 3);
 
                     }
                     this.despawn();

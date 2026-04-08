@@ -77,7 +77,7 @@ public abstract class LivingEntity extends Entity {
         BOMBER(new Point2D(48,84), 42, 10, 15, 3.5, 0.15, 1, 3*Level.gridSize),
         SKELETON(new Point2D(48, 48), 21, 0, 1, 3.5, 0.3, 1, 8*Level.gridSize),
 
-        BOSS(new Point2D(64, 64), 100, 10, 25, 1.25, 0.2, 0, 7*Level.gridSize);
+        BOSS(new Point2D(80, 80), 100, 10, 25, 1.25, 0.2, 0, 7*Level.gridSize);
 
         void attack(LivingEntity targetEntity) {}
 
@@ -152,7 +152,6 @@ public abstract class LivingEntity extends Entity {
         walkSpeed = getLivingType().walkSpeed*dt*Level.gridSize;
         damage = getLivingType().damage;
 
-        double defaultSpeed = getLivingType().walkSpeed * dt * Level.gridSize;
         for (Effect e : new ArrayList<Effect>(effects)) {
             switch (e.getEffectType()) {
                 case STUN:
@@ -160,8 +159,8 @@ public abstract class LivingEntity extends Entity {
                     attackSpeed *= 0.1;
                     break;
                 case FREEZE:
-                    walkSpeed = defaultSpeed / 5.0;
-                    attackSpeed *= 0.2;
+                    walkSpeed *= 0.15;
+                    attackSpeed *= 0.1;
                     break;
                 case FEAR:
                     walkSpeed *= -1;
