@@ -8,8 +8,6 @@ public class GameSettings {
     public static final int DEFAULT_MUSIC_VOLUME = 80;
     public static final int DEFAULT_SFX_VOLUME = 80;
     public static final double DEFAULT_UI_SCALE = 1.0;
-    public static final int DEFAULT_RESOLUTION_WIDTH = 1280;
-    public static final int DEFAULT_RESOLUTION_HEIGHT = 720;
 
     // instance accessible from static class
     public static GameSettings instance = new GameSettings();
@@ -21,8 +19,9 @@ public class GameSettings {
 
     // visual settings
     public double uiScale = DEFAULT_UI_SCALE;
-    public int resolutionWidth = DEFAULT_RESOLUTION_WIDTH;
-    public int resolutionHeight = DEFAULT_RESOLUTION_HEIGHT;
+
+    // attack input mode: "KEYBOARD" or "MOUSE"
+    public String attackInputMode = "KEYBOARD";
 
     // control bindings
     public String keyUp = "W";
@@ -37,8 +36,8 @@ public class GameSettings {
     // last window properties
     public double windowX = -1;
     public double windowY = -1;
-    public double windowWidth = DEFAULT_RESOLUTION_WIDTH;
-    public double windowHeight = DEFAULT_RESOLUTION_HEIGHT;
+    public double windowWidth = 1280;
+    public double windowHeight = 720;
     public boolean isMaximized = false;
     public boolean isFullscreen = false;
 
@@ -54,12 +53,8 @@ public class GameSettings {
         return getMasterVolume() * clampVolume(instance.sfxVolume) / 100.0;
     }
 
-    public static String getResolutionLabel() {
-        return instance.resolutionWidth + "x" + instance.resolutionHeight;
-    }
-
     public static String getUiScaleLabel() {
-        return String.format("%%%d", (int) Math.round(instance.uiScale * 100));
+        return String.format("%d%%", (int) Math.round(instance.uiScale * 100));
     }
 
     public static void setMasterVolume(int volume) {
@@ -78,11 +73,12 @@ public class GameSettings {
         instance.uiScale = Math.max(0.5, Math.min(2.0, scale));
     }
 
-    public static void setResolution(int width, int height) {
-        instance.resolutionWidth = width;
-        instance.resolutionHeight = height;
-        instance.windowWidth = width;
-        instance.windowHeight = height;
+    public static boolean isMouseAttackMode() {
+        return "MOUSE".equals(instance.attackInputMode);
+    }
+
+    public static void setAttackInputMode(String mode) {
+        instance.attackInputMode = mode;
     }
 
     public static void setKeyBinding(String action, String key) {
@@ -116,15 +112,6 @@ public class GameSettings {
         return KeyCode.valueOf(getKeyBinding(action));
     }
 
-
-    public static String getMasterVolumeLabel() {
-        return "%" + instance.masterVolume;
-    }
-
-    public static String getMusicVolumeLabel() {
-        return "%" + instance.musicVolume;
-    }
-
     public static void resetAudio() {
         instance.masterVolume = DEFAULT_MASTER_VOLUME;
         instance.musicVolume = DEFAULT_MUSIC_VOLUME;
@@ -133,8 +120,7 @@ public class GameSettings {
 
     public static void resetVisuals() {
         instance.uiScale = DEFAULT_UI_SCALE;
-        instance.resolutionWidth = DEFAULT_RESOLUTION_WIDTH;
-        instance.resolutionHeight = DEFAULT_RESOLUTION_HEIGHT;
+        instance.attackInputMode = "KEYBOARD";
     }
 
     public static void resetControls() {
@@ -145,6 +131,7 @@ public class GameSettings {
         instance.keyAttack = "SPACE";
         instance.keyInteract = "E";
         instance.keyMenu = "ESCAPE";
+        instance.keyMap = "M";
     }
 
     public static void resetAll() {

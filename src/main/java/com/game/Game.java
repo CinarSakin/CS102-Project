@@ -65,6 +65,10 @@ public class Game{
             lastMouseX = e.getX();
             lastMouseY = e.getY();
         });
+        scene.setOnMouseDragged(e -> {
+            lastMouseX = e.getX();
+            lastMouseY = e.getY();
+        });
 
         scene.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
@@ -89,11 +93,26 @@ public class Game{
 
         timer.start();
 
+        scene.setOnMouseClicked(e -> {
+            if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY
+                    && GameSettings.isMouseAttackMode()
+                    && !isPaused
+                    && e.getPickResult().getIntersectedNode() instanceof Canvas) {
+                lastMouseX = e.getX();
+                lastMouseY = e.getY();
+                Point2D mouseWorld = getMouseWorldPosition();
+                Point2D heroCenter = hero.getDimension().getCenter();
+                Point2D mouseDir = mouseWorld.subtract(heroCenter);
+                if (mouseDir.magnitude() > 0) hero.setLastDirection(mouseDir);
+                hero.attack();
+            }
+        });
+
         scene.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
             boolean freshPress = !activeKeys.contains(code);
             if (freshPress) activeKeys.add(code);
-            if (freshPress && code == GameSettings.getKeyCode("attack")) hero.attack();
+            if (freshPress && code == GameSettings.getKeyCode("attack") && !GameSettings.isMouseAttackMode()) hero.attack();
             if (freshPress && code == GameSettings.getKeyCode("menu")) {
                 HUD.closeMap();
                 isPaused = !isPaused;
@@ -188,7 +207,15 @@ public class Game{
         if (activeKeys.contains(GameSettings.getKeyCode("down"))) velocity = velocity.add(0, 1);
         if (activeKeys.contains(GameSettings.getKeyCode("right"))) velocity = velocity.add(1, 0);
         hero.moveByDirection(velocity.normalize());
-        hero.setLastDirection(velocity);
+
+        if (!GameSettings.isMouseAttackMode()) {
+            hero.setLastDirection(velocity);
+        } else {
+            Point2D mouseWorld = getMouseWorldPosition();
+            Point2D heroCenter = hero.getDimension().getCenter();
+            Point2D mouseDir = mouseWorld.subtract(heroCenter);
+            if (mouseDir.magnitude() > 0) hero.setLastDirection(mouseDir);
+        }
         
 
         if (activeKeys.contains(GameSettings.getKeyCode("interact"))) {

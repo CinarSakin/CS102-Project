@@ -1,5 +1,7 @@
 package com.game;
 
+import java.util.Locale;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -34,6 +36,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -204,17 +207,18 @@ public class App extends Application {
             controlsLabel.setTextFill(Color.WHITE);
 
             GridPane controlsGrid = new GridPane();
-            controlsGrid.setHgap(12);
-            controlsGrid.setVgap(12);
+            controlsGrid.setHgap(8);
+            controlsGrid.setVgap(8);
             controlsGrid.setAlignment(Pos.CENTER_LEFT);
 
-            String[] controlActions = {"Up", "Down", "Left", "Right", "Attack", "Interact"};
+            String[] controlActions = {"up", "down", "left", "right", "attack", "interact", "map"};
             Button[] keyButtons = new Button[controlActions.length];
             javafx.beans.property.ObjectProperty<String> waitingForKey = new SimpleObjectProperty<>(null);
 
             for (int i = 0; i < controlActions.length; i++) {
                 String action = controlActions[i];
-                Button actionBtn = createStyledButton(action, 1);
+                String label = action.substring(0, 1).toUpperCase(Locale.ENGLISH) + action.substring(1);
+                Button actionBtn = createStyledButton(label, 1);
                 actionBtn.setDisable(true);
                 actionBtn.setOpacity(0.9);
 
@@ -222,11 +226,11 @@ public class App extends Application {
                 Button keyBtn = createStyledButton(binding, 1);
                 int index = i;
                 keyBtn.setOnAction(e -> {
-                    keyBtn.setText("Press a key...");
+                    keyBtn.setText("Press a key..");
                     waitingForKey.set(controlActions[index]);
                 });
-                keyBtn.prefWidthProperty().bind(uiSizeBinding(140));
-                actionBtn.prefWidthProperty().bind(uiSizeBinding(140));
+                keyBtn.prefWidthProperty().bind(uiSizeBinding(120));
+                actionBtn.prefWidthProperty().bind(uiSizeBinding(120));
                 controlsGrid.add(actionBtn, 0, i);
                 controlsGrid.add(keyBtn, 1, i);
                 keyButtons[i] = keyBtn;
@@ -237,18 +241,18 @@ public class App extends Application {
             visualsLabel.setTextFill(Color.WHITE);
 
             GridPane visualsGrid = new GridPane();
-            visualsGrid.setHgap(12);
-            visualsGrid.setVgap(12);
+            visualsGrid.setHgap(8);
+            visualsGrid.setVgap(8);
             visualsGrid.setAlignment(Pos.CENTER_LEFT);
 
             Button uiScaleBtn = createStyledButton("UI Scale", 1);
             Button uiScaleValue = createStyledButton(GameSettings.getUiScaleLabel(), 1);
             uiScaleValue.setDisable(true);
             uiScaleValue.setOpacity(0.9);
-            Slider uiScaleSlider = new Slider(0.5, 2.0, settings.uiScale);
+            Slider uiScaleSlider = new Slider(0.75, 1.25, settings.uiScale);
             uiScaleSlider.setShowTickLabels(false);
             uiScaleSlider.setShowTickMarks(false);
-            uiScaleSlider.setPrefWidth(240);
+            uiScaleSlider.setPrefWidth(200);
             uiScaleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                 GameSettings.setUiScale(newVal.doubleValue());
                 UI_SCALE.set(newVal.doubleValue());
@@ -258,79 +262,92 @@ public class App extends Application {
             visualsGrid.add(uiScaleValue, 1, 0);
             visualsGrid.add(uiScaleSlider, 0, 1, 2, 1);
 
-            Button resolutionBtn = createStyledButton("Resolution", 1);
-            Button resolutionValue = createStyledButton(GameSettings.getResolutionLabel(), 1);
-            resolutionValue.setOpacity(0.9);
-            java.util.List<String> resolutionOptions = java.util.List.of("1280x720", "1600x900", "1920x1080");
-            int[] resolutionIndexRef = new int[1];
-            resolutionIndexRef[0] = Math.max(0, resolutionOptions.indexOf(GameSettings.getResolutionLabel()));
-            resolutionValue.setOnAction(e -> {
-                resolutionIndexRef[0] = (resolutionIndexRef[0] + 1) % resolutionOptions.size();
-                String[] parts = resolutionOptions.get(resolutionIndexRef[0]).split("x");
-                GameSettings.setResolution(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-                resolutionValue.setText(GameSettings.getResolutionLabel());
+            Button attackInputBtn = createStyledButton("Attack Input", 1);
+            attackInputBtn.setDisable(true);
+            attackInputBtn.setOpacity(0.9);
+            Button attackInputValue = createStyledButton(GameSettings.instance.attackInputMode, 1);
+            attackInputValue.setOnAction(e -> {
+                String next = GameSettings.isMouseAttackMode() ? "KEYBOARD" : "MOUSE";
+                GameSettings.setAttackInputMode(next);
+                attackInputValue.setText(next);
             });
-            visualsGrid.add(resolutionBtn, 0, 2);
-            visualsGrid.add(resolutionValue, 1, 2);
+            visualsGrid.add(attackInputBtn, 0, 2);
+            visualsGrid.add(attackInputValue, 1, 2);
 
             Label audioLabel = new Label("Audio");
             audioLabel.fontProperty().bind(fontPropSmall);
             audioLabel.setTextFill(Color.WHITE);
 
             GridPane audioGrid = new GridPane();
-            audioGrid.setHgap(12);
-            audioGrid.setVgap(12);
+            audioGrid.setHgap(8);
+            audioGrid.setVgap(8);
             audioGrid.setAlignment(Pos.CENTER_LEFT);
 
             Button allBtn = createStyledButton("All", 1);
-            Button allValue = createStyledButton(GameSettings.getMasterVolumeLabel(), 1);
+            Button allValue = createStyledButton(GameSettings.getMasterVolume()+"%", 1);
             allValue.setDisable(true);
             allValue.setOpacity(0.9);
             Slider allSlider = new Slider(0, 100, settings.masterVolume);
             allSlider.setShowTickLabels(false);
             allSlider.setShowTickMarks(false);
-            allSlider.setPrefWidth(240);
+            allSlider.setPrefWidth(200);
             allSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                 GameSettings.setMasterVolume(newVal.intValue());
-                allValue.setText(GameSettings.getMasterVolumeLabel());
+                allValue.setText(GameSettings.getMasterVolume()+"%");
             });
             audioGrid.add(allBtn, 0, 0);
             audioGrid.add(allValue, 1, 0);
             audioGrid.add(allSlider, 0, 1, 2, 1);
 
             Button musicBtn = createStyledButton("Music", 1);
-            Button musicValue = createStyledButton(GameSettings.getMusicVolumeLabel(), 1);
+            Button musicValue = createStyledButton(GameSettings.getMusicVolume()+"%", 1);
             musicValue.setDisable(true);
             musicValue.setOpacity(0.9);
             Slider musicSlider = new Slider(0, 100, settings.musicVolume);
             musicSlider.setShowTickLabels(false);
             musicSlider.setShowTickMarks(false);
-            musicSlider.setPrefWidth(240);
+            musicSlider.setPrefWidth(200);
             musicSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
                 GameSettings.setMusicVolume(newVal.intValue());
-                musicValue.setText(GameSettings.getMusicVolumeLabel());
+                musicValue.setText(GameSettings.instance.musicVolume+"%");
             });
             audioGrid.add(musicBtn, 0, 2);
             audioGrid.add(musicValue, 1, 2);
             audioGrid.add(musicSlider, 0, 3, 2, 1);
 
+            Button sfxBtn = createStyledButton("SFX", 1);
+            Button sfxValue = createStyledButton(GameSettings.instance.sfxVolume+"%", 1);
+            sfxValue.setDisable(true);
+            sfxValue.setOpacity(0.9);
+            Slider sfxSlider = new Slider(0, 100, settings.sfxVolume);
+            sfxSlider.setShowTickLabels(false);
+            sfxSlider.setShowTickMarks(false);
+            sfxSlider.setPrefWidth(200);
+            sfxSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                GameSettings.setSfxVolume(newVal.intValue());
+                sfxValue.setText(GameSettings.instance.sfxVolume+"%");
+            });
+            audioGrid.add(sfxBtn, 0, 4);
+            audioGrid.add(sfxValue, 1, 4);
+            audioGrid.add(sfxSlider, 0, 5, 2, 1);
+
             VBox leftColumn = new VBox(controlsLabel, controlsGrid);
-            leftColumn.setSpacing(18);
+            leftColumn.setSpacing(12);
             VBox rightColumn = new VBox(visualsLabel, visualsGrid, audioLabel, audioGrid);
-            rightColumn.setSpacing(18);
+            rightColumn.setSpacing(12);
 
             HBox settingsContent = new HBox(leftColumn, rightColumn);
             settingsContent.setAlignment(Pos.CENTER);
-            settingsContent.setSpacing(40);
+            settingsContent.setSpacing(28);
 
             HBox resetButtons = new HBox(resetControlsBtn, resetSettingsBtn);
             resetButtons.setAlignment(Pos.CENTER);
-            resetButtons.setSpacing(12);
+            resetButtons.setSpacing(10);
 
             VBox settingsMenuContainer = new VBox(settingsTitle, settingsContent, resetButtons, exitSettingsBtn);
             settingsMenuContainer.setAlignment(Pos.TOP_CENTER);
-            settingsMenuContainer.setSpacing(24);
-            settingsMenuContainer.setPadding(new Insets(30));
+            settingsMenuContainer.setSpacing(16);
+            settingsMenuContainer.setPadding(new Insets(18));
 
             ObjectBinding<Background> textureBackground = Bindings.createObjectBinding(() -> {
                 Image img = bgTextureProp.get();
@@ -359,10 +376,12 @@ public class App extends Application {
                 uiScaleSlider.setValue(settings.uiScale);
                 allSlider.setValue(settings.masterVolume);
                 musicSlider.setValue(settings.musicVolume);
+                sfxSlider.setValue(settings.sfxVolume);
                 uiScaleValue.setText(GameSettings.getUiScaleLabel());
-                resolutionValue.setText(GameSettings.getResolutionLabel());
-                allValue.setText(GameSettings.getMasterVolumeLabel());
-                musicValue.setText(GameSettings.getMusicVolumeLabel());
+                attackInputValue.setText(GameSettings.instance.attackInputMode);
+                allValue.setText(GameSettings.getMasterVolume()+"%");
+                musicValue.setText(GameSettings.instance.musicVolume+"%");
+                sfxValue.setText(GameSettings.instance.sfxVolume+"%");
                 UI_SCALE.set(GameSettings.instance.uiScale);
             });
 
@@ -444,9 +463,13 @@ public class App extends Application {
 
             exitSettingsBtn.setOnAction(e -> {
                 if(!settingsFromGame)changeMenu(mainMenu);
-                settingsFromGame = false;
-                settingsMenu.setVisible(false);
-                gamePane.setVisible(true);
+                else {
+                    settingsFromGame = false;
+                    menuPane.setVisible(false);
+                    settingsMenu.setVisible(false);
+                    settingsMenu.setOpacity(0);
+                    gamePane.setVisible(true);
+                }
             });
 
             standardBtn.setOnAction(e -> changeMenu(saveMenu));
@@ -522,6 +545,7 @@ public class App extends Application {
             }
 
             primaryStage.setFullScreenExitHint("");
+            primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
             // canvas
             for (GameLayer layer : GameLayer.values()) {
@@ -909,7 +933,9 @@ public class App extends Application {
         });
         settings.setOnAction(e -> {
             gamePane.setVisible(false);
-            settings.setVisible(true);
+            settingsMenu.setVisible(true);
+            settingsMenu.setOpacity(1);
+            menuPane.setVisible(true);
             settingsFromGame = true;
         });
         SaveNExt.setOnAction(event -> {
