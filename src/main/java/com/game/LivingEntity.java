@@ -234,12 +234,14 @@ public abstract class LivingEntity extends Entity {
         new LivingStateObject(LivingStateObject.LivingState.TAKE_DAMAGE);
 
         if (this.health == 0){
+            GameStats.getInstance().enemiesKilled++;
             new LivingStateObject(LivingStateObject.LivingState.DIE);
             AnimationManager.updateImage(this);
             // if hero > lose the game
             // if enemy > despawn
             if (this.lType != LivingType.HERO) {
                 if(this instanceof Boss){
+                    GameStats.getInstance().bossKilled++;
                     new Portal(Level.getLevel().bossRoom.getDimension().getCenter(),Level.getLevel().bossRoom);
                 }
                 despawn();

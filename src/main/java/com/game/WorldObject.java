@@ -49,6 +49,7 @@ class Chest extends WorldObject {
     @Override
     public boolean interact() {
         if (!isHeroInRange() || !interactable) return false;
+        GameStats.getInstance().chestsOpened++;
         this.open = true;
         this.interactable = false;
         reloadImages();
@@ -125,6 +126,7 @@ class Portal extends WorldObject {
     @Override
     public boolean interact() {
         if (!isHeroInRange()) return false;
+        GameStats.getInstance().levelsCleared++;
         System.out.println("ben buranın hakimi");
         Level.endLevel();
         return true;

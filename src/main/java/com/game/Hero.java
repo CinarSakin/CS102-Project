@@ -7,7 +7,6 @@ import javafx.util.Duration;
 public class Hero extends LivingEntity {
     public static Hero currentHero;
     public static boolean isDead = false;
-
     public static final int TALISMAN_AMOUNT = 3;
     public static final int CONSUMABLE_AMOUNT = 3;
 
@@ -42,6 +41,7 @@ public class Hero extends LivingEntity {
             delay.setOnFinished(e -> App.showGameOver());
             delay.play();
         }
+        GameStats.getInstance().timePassed = dt;
     }
 
     @Override
