@@ -576,7 +576,7 @@ public class App extends Application {
 
                 settings.uiScale = UI_SCALE.get();
 
-                if (activeGame != null) {
+                if (activeGame != null && Game.getType() != 1) {
                     activeGame.saveCurrentGame();
                 }
 
@@ -939,7 +939,7 @@ public class App extends Application {
             settingsFromGame = true;
         });
         SaveNExt.setOnAction(event -> {
-            if(activeGame != null)
+            if(activeGame != null && Game.getType()!=1)
                 activeGame.saveCurrentGame();
             updateSaveSlots();
             gamePane.getChildren().remove(pauseMenuPane);
