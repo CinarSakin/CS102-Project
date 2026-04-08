@@ -1,6 +1,7 @@
 package com.game;
 
 import com.game.Bow.BowType;
+import com.game.LivingEntity.LivingStateObject.LivingState;
 
 import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
@@ -34,12 +35,11 @@ public class Hero extends LivingEntity {
         }
         if (health <= 0 && !isDead) {
             isDead = true;
-            walkSpeed = 0;
+            new LivingStateObject(LivingState.DIE);
             PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
             delay.setOnFinished(e -> App.showGameOver());
             delay.play();
         }
-        if (isDead) walkSpeed = 0;
         GameStats.getInstance().timePassed += dt;
     }
 

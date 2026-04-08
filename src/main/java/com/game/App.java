@@ -820,8 +820,13 @@ public class App extends Application {
         box.maxWidthProperty().bind(scene.widthProperty().multiply(0.7));
         StackPane.setAlignment(box, Pos.CENTER);
         overlay.getChildren().add(box);
+        overlay.setFocusTraversable(true);
+        overlay.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.ESCAPE) e.consume();
+        });
 
         gamePane.getChildren().add(overlay);
+        Platform.runLater(overlay::requestFocus);
 
         FadeTransition fade = new FadeTransition(Duration.seconds(0.5), overlay);
         fade.setFromValue(0);

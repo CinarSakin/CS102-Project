@@ -11,35 +11,27 @@ public class Bow extends Weapon{
     public enum BowType {
         FLAMING(
             "/sprites/items/flaming_bow.png",
-            "Flaming Sword",
+            "Flaming Bow",
             "It Burns.",
-            5,
+            3.3,
             12,
-            .1
+            .15
         ),
         ICY(
             "/sprites/items/bow.png",
-            "Icy Sword",
+            "Icy Bow",
             "Freezes the enemies.",
-            3.7,
+            3.5,
             15,
-            .1
+            .15
         ),
         NORMAL(
             "/sprites/items/bow.png",
             "Bow",
-            "Just a regular sword.",
-            5,
+            "Just a regular bow.",
+            3,
             8,
             -1
-        ),
-        STARTER(
-            "/sprites/items/starter_bow.png",
-            "Starter Sword",
-            "",
-            4.5,
-            7,
-            0
         );
 
         public final String imagePath;
