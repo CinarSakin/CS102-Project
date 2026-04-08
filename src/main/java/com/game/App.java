@@ -563,11 +563,40 @@ public class App extends Application {
 
     static boolean gameOverShown = false;
 
+    public static VBox scorePane(){
+        GameStats a = GameStats.getInstance();
+        a.calculateScore();
+        Text time = new Text("Time Passed: " + a.getTimePassed());
+        time.fontProperty().bind(fontPropSmall);
+        time.setFill(Color.WHITE);
+        Text score = new Text("Score: " + a.getScore());
+        score.fontProperty().bind(fontPropSmall);
+        score.setFill(Color.WHITE);
+        Text dash = new Text("--------------------------------------------------------");
+        dash.fontProperty().bind(fontPropSmall);
+        dash.setFill(Color.WHITE);
+        Text enemies = new Text("Enemies Killed: " + a.getEnemiesKilled() + " X100");
+        enemies.fontProperty().bind(fontPropSmall);
+        enemies.setFill(Color.WHITE);
+        Text chests = new Text("Chest: " + a.getEnemiesKilled() + " X10");
+        chests.fontProperty().bind(fontPropSmall);
+        chests.setFill(Color.WHITE);
+        Text boss = new Text("Enemies Killed: " + a.getEnemiesKilled() + " X500");
+        boss.fontProperty().bind(fontPropSmall);
+        boss.setFill(Color.WHITE);
+        Text level = new Text("Enemies Killed: " + a.getEnemiesKilled() + " X500");
+        level.fontProperty().bind(fontPropSmall);
+        level.setFill(Color.WHITE);
+        VBox scorePane = new VBox(time,score,dash,enemies,chests,boss,level);
+        return scorePane;
+    }
+
     public static void showGameOver() {
         if (gameOverShown) return;
         gameOverShown = true;
-
         activeGame.stopGame(1);
+
+        
 
         StackPane overlay = new StackPane();
         overlay.setBackground(bgFill);
@@ -577,6 +606,7 @@ public class App extends Application {
         text.fontProperty().bind(fontPropBig);
         text.setFill(Color.WHITE);
 
+        
         Button menuBtn = createStyledButton("MAIN MENU", 0);
         menuBtn.setOnAction(e -> {
             gameOverShown = false;
@@ -585,7 +615,7 @@ public class App extends Application {
             menuPane.setVisible(true);
         });
 
-        VBox box = new VBox(uiSize(30), text, menuBtn);
+        VBox box = new VBox(uiSize(30), text, scorePane(), menuBtn);
         box.setAlignment(Pos.CENTER);
         overlay.getChildren().add(box);
 

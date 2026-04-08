@@ -17,4 +17,9 @@ public class GameStats {
 
     public static GameStats getInstance(){return instance;}
     public int getScore(){return score;}
+    public int getEnemiesKilled(){return enemiesKilled;}
+    public double getTimePassed(){return timePassed;}
+    public int getBossKilled(){return bossKilled;}
+    public int getLevelsCleared(){return levelsCleared;}
+    public int getChestsOpened(){return chestsOpened;}
 }

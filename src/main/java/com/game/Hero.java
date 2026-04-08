@@ -41,7 +41,7 @@ public class Hero extends LivingEntity {
             delay.setOnFinished(e -> App.showGameOver());
             delay.play();
         }
-        GameStats.getInstance().timePassed = dt;
+        GameStats.getInstance().timePassed += dt;
     }
 
     @Override
