@@ -567,7 +567,7 @@ public class App extends Application {
         if (gameOverShown) return;
         gameOverShown = true;
 
-        activeGame.stopGame();
+        activeGame.stopGame(1);
 
         StackPane overlay = new StackPane();
         overlay.setBackground(bgFill);
@@ -601,7 +601,7 @@ public class App extends Application {
         if (gameOverShown) return;
         gameOverShown = true;
 
-        activeGame.stopGame();
+        activeGame.stopGame(1);
 
         StackPane overlay = new StackPane();
         overlay.setBackground(bgFill);

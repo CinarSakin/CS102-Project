@@ -136,7 +136,7 @@ public class Game{
             if (freshPress && code == GameSettings.getKeyCode("menu")) {
                 HUD.closeMap();
                 isPaused = !isPaused;
-                if (isPaused) stopGame();
+                if (isPaused) stopGame(0);
                 else { timer.start(); App.closePauseMenu.run(); }
             }
             if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
@@ -249,10 +249,10 @@ public class Game{
           
     }
 
-    public void stopGame() {
+    public void stopGame(int i) {
         timer.stop();
         lastUpdate = 0;
-        App.drawPauseMenu();
+        if(i == 0)App.drawPauseMenu();
     }
 
     public void unPauseTimer(){timer.start();}
