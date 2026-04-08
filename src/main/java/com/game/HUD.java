@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -21,6 +22,7 @@ public class HUD {
     private static Canvas mapCanvas;
     private static boolean mapVisible = false;
     private static final double MAP_PAD = 20;
+    private static final java.util.HashMap<String, java.util.HashMap<Double, Image>> iconCache = new java.util.HashMap<>();
 
     private static Rectangle hpBar;
     private static Rectangle defBar;
@@ -201,6 +203,16 @@ public class HUD {
         mapCanvas.setVisible(mapVisible);
     }
 
+    private static Image loadIconAtSize(String path, double size) {
+        double key = Math.round(size);
+        iconCache.computeIfAbsent(path, p -> new java.util.HashMap<>())
+                 .computeIfAbsent(key, k -> {
+                     var stream = HUD.class.getResourceAsStream(path);
+                     return stream != null ? new Image(stream, k, k, true, false) : null;
+                 });
+        return iconCache.get(path).get(key);
+    }
+
     private static void drawMap() {
         if (!mapVisible || mapCanvas == null) return;
 
@@ -246,6 +258,22 @@ public class HUD {
             gc.setStroke(Color.rgb(140, 120, 200, 0.7));
             gc.setLineWidth(1);
             gc.strokeRect(x, y, w, h);
+
+            // oda ikonu
+            if (area instanceof Room) {
+                double iconSize = App.uiSize(30);
+                String iconPath = switch (((Room) area).getType()) {
+                    case BOSS   -> "/sprites/ui/bossRoom_icon.png";
+                    case LOOT   -> "/sprites/ui/lootRoom_icon.png";
+                    case PORTAL -> "/sprites/ui/starterRoom_icon.png";
+                    default     -> null;
+                };
+                if (iconPath != null) {
+                    Image icon = loadIconAtSize(iconPath, iconSize);
+                    if (icon != null)
+                        gc.drawImage(icon, x + (w - iconSize) / 2, y + (h - iconSize) / 2, iconSize, iconSize);
+                }
+            }
         }
 
         // draw hero position
