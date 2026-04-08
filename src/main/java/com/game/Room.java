@@ -1,5 +1,6 @@
 package com.game;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import com.game.LivingEntity.LivingType;
@@ -35,6 +36,12 @@ public class Room extends Area {
         if(newType == 4)type = RoomType.NORMAL; 
         dif = 1+ Level.levelNo/10;
 
+    }
+
+    @Override
+    public void update(double dt){
+        super.update(dt);
+        type.update(dt, this);
     }
 
     public void divide(){
@@ -121,7 +128,8 @@ public class Room extends Area {
                 break;
             case PUZZLE:
                 //EREN KOZAN TODO:MAKE A PUZZLE GENERATION
-                
+                for(int i = 1; i <= 4; i++)
+                new Plate(randomPos(48, 48), this, Item.randomItem(2), i);
                 break;
             case BOSS:
                 //Create a boss in the middle of the room which can or cannot move according to the move patern of its
@@ -179,8 +187,26 @@ public class Room extends Area {
         PORTAL,
         NORMAL,
         LOOT,
-        PUZZLE,
-        BOSS
+        PUZZLE{
+            ArrayList<Plate> presses = new ArrayList<Plate>();
+            public void update(double dt, Room a){
+                ArrayList<Entity> copy = (ArrayList<Entity>)a.getEntities().clone();
+                for(Entity e: copy){
+                    if(e instanceof Plate && e.getDimension().insideOf(a)){
+                        presses.add((Plate)e);
+                    }
+                }
+                boolean unlocked = presses.get(0).getPressed() && presses.get(1).getPressed() && 
+                presses.get(2).getPressed() && presses.get(3).getPressed();
+                presses.get(0).setUnlocked(unlocked);
+                presses.get(1).setUnlocked(unlocked);
+                presses.get(2).setUnlocked(unlocked);
+                presses.get(3).setUnlocked(unlocked);
+            }
+        },
+        BOSS;
+        private RoomType(){}
+        public void update(double dt, Room a){}
     }
 
 }

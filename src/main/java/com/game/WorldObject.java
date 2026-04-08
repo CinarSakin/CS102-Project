@@ -28,7 +28,8 @@ public abstract class WorldObject extends Entity {
     }
 
     @Override
-    public void update(double dt) {}
+    public void update(double dt) {
+    }
 }
 
 class Chest extends WorldObject {
@@ -60,6 +61,48 @@ class Chest extends WorldObject {
     @Override
     public void reloadImages() {
         String path = open ? "/sprites/world/chest_open.png" : "/sprites/world/chest_closed.png";
+        double w = dimension.getWidth(), h = dimension.getHeight();
+        this.imageToDraw = new Image(getClass().getResourceAsStream(path), w, h, false, false);
+    }
+}
+
+class Plate extends WorldObject {
+
+    public Item item;
+    public boolean pressed;
+    public boolean unlocked;
+
+    public Plate(Point2D position, Area currentArea, Item item, int index) {
+        super(position, 1, 1, currentArea, Level.gridSize*4, "INTERACT", ("'" + index + "'"));
+        this.item = item;
+        this.pressed = false;
+        this.unlocked = false;
+        this.dimension.moveCenterTo(position.getX(), position.getY()-Level.gridSize/2);
+        reloadImages();
+    }
+
+    @Override
+    public boolean interact() {
+        if (!isHeroInRange() || !interactable) return false;
+        //GameStats.getInstance().puzzleSolved++;
+        this.pressed = true;
+        this.interactable = false;
+        reloadImages();
+        return true;
+    }
+
+    @Override
+    public void update(double dt){
+        if(unlocked)new DroppedItem(currentArea.getDimension().getCenter(),currentArea,item);
+    }
+
+    public void setUnlocked(boolean a){unlocked = a;}
+    public boolean getUnlocked(){return unlocked;}
+    public boolean getPressed(){return pressed;}
+
+    @Override
+    public void reloadImages() {
+        String path = pressed ? "/sprites/world/plate_pressed.png" : "/sprites/world/plate.png";
         double w = dimension.getWidth(), h = dimension.getHeight();
         this.imageToDraw = new Image(getClass().getResourceAsStream(path), w, h, false, false);
     }
