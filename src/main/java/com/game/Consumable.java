@@ -61,8 +61,8 @@ public class Consumable extends Item {
             Hero.getHero().addEffect(EffectType.DMG_UP, 30);
         } else if (this.consumableType == ConsumableType.HEALTH_POTION) {
             Hero.getHero().addEffect(EffectType.HEAL, 10);
-        } else { // starter sword
-
+        } else if (this.consumableType == ConsumableType.SPEED_POTION) {
+            Hero.getHero().addEffect(EffectType.SPEED_UP, 10);
         }
     }
     

@@ -27,14 +27,18 @@ public class Room extends Area {
     
 
     public Room(double x1, double y1, double width, double height){
-        this(x1, y1, width, height, (int)(Math.random()*3+1));
+        this(x1, y1, width, height, Math.random());
     }
-    public Room(double x1, double y1, double width, double height, int newType){
+    public Room(double x1, double y1, double width, double height, double newType){
         super(new Dimension(x1, y1, width, height));
-        if(newType == 1)type = RoomType.NORMAL;
-        if(newType == 2)type = RoomType.LOOT;
-        if(newType == 3)type = RoomType.PUZZLE;
-        if(newType == 4)type = RoomType.NORMAL; 
+
+        if (newType < .15) // %15 -> puzzle room
+            type = RoomType.PUZZLE;
+        else if (newType < .5) // %35 -> loot room
+            type = RoomType.LOOT;
+        else
+            type = RoomType.NORMAL;
+ 
         dif = 1+ Level.levelNo/10;
 
     }

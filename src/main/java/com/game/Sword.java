@@ -101,14 +101,12 @@ public class Sword extends Weapon {
         //Point2D slashPos = heroPos.add(Hero.getHero().isFlipped() ? offset.multiply(-1) : offset);
         
         Point2D lastDir = Hero.getHero().lastDirection;
-        double offsetX = lastDir.getX()>0 ? Drawer.gridSize : (lastDir.getX()<0 ? -Drawer.gridSize : 0);
-        double offsetY = lastDir.getY()>0 ? Drawer.gridSize : (lastDir.getY()<0 ? -Drawer.gridSize : 0);
-        Point2D offset = new Point2D(offsetX, offsetY);
+        Point2D spawnPos = heroPos.add(lastDir.multiply(Drawer.gridSize * 0.4));
 
         Projectile p = new Projectile(
-            Projectile.ProjectileType.SLASH, TargetType.ENEMIES, Point2D.ZERO, lastDir, attackSpeed, Hero.getHero().currentArea
+            Projectile.ProjectileType.SLASH, TargetType.ENEMIES, spawnPos, lastDir, attackSpeed, Hero.getHero().currentArea
         );
-        p.dimension.moveCenterTo(heroPos.add(offset.multiply(.4)));
+        p.dimension.moveCenterTo(spawnPos);
 
         resetTimer();
     }

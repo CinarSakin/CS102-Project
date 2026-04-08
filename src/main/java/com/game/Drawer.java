@@ -89,6 +89,47 @@ public class Drawer {
 
         gc.restore();
 
+        // draw effects on top of entity
+        if (e instanceof LivingEntity) {
+            drawEffects((LivingEntity) e);
+        }
+
+    }
+
+    private static long effectFrameTimer = 0;
+    private static int effectFrame = 0;
+
+    private static void drawEffects(LivingEntity le) {
+        if (le.effects == null || le.effects.isEmpty()) return;
+
+        long now = System.currentTimeMillis();
+        if (now - effectFrameTimer > 300) {
+            effectFrame = 1 - effectFrame;
+            effectFrameTimer = now;
+        }
+
+        GraphicsContext gc = App.getLayerGC(App.GameLayer.ENTITIES);
+        double w = le.getDimension().getWidth()*1.1;
+        double h = le.getDimension().getHeight()*1.1;
+
+        for (Effect effect : le.effects) {
+            String spriteName = getEffectSprite(effect.getEffectType());
+            if (spriteName == null) continue;
+            Image img = AnimationManager.loadImage(spriteName, w, h);
+            if (img == null) continue;
+            gc.drawImage(img, le.getDimension().getX(), le.getDimension().getY(), w, h);
+        }
+    }
+
+    private static String getEffectSprite(Effect.EffectType type) {
+        int f = effectFrame + 1;
+        switch (type) {
+            case BURN:   return "effects/burn_effect" + f + ".png";
+            case FREEZE: return "effects/freeze_effect" + f + ".png";
+            case HEAL: return "effects/heal_effect" + f + ".png";
+            case STUN:   return "effects/stun_effect.png";
+            default: return null;
+        }
     }
 
     public static void drawHover(WorldObject w) {
