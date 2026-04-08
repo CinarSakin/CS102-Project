@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 
 public class Boss extends Enemy {
     
-    private static final long ATTACK_DELAY = 1000;
+    private static final long ATTACK_DELAY = 100;
     private static final int ATTACK_PROJECTILE_NUMBER = 3;
 
     public Boss(Point2D position, Area currentArea, double diffMulti) {
@@ -38,7 +38,7 @@ public class Boss extends Enemy {
         for (int i = ATTACK_PROJECTILE_NUMBER/2; i < ATTACK_PROJECTILE_NUMBER; i++) {
             direction = targetPos.subtract(this.dimension.getPos().subtract(new Point2D(0, i))).normalize();
 
-            new Projectile(Projectile.ProjectileType.ARROW, Projectile.TargetType.HERO, dimension.getPos(), direction, 1.5, currentArea);
+            new Projectile(Projectile.ProjectileType.ARROW, Projectile.TargetType.HERO, dimension.getPos(), direction, 0.2, currentArea);
         }
     }
 

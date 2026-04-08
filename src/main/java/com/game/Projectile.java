@@ -132,8 +132,8 @@ public class Projectile extends Entity {
                     double dist = target.getDimension().distanceTo(dimension);
                     if (dist < Level.gridSize*2){
                         target.getDamaged(Level.gridSize*15/(dist+Level.gridSize)); // damage range from 15 to 5
-                    //    new Effect(EffectType.FEAR, 1000, target).startEffect();
-                    //    new Effect(EffectType.BURN, 1000, target).startEffect();
+                    new Effect(target, EffectType.FEAR, 1000);
+                    new Effect(target, EffectType.BURN, 1000);
                     }                    
                 }
                 despawn();

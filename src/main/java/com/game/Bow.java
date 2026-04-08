@@ -10,10 +10,10 @@ public class Bow extends Weapon{
 
     public enum BowType {
         FLAMING(
-            "/sprites/items/bow.png",
+            "/sprites/items/flaming_bow.png",
             "Flaming Sword",
             "It Burns.",
-            4,
+            5,
             12,
             .1
         ),
@@ -29,9 +29,17 @@ public class Bow extends Weapon{
             "/sprites/items/bow.png",
             "Bow",
             "Just a regular sword.",
-            3.5,
+            5,
             8,
             -1
+        ),
+        STARTER(
+            "/sprites/items/starter_bow.png",
+            "Starter Sword",
+            "",
+            4.5,
+            7,
+            0
         );
 
         public final String imagePath;
