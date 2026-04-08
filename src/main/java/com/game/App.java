@@ -614,8 +614,12 @@ public class App extends Application {
             gamePane.setVisible(false);
             menuPane.setVisible(true);
         });
-
-        VBox box = new VBox(uiSize(30), text, scorePane(), menuBtn);
+        VBox box;
+        if(Game.getType() == 0){    
+            box = new VBox(uiSize(30), text, menuBtn);
+        }else{
+            box = new VBox(uiSize(30), text, scorePane(), menuBtn);
+        }
         box.setAlignment(Pos.CENTER);
         overlay.getChildren().add(box);
 
