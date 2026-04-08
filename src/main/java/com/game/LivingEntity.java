@@ -71,9 +71,9 @@ public abstract class LivingEntity extends Entity {
 
     public enum LivingType {
         HERO(new Point2D(48, 48), 100, 0, 10, 5, 0.8, 0, 0),
-        WALKER(new Point2D(48, 48), 10, 0, 2, 4, 0.75, 1, 1*Level.gridSize),
-        BOMBER(new Point2D(48,84), 50, 10, 20, 3, 0.15, 1, 3*Level.gridSize),
-        SKELETON(new Point2D(48, 48), 75, 5, 1, 3, 0.3, 1, 8*Level.gridSize),
+        WALKER(new Point2D(48, 48), 21, 5, 2, 4, 0.75, 1, 1*Level.gridSize),
+        BOMBER(new Point2D(48,84), 42, 10, 20, 3, 0.15, 1, 3*Level.gridSize),
+        SKELETON(new Point2D(48, 48), 21, 0, 1, 3, 0.3, 1, 8*Level.gridSize),
 
         BOSS(new Point2D(64, 64), 100, 10, 35, 1, 0.2, 0, 7*Level.gridSize);
 

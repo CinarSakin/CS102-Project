@@ -21,6 +21,7 @@ public class Level {
     private transient ArrayList<Room> rooms = new ArrayList<Room>();
     public ArrayList<Area> areas = new ArrayList<Area>();
     public Room startingRoom;
+    public Room bossRoom;
     private transient Room root;
     private int savedLevelNo; // non-static copy for GSON (levelNo is static)
 
@@ -119,6 +120,9 @@ public class Level {
 
         startingRoom = rooms.get((int) (Math.random() * rooms.size()));
         startingRoom.setStartingRoom();
+        
+        int bossIndex = (int) (Math.random()*rooms.size());
+        while(!rooms.get(bossIndex).setBossRoom()){bossIndex = (int) (Math.random()*rooms.size());}
 
         Game.hero = new Hero(
             startingRoom.getDimension().getCenter().subtract(new Point2D(8, 8)),

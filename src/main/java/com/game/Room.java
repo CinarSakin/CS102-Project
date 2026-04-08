@@ -3,7 +3,6 @@ package com.game;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
 
 public class Room extends Area {
     //class variables
@@ -28,9 +27,9 @@ public class Room extends Area {
     public Room(double x1, double y1, double width, double height, int newType){
         super(new Dimension(x1, y1, width, height));
         if(newType == 0)type = RoomType.PORTAL;
-        if(newType == 1)type = RoomType.BOSS;
+        if(newType == 1)type = RoomType.NORMAL;
         if(newType == 2)type = RoomType.LOOT;
-        if(newType == 3)type = RoomType.NORMAL;
+        if(newType == 3)type = RoomType.PUZZLE;
         if(newType == 4)type = RoomType.NORMAL; 
         dif = 1+ Level.levelNo/10;
 
@@ -165,6 +164,14 @@ public class Room extends Area {
     public static ArrayList<Hall> getHHalls(){return hHalls;}
     public static ArrayList<Hall> getVHalls(){return vHalls;}
     public void setStartingRoom(){this.type = RoomType.PORTAL;}
+    public boolean setBossRoom(){
+        if(type != RoomType.PORTAL){
+            this.type = RoomType.BOSS;
+            return true;
+        }
+        return false;
+    }
+            
 
 
     //enumeration
