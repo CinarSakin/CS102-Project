@@ -91,6 +91,7 @@ public class Hero extends LivingEntity {
             for (int i = 0; i < TALISMAN_AMOUNT; i++) {
                 if (talismans[i] == null) {
                     talismans[i] = (Talisman) item;
+                    ((Talisman)item).equip(currentHero);
                     return true;
                 }
             }
