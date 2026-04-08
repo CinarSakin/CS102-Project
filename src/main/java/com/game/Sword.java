@@ -15,7 +15,7 @@ public class Sword extends Weapon {
             "Flaming Sword",
             "It Burns.",
             5,
-            10,
+            12,
             .1
         ),
         ICY(
@@ -23,7 +23,7 @@ public class Sword extends Weapon {
             "Icy Sword",
             "Freezes the enemies!",
             5.5,
-            7.5,
+            10,
             .1
         ),
         NORMAL(
@@ -31,7 +31,7 @@ public class Sword extends Weapon {
             "Sword",
             "Just a regular sword.",
             5,
-            5,
+            8,
             -1
         ),
         STARTER(
@@ -39,7 +39,7 @@ public class Sword extends Weapon {
             "Starter Sword",
             "",
             4.5,
-            3,
+            7,
             0
         );
 
@@ -113,7 +113,6 @@ public class Sword extends Weapon {
         ArrayList<LivingEntity> a = new ArrayList<>(Hero.getHero().currentArea.getLivingEntities());
         for (LivingEntity target : a) {
             if (target != Hero.getHero() && target.getDimension().intersects(p.getDimension())) {
-
                 
 
                 if (this.swordType == SwordType.FLAMING) {

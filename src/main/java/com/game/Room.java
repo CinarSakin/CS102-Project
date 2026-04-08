@@ -127,7 +127,7 @@ public class Room extends Area {
             case BOSS:
                 //Create a boss in the middle of the room which can or cannot move according to the move patern of its
                 //new Boss(new Point2D(this.getDimension().getWidth()/2, this.getDimension().getHeight()/2), this, dif);
-                new Boss(new Point2D(this.getDimension().getWidth()/2, this.getDimension().getHeight()/2), this, dif);
+                new Boss(getDimension().getCenter(), this, dif);
                 
                 break;
                 

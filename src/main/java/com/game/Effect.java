@@ -30,8 +30,8 @@ public class Effect {
         FREEZE {
             @Override
             public void affectEntity(LivingEntity targetEntity) {
-                targetEntity.walkSpeed += -1;
-                targetEntity.attackSpeed += -1;
+                //targetEntity.walkSpeed += -1;bunun zamanlı olması lazım yoksa düşman geriye doğru sonsuz hıza ulaşıyor.
+                //targetEntity.attackSpeed += -1;
             }
         },
 

@@ -1,18 +1,20 @@
 package com.game;
 
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
 
 public class Boss extends Enemy {
     
     private static final long ATTACK_DELAY = 1000;
     private static final int ATTACK_PROJECTILE_NUMBER = 3;
-    private transient Image bossImage = AnimationManager.loadImage("entities/error.png", 64, 64);
-
+    
     public Boss(Point2D position, Area currentArea, double diffMulti) {
         super(LivingEntity.LivingType.BOSS, position, currentArea, diffMulti);
         System.out.println("ben buranın hakimi");
-        imageToDraw = bossImage;
+        imageToDraw = AnimationManager.loadImage(
+            "entities/boss.png",
+            getDimension().getWidth(),
+            getDimension().getHeight()
+        );
     }
 
     @Override

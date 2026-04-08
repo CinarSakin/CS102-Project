@@ -1,7 +1,5 @@
 package com.game;
 
-import com.game.Projectile.ProjectileType;
-
 import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
