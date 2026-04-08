@@ -51,9 +51,11 @@ public class Hero extends LivingEntity {
     }
 
     public void changeWeapon(){
-        Weapon temp = weapons[0];
-        weapons[0] = weapons[1];
-        weapons[1] = temp;
+        if(weapons[1]!=null){
+            Weapon temp = weapons[0];
+            weapons[0] = weapons[1];
+            weapons[1] = temp;
+        } 
     }
 
     public void useConsumable(int index) {
