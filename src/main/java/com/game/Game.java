@@ -21,6 +21,7 @@ public class Game{
     private static char saveslot;
     private Level level;
     public static Hero hero;
+    public static int type = 0;//0 standard, 1 infinite
 
     public static boolean isPaused = false;
     private long lastUpdate = 0;
@@ -140,6 +141,10 @@ public class Game{
             if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
                 HUD.toggleMap();
         });
+    }
+
+    public static void endGame(){
+        //TODO
     }
 
     private void renderGame() {
@@ -279,5 +284,8 @@ public class Game{
         // TODO
         level = Level.constructNew(levelCount);
     }
+
+    public void setType(int gameType){this.type = gameType;}
+    public static int getType(){return type;}
 
 }

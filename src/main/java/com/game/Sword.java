@@ -6,7 +6,7 @@ import com.game.Projectile.TargetType;
 
 import javafx.geometry.Point2D;
 public class Sword extends Weapon {
-    public static final Sword STARTER_SWORD = new Sword(SwordType.STARTER, 0);
+    public static final Sword STARTER_SWORD = new Sword(SwordType.STARTER, 2);
     private SwordType swordType;
 
     public enum SwordType {

@@ -121,7 +121,7 @@ class Portal extends WorldObject {
     @Override
     public boolean interact() {
         if (!isHeroInRange()) return false;
-        // use portal
+        Level.endLevel();
         return true;
     }
 

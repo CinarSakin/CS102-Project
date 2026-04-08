@@ -239,6 +239,9 @@ public abstract class LivingEntity extends Entity {
             // if hero > lose the game
             // if enemy > despawn
             if (this.lType != LivingType.HERO) {
+                if(this instanceof Boss){
+                    new Portal(Level.getLevel().bossRoom.getDimension().getCenter(),Level.getLevel().bossRoom);
+                }
                 despawn();
             }
         }

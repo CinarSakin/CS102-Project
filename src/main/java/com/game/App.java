@@ -601,6 +601,7 @@ public class App extends Application {
         menuPane.setVisible(false);
 
         activeGame = new Game(saveSlot);
+        activeGame.setType(0);
         activeGame.startGame();
 
         gamePane.setVisible(true);
@@ -609,6 +610,7 @@ public class App extends Application {
     private static void startInfinite(){
         menuPane.setVisible(false);
         activeGame = new Game('z');
+        activeGame.setType(1);
         activeGame.startInfinite();
         gamePane.setVisible(true);
     }

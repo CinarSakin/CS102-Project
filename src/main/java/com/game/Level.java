@@ -120,6 +120,7 @@ public class Level {
         
         int bossIndex = (int) (Math.random()*rooms.size());
         while(!rooms.get(bossIndex).setBossRoom()){bossIndex = (int) (Math.random()*rooms.size());}
+        bossRoom = rooms.get(bossIndex);
 
         Game.hero = new Hero(
             startingRoom.getDimension().getCenter().subtract(new Point2D(8, 8)),
@@ -157,7 +158,7 @@ public class Level {
         }
     }
 
-    
+
     private void addHalls() {
         Room.hHalls.clear();
         Room.vHalls.clear();
@@ -214,6 +215,13 @@ public class Level {
         return false;
     }
 
+    public static void endLevel(){
+        if(Game.getType() == 0)Game.endGame();
+        else{
+            currentLevel = null;
+            constructNew(levelNo++);
+        }
+    }
     //GETTER,SETTERS
     public static Level getLevel() {
         return currentLevel;
