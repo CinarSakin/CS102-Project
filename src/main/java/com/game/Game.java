@@ -54,7 +54,71 @@ public class Game{
     }
 
     public void startInfinite(){
-        startGame();
+        Scene scene = App.getScene();
+
+        scene.setOnMouseMoved(e -> {
+            lastMouseX = e.getX();
+            lastMouseY = e.getY();
+        });
+        scene.setOnMouseDragged(e -> {
+            lastMouseX = e.getX();
+            lastMouseY = e.getY();
+        });
+
+        scene.setOnKeyPressed(event -> {
+            KeyCode code = event.getCode();
+            if (!activeKeys.contains(code)) {
+                activeKeys.add(code);
+            }
+        });
+
+        scene.setOnKeyReleased(event -> {
+            activeKeys.remove(event.getCode());
+        });
+
+        for (App.GameLayer layer : App.GameLayer.values()) {
+            Canvas c = App.getLayerCanvas(layer);
+            c.widthProperty().bind(scene.widthProperty());
+            c.heightProperty().bind(scene.heightProperty());
+        }
+
+        Level.resetLevel();
+        newGame(1);
+
+        Drawer.setupHUD();
+
+        timer.start();
+
+        scene.setOnMouseClicked(e -> {
+            if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY
+                    && GameSettings.isMouseAttackMode()
+                    && !isPaused
+                    && e.getPickResult().getIntersectedNode() instanceof Canvas) {
+                lastMouseX = e.getX();
+                lastMouseY = e.getY();
+                Point2D mouseWorld = getMouseWorldPosition();
+                Point2D heroCenter = hero.getDimension().getCenter();
+                Point2D mouseDir = mouseWorld.subtract(heroCenter);
+                if (mouseDir.magnitude() > 0) hero.setLastDirection(mouseDir);
+                hero.attack();
+            }
+        });
+
+        scene.setOnKeyPressed(event -> {
+            KeyCode code = event.getCode();
+            boolean freshPress = !activeKeys.contains(code);
+            if (freshPress) activeKeys.add(code);
+            if (freshPress && code == GameSettings.getKeyCode("attack") && !GameSettings.isMouseAttackMode()) hero.attack();
+            if (freshPress && code == GameSettings.getKeyCode("menu")) {
+                HUD.closeMap();
+                isPaused = !isPaused;
+                if (isPaused) stopGame(0);
+                else { timer.start(); App.closePauseMenu.run(); }
+            }
+            if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
+                HUD.toggleMap();
+            if (activeKeys.contains(GameSettings.getKeyCode("swap")))hero.changeWeapon();
+        });
     }
 
     public void startGame() {

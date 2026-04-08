@@ -236,6 +236,4 @@ public class Level {
         return Level.getLevel().areas;
     }
     public static void setHero(Hero aHero){hero = aHero;}
-    
-
 }
