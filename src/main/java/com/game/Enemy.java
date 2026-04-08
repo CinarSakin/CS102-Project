@@ -42,7 +42,7 @@ public class Enemy extends LivingEntity {
                 new Projectile(ProjectileType.ARROW, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
                 break;
             case WALKER:
-                new Projectile(ProjectileType.SLASH, TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
+                new Projectile(ProjectileType.SLASH, TargetType.HERO, Hero.getHero().getDimension().getPos(), Point2D.ZERO, 1, currentArea);
                 break;
         }
     }
