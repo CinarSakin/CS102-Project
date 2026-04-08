@@ -299,9 +299,13 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void getDamaged(double damage){
-        this.health = Math.max(this.health-(damage-armor), 0);
-        this.armor = Math.max(armor-2, 0);
-
+        if (damage > armor) {
+            armor = 0;
+            health -= Math.max(damage-armor, 0);
+        } else {
+            armor -= damage;
+        }
+        
         new LivingStateObject(LivingStateObject.LivingState.TAKE_DAMAGE);
 
         if (this.health == 0){

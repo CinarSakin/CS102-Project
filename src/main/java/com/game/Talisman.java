@@ -5,7 +5,7 @@ public class Talisman extends Item {
     public enum TalismanType {
         TALISMAN_5("/sprites/items/talisman-5.png", "Purple Gem", "Increases walk speed", 1, 0.10, 0, 0, 0, 0, 0.8),
         TALISMAN_4("/sprites/items/talisman-4.png", "Shadow Ring", "Boosts everything", 1, 0.02, 40, 10, 10, 0.4, 1),
-        TALISMAN_3("/sprites/items/talisman-3.png", "Armor Ring", "Increases Armor", 1, 0.20, 0, 5, 0, 0, 0),
+        TALISMAN_3("/sprites/items/talisman-3.png", "Armor Ring", "Increases Armor", 1, 0.20, 0, 10, 0, 0, 0),
         TALISMAN_2("/sprites/items/talisman-2.png", "Blue Charm", "Increases damage and speed", 1, 0.30, 0, 0, 10, 0.2, 0),
         TALISMAN_1("/sprites/items/talisman-1.png", "Gold Ring", "Increases max health.", 1, 0.10, 25, 0, 0, 0, 0);
 
