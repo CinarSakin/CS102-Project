@@ -19,7 +19,7 @@ public class Game{
 
     private static int levelCount = 1;
     private static char saveslot;
-    private Level level;
+    public static Level level;
     public static Hero hero;
     public static int type = 0;//0 standard, 1 infinite
 
@@ -54,46 +54,47 @@ public class Game{
     }
 
     public void startInfinite(){
-        //TODO
-        Scene scene = App.getScene();
-
-        scene.setOnKeyPressed(event -> {
-            KeyCode code = event.getCode();
-            if (!activeKeys.contains(code)) {
-                activeKeys.add(code);
-            }
-        });
-
-        scene.setOnKeyReleased(event -> {
-            activeKeys.remove(event.getCode());
-        });
-
-        for (App.GameLayer layer : App.GameLayer.values()) {
-            Canvas c = App.getLayerCanvas(layer);
-            c.widthProperty().bind(scene.widthProperty());
-            c.heightProperty().bind(scene.heightProperty());
-        }
-        Drawer.setupHUD();
-        while(!Hero.isDead){
-            newGame(levelCount);
-            timer.start();
-        }
-            
-        scene.setOnKeyPressed(event -> {
-            KeyCode code = event.getCode();
-            boolean freshPress = !activeKeys.contains(code);
-            if (freshPress) activeKeys.add(code);
-            if (freshPress && code == GameSettings.getKeyCode("attack")) hero.attack();
-            if (freshPress && code == GameSettings.getKeyCode("menu")) {
-                HUD.closeMap();
-                isPaused = !isPaused;
-                if (isPaused) stopGame();
-                else {timer.start(); App.closePauseMenu.run();}
-            }
-            if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
-                HUD.toggleMap();
-        });
+        startGame();
     }
+    // public void startInfinite(){
+    //     //TODO
+    //     Scene scene = App.getScene();
+
+    //     scene.setOnKeyPressed(event -> {
+    //         KeyCode code = event.getCode();
+    //         if (!activeKeys.contains(code)) {
+    //             activeKeys.add(code);
+    //         }
+    //     });
+
+    //     scene.setOnKeyReleased(event -> {
+    //         activeKeys.remove(event.getCode());
+    //     });
+
+    //     for (App.GameLayer layer : App.GameLayer.values()) {
+    //         Canvas c = App.getLayerCanvas(layer);
+    //         c.widthProperty().bind(scene.widthProperty());
+    //         c.heightProperty().bind(scene.heightProperty());
+    //     }
+    //     Drawer.setupHUD();
+    //         newGame(levelCount);
+    //         timer.start();
+            
+    //     scene.setOnKeyPressed(event -> {
+    //         KeyCode code = event.getCode();
+    //         boolean freshPress = !activeKeys.contains(code);
+    //         if (freshPress) activeKeys.add(code);
+    //         if (freshPress && code == GameSettings.getKeyCode("attack")) hero.attack();
+    //         if (freshPress && code == GameSettings.getKeyCode("menu")) {
+    //             HUD.closeMap();
+    //             isPaused = !isPaused;
+    //             if (isPaused) stopGame();
+    //             else {timer.start(); App.closePauseMenu.run();}
+    //         }
+    //         if (freshPress && code == GameSettings.getKeyCode("map") && !isPaused)
+    //             HUD.toggleMap();
+    //     });
+    // }
 
     public void startGame() {
 
@@ -144,7 +145,7 @@ public class Game{
     }
 
     public static void endGame(){
-        //TODO
+        App.drawGameEnding();
     }
 
     private void renderGame() {

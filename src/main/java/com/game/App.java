@@ -597,6 +597,40 @@ public class App extends Application {
         fade.play();
     }
 
+    public static void drawGameEnding() {
+        if (gameOverShown) return;
+        gameOverShown = true;
+
+        activeGame.stopGame();
+
+        StackPane overlay = new StackPane();
+        overlay.setBackground(bgFill);
+        overlay.setOpacity(0);
+
+        Text text = new Text("YOU WON");
+        text.fontProperty().bind(fontPropBig);
+        text.setFill(Color.WHITE);
+
+        Button menuBtn = createStyledButton("MAIN MENU", 0);
+        menuBtn.setOnAction(e -> {
+            gameOverShown = false;
+            gamePane.getChildren().remove(overlay);
+            gamePane.setVisible(false);
+            menuPane.setVisible(true);
+        });
+
+        VBox box = new VBox(uiSize(30), text, menuBtn);
+        box.setAlignment(Pos.CENTER);
+        overlay.getChildren().add(box);
+
+        gamePane.getChildren().add(overlay);
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(0.5), overlay);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+    }
+
     private static void onSlotClicked(char saveSlot) {
         menuPane.setVisible(false);
 

@@ -121,6 +121,7 @@ class Portal extends WorldObject {
     @Override
     public boolean interact() {
         if (!isHeroInRange()) return false;
+        System.out.println("ben buranın hakimi");
         Level.endLevel();
         return true;
     }
