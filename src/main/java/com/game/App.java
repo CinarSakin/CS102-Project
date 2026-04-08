@@ -67,6 +67,7 @@ public class App extends Application {
     private static Canvas[] layers = new Canvas[GameLayer.values().length];
     private static Background bgFill;
     private static boolean qualifiedUser = true;
+    private static boolean settingsFromGame =false;
 
     public static final DoubleProperty UI_SCALE = new SimpleDoubleProperty(1.0); // load from save
     public static final DoubleProperty uiSizeProp = new SimpleDoubleProperty(1.0);
@@ -441,7 +442,12 @@ public class App extends Application {
                 primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST))
             );
 
-            exitSettingsBtn.setOnAction(e -> changeMenu(mainMenu));
+            exitSettingsBtn.setOnAction(e -> {
+                if(!settingsFromGame)changeMenu(mainMenu);
+                settingsFromGame = false;
+                settingsMenu.setVisible(false);
+                gamePane.setVisible(true);
+            });
 
             standardBtn.setOnAction(e -> changeMenu(saveMenu));
             infiniteBtn.setOnAction(e -> {
@@ -900,6 +906,11 @@ public class App extends Application {
                 gamePane.getChildren().remove(pauseMenuPane);
                 activeGame.unPauseTimer();
             }
+        });
+        settings.setOnAction(e -> {
+            gamePane.setVisible(false);
+            settings.setVisible(true);
+            settingsFromGame = true;
         });
         SaveNExt.setOnAction(event -> {
             if(activeGame != null)
