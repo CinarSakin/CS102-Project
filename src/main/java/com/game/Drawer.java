@@ -28,6 +28,8 @@ public class Drawer {
 
         if (e instanceof Projectile && ((Projectile)e).getType() == ProjectileType.BOMB){
             gc = App.getLayerGC(App.GameLayer.VFX);
+        }else if (e instanceof Plate) {
+            gc = App.getLayerGC(App.GameLayer.GROUND);
         }else{
             gc = App.getLayerGC(App.GameLayer.ENTITIES);
         }

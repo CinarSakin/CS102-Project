@@ -131,6 +131,7 @@ public class Level {
 
         for (Room r : rooms) {
             r.spawnEntities();
+            r.setupRoom();
         }
 
         this.areas.clear();

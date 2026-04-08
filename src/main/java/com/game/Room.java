@@ -1,7 +1,8 @@
 package com.game;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.game.LivingEntity.LivingType;
 
@@ -109,6 +110,10 @@ public class Room extends Area {
         return Math.round(value/Level.gridSize) * Level.gridSize;
     }
 
+    public void setupRoom() {
+        type.setupRoom(this);
+    }
+
     public void spawnEntities(){
         //ToDo
         switch (this.type) {
@@ -188,25 +193,57 @@ public class Room extends Area {
         NORMAL,
         LOOT,
         PUZZLE{
-            ArrayList<Plate> presses = new ArrayList<Plate>();
-            public void update(double dt, Room a){
-                ArrayList<Entity> copy = (ArrayList<Entity>)a.getEntities().clone();
-                for(Entity e: copy){
-                    if(e instanceof Plate && e.getDimension().insideOf(a)){
-                        presses.add((Plate)e);
+            Map<Area, ArrayList<Plate>> pressMap = new HashMap<>();
+
+            public void update(double dt, Area a){
+                ArrayList<Plate> presses = pressMap.get(a);
+                if (presses == null || presses.isEmpty()) return;
+
+                boolean allPressed = true;
+                for (Plate p : presses) {
+                    if (!p.getPressed()) { allPressed = false; break; }
+                }
+
+                if (allPressed) {
+                    boolean valid =
+                        presses.get(0).pressTime.isBefore(presses.get(1).pressTime) &&
+                        presses.get(1).pressTime.isBefore(presses.get(2).pressTime) &&
+                        presses.get(2).pressTime.isBefore(presses.get(3).pressTime);
+
+                    if (valid) {
+                        for (int i = 0; i < 2; i++) {
+                            for (int j = 0; j < 2; j++) {
+                                new DroppedItem(
+                                    a.dim.getCenter().add((i-.5)*Level.gridSize, (j-.5)*Level.gridSize),
+                                    a, Item.randomItem(1.5)
+                                );
+                            }
+                        }
+                        pressMap.remove(a);
+                    } else {
+                        for (Plate p : presses) {
+                            p.interactable = true;
+                            p.pressed = false;
+                            p.reloadImages();
+                        }
                     }
                 }
-                boolean unlocked = presses.get(0).getPressed() && presses.get(1).getPressed() && 
-                presses.get(2).getPressed() && presses.get(3).getPressed();
-                presses.get(0).setUnlocked(unlocked);
-                presses.get(1).setUnlocked(unlocked);
-                presses.get(2).setUnlocked(unlocked);
-                presses.get(3).setUnlocked(unlocked);
+            }
+
+            public void setupRoom(Area a) {
+                ArrayList<Plate> presses = new ArrayList<>();
+                for (Entity e : a.getEntities()) {
+                    if (e instanceof Plate && e.getDimension().insideOf(a)) {
+                        presses.add((Plate) e);
+                    }
+                }
+                pressMap.put(a, presses);
             }
         },
         BOSS;
         private RoomType(){}
-        public void update(double dt, Room a){}
+        public void update(double dt, Area a){}
+        public void setupRoom(Area a){}
     }
 
 }

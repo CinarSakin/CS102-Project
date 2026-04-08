@@ -1,5 +1,7 @@
 package com.game;
 
+import java.time.LocalTime;
+
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
@@ -69,14 +71,13 @@ class Chest extends WorldObject {
 class Plate extends WorldObject {
 
     public Item item;
-    public boolean pressed;
-    public boolean unlocked;
+    public transient boolean pressed;
+    public transient LocalTime pressTime;
 
     public Plate(Point2D position, Area currentArea, Item item, int index) {
         super(position, 1, 1, currentArea, Level.gridSize*4, "INTERACT", ("'" + index + "'"));
         this.item = item;
         this.pressed = false;
-        this.unlocked = false;
         this.dimension.moveCenterTo(position.getX(), position.getY()-Level.gridSize/2);
         reloadImages();
     }
@@ -84,20 +85,13 @@ class Plate extends WorldObject {
     @Override
     public boolean interact() {
         if (!isHeroInRange() || !interactable) return false;
-        //GameStats.getInstance().puzzleSolved++;
-        this.pressed = true;
+        pressed = !pressed;
+        if (pressed) pressTime = LocalTime.now();
         this.interactable = false;
         reloadImages();
         return true;
     }
 
-    @Override
-    public void update(double dt){
-        if(unlocked)new DroppedItem(currentArea.getDimension().getCenter(),currentArea,item);
-    }
-
-    public void setUnlocked(boolean a){unlocked = a;}
-    public boolean getUnlocked(){return unlocked;}
     public boolean getPressed(){return pressed;}
 
     @Override
