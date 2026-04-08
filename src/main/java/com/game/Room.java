@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
 
+
 public class Room extends Area {
     //class variables
     public static int minSize = Level.gridSize*16;
@@ -126,7 +127,7 @@ public class Room extends Area {
             case BOSS:
                 //Create a boss in the middle of the room which can or cannot move according to the move patern of its
                 //new Boss(new Point2D(this.getDimension().getWidth()/2, this.getDimension().getHeight()/2), this, dif);
-                new Enemy(LivingEntity.LivingType.BOSS , new Point2D(this.getDimension().getWidth()/2, this.getDimension().getHeight()/2), this, dif);
+                new Boss(new Point2D(this.getDimension().getWidth()/2, this.getDimension().getHeight()/2), this, dif);
                 
                 break;
                 
