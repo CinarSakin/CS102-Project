@@ -200,10 +200,12 @@ public class App extends Application {
             menuPane.getChildren().add(mainMenu);
 
             // settings menu
-            Button resetControlsBtn = createStyledButton("RESET CONTROLS", 1);
+            Button resetControlsBtn = createStyledButton("RESET CONTROLS", 0);
             Button resetSettingsBtn = createStyledButton("RESET SETTINGS", 0);
             StackPane resetSettingsGraphic = (StackPane)(resetSettingsBtn.getGraphic());
             resetSettingsGraphic.getChildren().get(1).setScaleX(.7);
+            StackPane resetControlsGraphic = (StackPane)(resetControlsBtn.getGraphic());
+            resetControlsGraphic.getChildren().get(1).setScaleX(.67);
 
             Button exitSettingsBtn = createStyledButton("CLOSE", 0);
             Label settingsTitle = new Label("SETTINGS");
@@ -255,6 +257,8 @@ public class App extends Application {
             visualsGrid.setAlignment(Pos.CENTER_LEFT);
 
             Button uiScaleBtn = createStyledButton("UI Scale", 1);
+            uiScaleBtn.setDisable(true);
+            uiScaleBtn.setOpacity(1);
             Button uiScaleValue = createStyledButton(GameSettings.getUiScaleLabel(), 1);
             uiScaleValue.setDisable(true);
             uiScaleValue.setOpacity(0.9);
@@ -271,9 +275,9 @@ public class App extends Application {
             visualsGrid.add(uiScaleValue, 1, 0);
             visualsGrid.add(uiScaleSlider, 0, 1, 2, 1);
 
-            Button attackInputBtn = createStyledButton("Attack Input", 1);
+            Button attackInputBtn = createStyledButton("Attack", 1);
             attackInputBtn.setDisable(true);
-            attackInputBtn.setOpacity(0.9);
+            attackInputBtn.setOpacity(1);
             Button attackInputValue = createStyledButton(GameSettings.instance.attackInputMode, 1);
             attackInputValue.setOnAction(e -> {
                 String next = GameSettings.isMouseAttackMode() ? "KEYBOARD" : "MOUSE";
