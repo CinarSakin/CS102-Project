@@ -108,9 +108,9 @@ public abstract class LivingEntity extends Entity {
     public LivingEntity(LivingType lType, Point2D position, Area currentArea, double diffMulti) {
         super(new Dimension(position.getX(), position.getY(), lType.size.getX(), lType.size.getY()), currentArea);
         this.maxHealth = (int)(lType.maxHealth * diffMulti);
-        this.health = this.maxHealth;
-        this.armor = lType.armor * diffMulti;
-        this.damage = lType.damage * diffMulti;
+        this.health = this.maxHealth* (1+(diffMulti/10));
+        this.armor = lType.armor * (1+(diffMulti/10));
+        this.damage = lType.damage * (1+(diffMulti/10));
         this.walkSpeed = lType.walkSpeed;
         this.attackSpeed = lType.attackSpeed;
         this.attackRange = lType.attackRange;
