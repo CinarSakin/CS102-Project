@@ -211,7 +211,7 @@ public class App extends Application {
             controlsGrid.setVgap(8);
             controlsGrid.setAlignment(Pos.CENTER_LEFT);
 
-            String[] controlActions = {"up", "down", "left", "right", "attack", "interact", "map"};
+            String[] controlActions = {"up", "down", "left", "right", "attack", "interact", "map","swap"};
             Button[] keyButtons = new Button[controlActions.length];
             javafx.beans.property.ObjectProperty<String> waitingForKey = new SimpleObjectProperty<>(null);
 

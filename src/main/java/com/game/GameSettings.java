@@ -32,6 +32,7 @@ public class GameSettings {
     public String keyInteract = "E";
     public String keyMenu = "ESCAPE";
     public String keyMap = "M";
+    public String keySwap = "Q";
 
     // last window properties
     public double windowX = -1;
@@ -91,6 +92,7 @@ public class GameSettings {
             case "interact" -> instance.keyInteract = key;
             case "menu" -> instance.keyMenu = key;
             case "map" -> instance.keyMap = key;
+            case "swap" -> instance.keySwap = key;
         }
     }
 
@@ -104,6 +106,7 @@ public class GameSettings {
             case "interact" -> instance.keyInteract;
             case "menu" -> instance.keyMenu;
             case "map" -> instance.keyMap;
+            case "swap" -> instance.keySwap;
             default -> "";
         };
     }
@@ -132,6 +135,7 @@ public class GameSettings {
         instance.keyInteract = "E";
         instance.keyMenu = "ESCAPE";
         instance.keyMap = "M";
+        instance.keySwap = "Q";
     }
 
     public static void resetAll() {

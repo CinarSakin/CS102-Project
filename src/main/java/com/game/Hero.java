@@ -43,9 +43,17 @@ public class Hero extends LivingEntity {
 
     @Override
     public void attack() {
-        if (canAttack() && weapons[heldWeapon] != null) {
-            weapons[heldWeapon].use();
+        if (canAttack() && weapons[0] != null) {
+            weapons[0].use();return;
+        }else if(canAttack()&&weapons[1] != null){
+            weapons[1].use();return;
         }
+    }
+
+    public void changeWeapon(){
+        Weapon temp = weapons[0];
+        weapons[0] = weapons[1];
+        weapons[1] = temp;
     }
 
     public void useConsumable(int index) {
