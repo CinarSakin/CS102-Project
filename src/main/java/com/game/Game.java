@@ -338,7 +338,7 @@ public class Game{
     }
 
     public void saveCurrentGame() {
-        if (this.level != null) {
+        if (this.level != null && type != 1) {
             SaveManager.saveLevel(this.level, saveslot);
         }
     }

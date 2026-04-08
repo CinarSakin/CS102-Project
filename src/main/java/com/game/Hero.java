@@ -34,7 +34,7 @@ public class Hero extends LivingEntity {
         }
         if (health <= 0 && !isDead) {
             isDead = true;
-            PauseTransition delay = new PauseTransition(Duration.seconds(2));
+            PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
             delay.setOnFinished(e -> App.showGameOver());
             delay.play();
         }
@@ -59,7 +59,6 @@ public class Hero extends LivingEntity {
     }
 
     public void useConsumable(int index) {
-        // TODO
         consumables[index].use();
         consumables[index] = null;
     }
@@ -84,7 +83,6 @@ public class Hero extends LivingEntity {
     }
 
     public void dropItem(Item item, double x, double y) {
-        // TODO
         new DroppedItem(new Point2D(x, y), currentArea, item);
     }
     
@@ -119,9 +117,6 @@ public class Hero extends LivingEntity {
     //incremented getHero()
     public static Hero getHero() {
         return currentHero;
-    }
-    public void setImage(){
-        //seting image iplementation...
     }
     public void setLastDirection(Point2D direction){
         if (direction.magnitude() > 0) {

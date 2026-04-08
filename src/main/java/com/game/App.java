@@ -33,6 +33,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
@@ -381,7 +382,9 @@ public class App extends Application {
             leaderboardContent.setSpacing(8);
             leaderboardContent.setPadding(new Insets(16));
             leaderboardContent.setAlignment(Pos.TOP_CENTER);
-            leaderboardContent.setStyle("-fx-background-color: rgba(42, 20, 80, 0.3);");
+            leaderboardContent.setBackground(new Background(
+                new BackgroundFill(Color.rgb(18, 14, 37, .9), null, null)
+            ));
 
             Label loadingLabel = new Label("Loading...");
             loadingLabel.setTextFill(Color.WHITE);
@@ -396,7 +399,8 @@ public class App extends Application {
             leaderboardContainer.setAlignment(Pos.TOP_CENTER);
             leaderboardContainer.setSpacing(16);
             leaderboardContainer.setPadding(new Insets(18));
-            leaderboardContainer.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
+            leaderboardContainer.setStyle("-fx-background-color: rgba(0,0,0,0);");
+
             VBox.setVgrow(leaderboardScroll, Priority.ALWAYS);
 
             StackPane.setAlignment(exitLeaderboardBtn, Pos.BOTTOM_RIGHT);
@@ -695,30 +699,41 @@ public class App extends Application {
 
     static boolean gameOverShown = false;
 
+    private static HBox scoreRow(String label, int value, int gainedPoints) {
+        Label left = new Label(label + ": " + value);
+        left.fontProperty().bind(fontPropSmall);
+        left.setTextFill(Color.WHITE);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Label right = new Label("+"+String.valueOf(gainedPoints*value));
+        right.fontProperty().bind(fontPropSmall);
+        right.setTextFill(Color.rgb(179, 157, 219));
+        HBox row = new HBox(left, spacer, right);
+        row.setMaxWidth(Double.MAX_VALUE);
+        return row;
+    }
+
     public static VBox scorePane(){
         GameStats a = GameStats.getInstance();
-        Text time = new Text("Time Passed: " + (int)a.getTimePassed());
+
+        Label time = new Label("Time Passed: " + (int)a.getTimePassed());
         time.fontProperty().bind(fontPropSmall);
-        time.setFill(Color.WHITE);
-        Text score = new Text("Score: " + a.calculateScore());
+        time.setTextFill(Color.WHITE);
+        Label score = new Label("Score: " + a.calculateScore());
         score.fontProperty().bind(fontPropSmall);
-        score.setFill(Color.WHITE);
-        Text dash = new Text("--------------------------------------------------------");
-        dash.fontProperty().bind(fontPropSmall);
-        dash.setFill(Color.WHITE);
-        Text enemies = new Text("Enemies Killed: " + a.getEnemiesKilled() + " X100");
-        enemies.fontProperty().bind(fontPropSmall);
-        enemies.setFill(Color.WHITE);
-        Text chests = new Text("Chest: " + a.getChestsOpened() + " X10");
-        chests.fontProperty().bind(fontPropSmall);
-        chests.setFill(Color.WHITE);
-        Text boss = new Text("Boss' Killed: " + a.getBossKilled() + " X500");
-        boss.fontProperty().bind(fontPropSmall);
-        boss.setFill(Color.WHITE);
-        Text level = new Text("Levels Cleared: " + a.getLevelsCleared() + " X500");
-        level.fontProperty().bind(fontPropSmall);
-        level.setFill(Color.WHITE);
-        VBox scorePane = new VBox(time,score,dash,enemies,chests,boss,level);
+        score.setTextFill(Color.WHITE);
+
+        Separator sep = new Separator();
+        sep.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+        sep.setPadding(new Insets(1, 0, 1, 0));
+
+        HBox enemies = scoreRow("Enemies Killed", a.getEnemiesKilled(), 100);
+        HBox chests  = scoreRow("Chests Opened",  a.getChestsOpened(),  50);
+        HBox boss    = scoreRow("Bosses Killed",   a.getBossKilled(),    50);
+        HBox level   = scoreRow("Levels Cleared",  a.getLevelsCleared(), 300);
+
+        VBox scorePane = new VBox(6, time, score, sep, enemies, chests, boss, level);
+        scorePane.setMaxWidth(Double.MAX_VALUE);
         return scorePane;
     }
 
@@ -727,7 +742,8 @@ public class App extends Application {
         gameOverShown = true;
         activeGame.stopGame(1);
 
-        
+        Hero.currentHero = null;
+        Game.hero = null;
 
         StackPane overlay = new StackPane();
         overlay.setBackground(bgFill);
@@ -797,6 +813,8 @@ public class App extends Application {
             box = new VBox(uiSize(16), text, scorePane(), tfPane, saveBtn, statusLabel, menuBtn);
         }
         box.setAlignment(Pos.CENTER);
+        box.maxWidthProperty().bind(scene.widthProperty().multiply(0.7));
+        StackPane.setAlignment(box, Pos.CENTER);
         overlay.getChildren().add(box);
 
         gamePane.getChildren().add(overlay);
@@ -853,7 +871,7 @@ public class App extends Application {
 
     private static void startInfinite(){
         menuPane.setVisible(false);
-        activeGame = new Game('z');
+        activeGame = new Game('X');
         activeGame.setType(1);
         activeGame.startInfinite();
         gamePane.setVisible(true);

@@ -36,7 +36,7 @@ public class Projectile extends Entity {
         ),
         BOSS_ORB(
             new Image(Projectile.class.getResourceAsStream("/sprites/projectiles/boss_orb.png")),
-            3, new Point2D(64, 64)
+            5, new Point2D(64, 64)
         );
 
         private Image image;
@@ -144,7 +144,7 @@ public class Projectile extends Entity {
             for (LivingEntity target : getTargets()){
                 double dist = target.getDimension().distanceTo(dimension);
                 if (dist <= 32){
-                    target.getDamaged(50*dt); 
+                    target.getDamaged(30*dt); 
                     Hero.getHero().setEffect(EffectType.FEAR, .3);
                 }                    
             }
