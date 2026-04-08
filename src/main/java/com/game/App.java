@@ -10,6 +10,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
@@ -31,6 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -87,7 +89,7 @@ public class App extends Application {
     public static final ObjectProperty<Font> fontPropSmall = new SimpleObjectProperty<>();
     public static final ObjectProperty<Font> fontPropMedium = new SimpleObjectProperty<>();
     public static final ObjectProperty<Font> fontPropBig = new SimpleObjectProperty<>();
-    private String bytebounceFontFamily;
+    private static String bytebounceFontFamily;
 
     public static Runnable closePauseMenu;
 
@@ -116,6 +118,8 @@ public class App extends Application {
 
             GameSettings settings = SaveManager.loadSettings();
             UI_SCALE.set(settings.uiScale);
+
+            new Thread(MongoManager::connect).start();
 
             bgFill = new Background(new BackgroundFill(Color.rgb(18, 14, 37), null, null));
             
@@ -595,11 +599,10 @@ public class App extends Application {
 
     public static VBox scorePane(){
         GameStats a = GameStats.getInstance();
-        a.calculateScore();
-        Text time = new Text("Time Passed: " + a.getTimePassed());
+        Text time = new Text("Time Passed: " + (int)a.getTimePassed());
         time.fontProperty().bind(fontPropSmall);
         time.setFill(Color.WHITE);
-        Text score = new Text("Score: " + a.getScore());
+        Text score = new Text("Score: " + a.calculateScore());
         score.fontProperty().bind(fontPropSmall);
         score.setFill(Color.WHITE);
         Text dash = new Text("--------------------------------------------------------");
@@ -645,10 +648,55 @@ public class App extends Application {
             menuPane.setVisible(true);
         });
         VBox box;
-        if(Game.getType() == 0){    
+        if (Game.getType() == 0) {
             box = new VBox(uiSize(30), text, menuBtn);
-        }else{
-            box = new VBox(uiSize(30), text, scorePane(), menuBtn);
+        } else {
+            Label statusLabel = new Label("");
+            statusLabel.fontProperty().bind(fontPropSmall);
+            statusLabel.setTextFill(Color.WHITE);
+
+            TextField usernameField = new TextField();
+            usernameField.setPromptText("Enter username");
+        //    usernameField.setMaxWidth(uiSize(400));
+        //    usernameField.setPrefWidth(uiSize(400));
+            usernameField.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-text-fill: black;" +
+                "-fx-prompt-text-fill: #555555;" +
+                "-fx-font-family: '" + bytebounceFontFamily + "';" +
+                "-fx-font-size:" + uiSize(32) + "px;" +
+                "-fx-padding: 9 10 2 10;" +
+                "-fx-alignment: CENTER;"
+            );
+            usernameField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal.length() > 12) {
+                    usernameField.setText(newVal.substring(0, 12));
+                }
+            });
+            usernameField.setScaleX(.85);
+            ImageView tfBg = new ImageView(new Image(
+                App.class.getResourceAsStream("/sprites/ui/textField.png"),
+                uiSize(210), uiSize(43), false, true));
+            StackPane tfPane = new StackPane(tfBg, usernameField);
+            tfPane.setMaxWidth(uiSize(190));
+            StackPane.setAlignment(usernameField, Pos.CENTER);
+
+            Button saveBtn = createStyledButton("SAVE SCORE", 0);
+            saveBtn.setOnAction(e -> {
+                String name = usernameField.getText().trim();
+                if (name.length() < 3) { statusLabel.setText("Name too short (min 3 chars)."); return; }
+                if (name.length() > 12) { statusLabel.setText("Name too long (max 12 chars)."); return; }
+                saveBtn.setDisable(true);
+                new Thread(() -> {
+                    LeaderboardManager.submitScore(name);
+                    Platform.runLater(() -> {
+                        statusLabel.setText("Score saved!");
+                        statusLabel.setTextFill(Color.LIGHTGREEN);
+                    });
+                }).start();
+            });
+
+            box = new VBox(uiSize(16), text, scorePane(), tfPane, saveBtn, statusLabel, menuBtn);
         }
         box.setAlignment(Pos.CENTER);
         overlay.getChildren().add(box);
