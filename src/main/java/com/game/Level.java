@@ -117,9 +117,6 @@ public class Level {
         int index =(int) (Math.random()*rooms.size());
         rooms.get(index).setStartingRoom();
         startingRoom = rooms.get(index);
-
-        startingRoom = rooms.get((int) (Math.random() * rooms.size()));
-        startingRoom.setStartingRoom();
         
         int bossIndex = (int) (Math.random()*rooms.size());
         while(!rooms.get(bossIndex).setBossRoom()){bossIndex = (int) (Math.random()*rooms.size());}
