@@ -40,27 +40,23 @@ class Chest extends WorldObject {
         this.open = false;
         this.unlocked = false;
         this.dimension.moveCenterTo(position.getX(), position.getY()-Level.gridSize/2);
-        loadChestImage();
-    }
-
-    private void loadChestImage() {
-        String path = open ? "/sprites/world/chest_open.png" : "/sprites/world/chest_closed.png";
-        double w = dimension.getWidth(), h = dimension.getHeight();
-        this.imageToDraw = new Image(getClass().getResourceAsStream(path), w, h, false, false);
+        reloadImages();
     }
 
     @Override
     public boolean interact() {
         if (!isHeroInRange() || open) return false;
         this.open = true;
-        loadChestImage();
+        reloadImages();
         new DroppedItem(this.dimension.getCenter().add(new Point2D(0, Level.gridSize)), currentArea, item);
         return true;
     }
 
     @Override
     public void reloadImages() {
-        loadChestImage();
+        String path = open ? "/sprites/world/chest_open.png" : "/sprites/world/chest_closed.png";
+        double w = dimension.getWidth(), h = dimension.getHeight();
+        this.imageToDraw = new Image(getClass().getResourceAsStream(path), w, h, false, false);
     }
 }
 
@@ -72,21 +68,17 @@ class DroppedItem extends WorldObject {
     public DroppedItem(Point2D position, Area currentArea, Item item) {
         super(position, .8, .8, currentArea, Level.gridSize*2);
         this.item = item;
-        refreshImage();
-    }
-
-    private void refreshImage() {
-        this.imageToDraw = item.loadImageAtSize(dimension.getWidth());
+        reloadImages();
     }
 
     @Override
     public void update(double dt) {
-        if (imageToDraw == null) refreshImage();
+        if (imageToDraw == null) reloadImages();
     }
 
     @Override
     public void reloadImages() {
-        refreshImage();
+        this.imageToDraw = item.loadImageAtSize(dimension.getWidth());
     }
 
     public boolean interact() {
@@ -117,4 +109,24 @@ class Gate extends WorldObject {
         this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/gate.png"), dimension.getWidth(), dimension.getHeight(), false, false);
     }
 
+}
+
+class Portal extends WorldObject {
+    
+    public Portal(Point2D position, Area currentArea) {
+        super(position, 1.5, 1.83, currentArea, Level.gridSize*3);
+        reloadImages();
+    }
+
+    @Override
+    public boolean interact() {
+        if (!isHeroInRange()) return false;
+        // use portal
+        return true;
+    }
+
+    @Override
+    public void reloadImages() {
+        this.imageToDraw = new Image(getClass().getResourceAsStream("/sprites/world/portal.png"), dimension.getWidth(), dimension.getHeight(), false, false);
+    }
 }
