@@ -14,6 +14,7 @@ public class AnimationManager {
     private static final Map<String, Image> imageCache = new HashMap<>();
 
  //   private Animats Animat;
+ //
 
     /*
     enum Animats {
