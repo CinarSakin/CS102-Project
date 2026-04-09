@@ -306,7 +306,7 @@ public abstract class LivingEntity extends Entity {
         
         new LivingStateObject(LivingStateObject.LivingState.TAKE_DAMAGE);
 
-        if (this.health == 0){
+        if (this.health <= 0){
             GameStats.getInstance().enemiesKilled++;
             new LivingStateObject(LivingStateObject.LivingState.DIE);
             AnimationManager.updateImage(this);

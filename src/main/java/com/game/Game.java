@@ -263,7 +263,7 @@ public class Game{
     }
 
     private void handleInput() {
-        if (hero == null || Hero.isDead) return;
+        if (hero == null) return;
 
         Point2D velocity = new Point2D(0, 0);
         if (activeKeys.contains(GameSettings.getKeyCode("up"))) velocity = velocity.add(0, -1);
@@ -320,7 +320,6 @@ public class Game{
 
     private void loadGame(char aSaveSlot) {
         App.gameOverShown = false;
-        Hero.isDead = false;
         Level.resetLevel();
         try {
             level = Level.constructFromSave(aSaveSlot);

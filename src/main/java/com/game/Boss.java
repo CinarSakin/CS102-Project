@@ -52,21 +52,9 @@ public class Boss extends Enemy {
         new Projectile(Projectile.ProjectileType.BOSS_ORB, Projectile.TargetType.HERO, dimension.getPos(), direction, 1, currentArea);
     }
 
-    /*
-    \     /\
-     \     /
-      \___/
-    */
     public void ramAttack() { // spiral şeklinde hareket ediyo 
-        boolean goNegative = false;
-        double distancex = 1;
-        double distancey = 1;
-
-        for (int i = 0; i < 10; i++) {
-            int j = -i;
-
-            this.moveBy(i, j);
-            this.moveBy(i, -j);
+        for (int i = 0; i < 3; i++) {
+            double rand = Math.random();
         }
     }
 }
