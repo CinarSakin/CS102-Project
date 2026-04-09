@@ -163,6 +163,9 @@ public abstract class LivingEntity extends Entity {
                 case FEAR:
                     walkSpeed *= -1;
                     break;
+                case KNOCKBACK:
+                    walkSpeed *= -10;
+                    break;
                 case SPEED_UP:
                     walkSpeed *= 1.5;
                     break;
@@ -197,7 +200,7 @@ public abstract class LivingEntity extends Entity {
         effects.add(new Effect(this, effectType, duration));
     }
 
-    private boolean hasEffect(EffectType type) {
+    public boolean hasEffect(EffectType type) {
         for (Effect e : effects) {
             if (e.getEffectType() == type) return true;
         }

@@ -1,6 +1,7 @@
 package com.game;
 
 import com.game.LivingEntity.LivingStateObject.LivingState;
+import com.game.Sword.SwordType;
 
 import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
@@ -22,6 +23,7 @@ public class Hero extends LivingEntity {
         super(LivingType.HERO, position, currentArea, diffMulti);
         
         weapons[0] = starterSword;
+        weapons[1] = new Sword(SwordType.KNOCKBACK_STICK, 1);
         this.heldWeapon = 0;
         currentHero = this; 
     }

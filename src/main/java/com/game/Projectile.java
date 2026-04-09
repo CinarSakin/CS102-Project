@@ -125,6 +125,9 @@ public class Projectile extends Entity {
                             else if (heldSword.swordType.equals(SwordType.ICY)) {
                                 target.setEffect(EffectType.FREEZE, 3);
                             }
+                            else if (heldSword.swordType.equals(SwordType.KNOCKBACK_STICK)) {
+                                target.setEffect(EffectType.KNOCKBACK, .7);
+                            }
                             hitEntities.add(target);
                         }                    
                 }

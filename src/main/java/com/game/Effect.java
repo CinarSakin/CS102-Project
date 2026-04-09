@@ -14,6 +14,7 @@ public class Effect {
                 if (targetEntity instanceof Enemy) ((Enemy)targetEntity).flee();
             }
         },
+        KNOCKBACK(-1),
         STUN(-1),
         BURN(1) {
             @Override

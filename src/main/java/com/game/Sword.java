@@ -41,6 +41,14 @@ public class Sword extends Weapon {
             4.5,
             7,
             0
+        ),
+        KNOCKBACK_STICK(
+            "/sprites/items/knockback_stick.png",
+            "Knockback Stick",
+            "Sends the enemies to the moon!!",
+            10,
+            1,
+            0
         );
 
         public final String imagePath;

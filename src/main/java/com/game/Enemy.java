@@ -18,7 +18,7 @@ public class Enemy extends LivingEntity {
     
     @Override
     public void update(double dt) {
-        if (!inAttackRange() && inRange()) {
+        if (hasEffect(EffectType.FEAR) || hasEffect(EffectType.KNOCKBACK) || (!inAttackRange() && inRange())) {
             super.follow(Hero.getHero());
         } else {
             if (canAttack() && inAttackRange()) {
