@@ -122,7 +122,7 @@ public class Level {
         while(!rooms.get(bossIndex).setBossRoom()){bossIndex = (int) (Math.random()*rooms.size());}
         bossRoom = rooms.get(bossIndex);
 
-        if (Game.hero == null){
+        if (Game.hero == null || Hero.getHero() == null){
             Game.hero = new Hero(
                 startingRoom.getDimension().getCenter().subtract(new Point2D(8, 8)),
                 Sword.STARTER_SWORD, 1, startingRoom

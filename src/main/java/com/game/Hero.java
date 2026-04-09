@@ -1,6 +1,5 @@
 package com.game;
 
-import com.game.Bow.BowType;
 import com.game.LivingEntity.LivingStateObject.LivingState;
 
 import javafx.animation.PauseTransition;
@@ -21,9 +20,10 @@ public class Hero extends LivingEntity {
 
     public Hero(Point2D position, Sword starterSword, double diffMulti, Area currentArea) {
         super(LivingType.HERO, position, currentArea, diffMulti);
-        currentHero = this; 
+        
         weapons[0] = starterSword;
         this.heldWeapon = 0;
+        currentHero = this; 
     }
     
     @Override
@@ -112,6 +112,9 @@ public class Hero extends LivingEntity {
             }
         } 
         return false;
+    }
+    public static void resetHero(){
+        currentHero = null;
     }
 
     //incremented getHero()
