@@ -1,6 +1,5 @@
 package com.game;
 
-import com.game.Bow.BowType;
 import com.game.LivingEntity.LivingStateObject.LivingState;
 
 import javafx.animation.PauseTransition;
@@ -112,6 +111,9 @@ public class Hero extends LivingEntity {
             }
         } 
         return false;
+    }
+    public static void resetHero(){
+        currentHero = null;
     }
 
     //incremented getHero()

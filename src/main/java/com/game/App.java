@@ -881,6 +881,7 @@ public class App extends Application {
 
     private static void startInfinite(){
         menuPane.setVisible(false);
+        Hero.resetHero();
         activeGame = null;
         activeGame = new Game('X');
         activeGame.setType(1);
