@@ -69,8 +69,6 @@ public class Enemy extends LivingEntity {
         return (getDimension().getCenter().distance(Hero.getHero().getDimension().getCenter())<range);
     }
     public boolean inAttackRange() {
-        if(Hero.getHero() != null)
         return dimension.getCenter().distance(Hero.getHero().dimension.getCenter()) < attackRange;
-        return false;
     }
 }

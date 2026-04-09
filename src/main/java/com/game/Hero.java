@@ -20,9 +20,10 @@ public class Hero extends LivingEntity {
 
     public Hero(Point2D position, Sword starterSword, double diffMulti, Area currentArea) {
         super(LivingType.HERO, position, currentArea, diffMulti);
-        currentHero = this; 
+        
         weapons[0] = starterSword;
         this.heldWeapon = 0;
+        currentHero = this; 
     }
     
     @Override
