@@ -266,6 +266,7 @@ public class HUD {
                     case BOSS   -> "/sprites/ui/bossRoom_icon.png";
                     case LOOT   -> "/sprites/ui/lootRoom_icon.png";
                     case PORTAL -> "/sprites/ui/starterRoom_icon.png";
+                    case PUZZLE -> "/sprites/ui/puzzleRoom_icon.png";
                     default     -> null;
                 };
                 if (iconPath != null) {

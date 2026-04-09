@@ -14,8 +14,8 @@ public class Level {
     public static boolean heroSetIn = false;
     
     // root room boyutları (aspect ratio hesabı için)
-    public static double rootLevelWidth  = 4800* (1+levelNo/10);
-    public static double rootLevelHeight = 3600 * (1+levelNo/10);
+    public static double rootLevelWidth  = Level.gridSize*80;
+    public static double rootLevelHeight = Level.gridSize*60;
 
     // instance variables
     private transient ArrayList<Room> rooms = new ArrayList<Room>();
@@ -102,9 +102,8 @@ public class Level {
 
     //CONSTRUCTING METHODS
     private void generateLevel(){
-        root = new Room(144, 144, 4800, 3600);
-        rootLevelWidth  = 4800;
-        rootLevelHeight = 3600;
+        double levelNoMultiplier = (1+(levelNo-1)/5);
+        root = new Room(144, 144, rootLevelWidth*levelNoMultiplier, rootLevelHeight*levelNoMultiplier);
         rooms = new ArrayList<>();
     //    rooms.add(root);
         
@@ -112,15 +111,29 @@ public class Level {
         getLeaves(root);
         findNeighbors();
         shrink();
-        addHalls();      
-
-        int index =(int) (Math.random()*rooms.size());
-        rooms.get(index).setStartingRoom();
-        startingRoom = rooms.get(index);
+        addHalls();   
         
-        int bossIndex = (int) (Math.random()*rooms.size());
-        while(!rooms.get(bossIndex).setBossRoom()){bossIndex = (int) (Math.random()*rooms.size());}
-        bossRoom = rooms.get(bossIndex);
+        startingRoom = rooms.get(0);
+        double posAtBottomLeft = rooms.get(0).getDimension().getX() - rooms.get(0).getDimension().getBottomY();
+        for (Room r : rooms) {
+            double pos = r.getDimension().getX() - r.getDimension().getBottomY();
+            if (pos < posAtBottomLeft) {
+                startingRoom = r;
+                posAtBottomLeft = pos;
+            }
+        }
+        startingRoom.setStartingRoom();
+
+        bossRoom = rooms.get(0);
+        double posAtTopRight = rooms.get(0).getDimension().getX() - rooms.get(0).getDimension().getBottomY();
+        for (Room r : rooms) {
+            double pos = r.getDimension().getX() - r.getDimension().getBottomY();
+            if (pos > posAtTopRight) {
+                bossRoom = r;
+                posAtTopRight = pos;
+            }
+        }
+        bossRoom.setBossRoom();
 
         if (Game.hero == null || Hero.getHero() == null){
             Game.hero = new Hero(
