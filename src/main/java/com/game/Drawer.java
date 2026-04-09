@@ -1,5 +1,6 @@
 package com.game;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.game.App.GameLayer;
@@ -26,9 +27,7 @@ public class Drawer {
     public static void draw(Entity e){
         GraphicsContext gc;
 
-        if (e instanceof Projectile && ((Projectile)e).getType() == ProjectileType.BOMB){
-            gc = App.getLayerGC(App.GameLayer.VFX);
-        }else if (e instanceof Plate) {
+        if (e instanceof Plate) {
             gc = App.getLayerGC(App.GameLayer.GROUND);
         }else{
             gc = App.getLayerGC(App.GameLayer.ENTITIES);
@@ -235,11 +234,30 @@ public class Drawer {
                     drawY += wallOffset;
                 }
  
+                boolean transparent = gc == App.getLayerGC(GameLayer.VFX)
+                    && isEntityBehindWall(drawX, drawY, gridSize, height, r);
+                    
+                if (transparent) gc.setGlobalAlpha(0.5);
                 gc.drawImage(imgToDraw, drawX, drawY, gridSize, height);
+                if (transparent) gc.setGlobalAlpha(1.0);
  
             }
         }
         
+    }
+
+    private static boolean isEntityBehindWall(double wallX, double wallY, double wallW, double wallH, Area area) {
+        double checkTop = wallY;
+        double checkBottom = wallY + wallH - gridSize;
+
+        for (LivingEntity e : new ArrayList<>(area.getLivingEntities())) {
+            Dimension d = e.getDimension();
+            if (d.getRightX() > wallX && d.getX() < wallX + wallW
+                    && d.getBottomY()>checkTop && d.getBottomY()-d.getHeight()*.3<checkBottom) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void draw(Hall h, int type){
@@ -262,10 +280,15 @@ public class Drawer {
                     double rescale = gridSize / imgToDraw.getWidth();
                     double height = imgToDraw.getHeight()*rescale;
                     ground.drawImage(imgToDraw, drawX, h.getDimension().getY() + wallOffset - gridSize, gridSize, height);
-                    if (i != 0 && i != cellAmountX-1)
-                        vfx.drawImage(imgToDraw, drawX, h.getDimension().getY() +cellAmountY*gridSize+wallOffset, gridSize, height);
+                    if (i != 0 && i != cellAmountX-1) {
+                        double wx = drawX, wy = h.getDimension().getY() + cellAmountY * gridSize + wallOffset;
+                        boolean transparent = isEntityBehindWall(wx, wy, gridSize, height, h);
+                        if (transparent) vfx.setGlobalAlpha(0.5);
+                        vfx.drawImage(imgToDraw, wx, wy, gridSize, height);
+                        if (transparent) vfx.setGlobalAlpha(1.0);
+                    }
                 }
-                
+
                 if (i == 0 && type == 1) { //vertical case
                     Image imgToDraw = Area.getImage(1);
                     double rescale = gridSize / imgToDraw.getWidth();
