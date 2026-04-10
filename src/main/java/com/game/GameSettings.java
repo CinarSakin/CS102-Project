@@ -1,5 +1,7 @@
 package com.game;
 
+import java.util.Locale;
+
 import javafx.scene.input.KeyCode;
 
 public class GameSettings {
@@ -112,7 +114,7 @@ public class GameSettings {
     }
 
     public static KeyCode getKeyCode(String action) {
-        return KeyCode.valueOf(getKeyBinding(action));
+        return KeyCode.valueOf((getKeyBinding(action)).toUpperCase(Locale.ENGLISH));
     }
 
     public static void resetAudio() {
