@@ -16,6 +16,14 @@ Dungeonfall is a 2D rogue-like dungeon crawler where the player goes through pro
 * **Build Tool:** Maven.
 * **Database:** MongoDB.
 
+## Starting The Game ✅
+
+1. Run dungeonfall-windows.jar.
+2. Press *PLAY*.
+3. Select a gamemode, *STANDARD* or *INFINITE*.
+4. For *STANDARD*, select a save slot, from A to F.
+5. Play the game.
+
 ## Made by:
 * Çınar Sakin
 * Deniz Akyol
