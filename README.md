@@ -15,3 +15,10 @@ Dungeonfall is a 2D rogue-like dungeon crawler where the player goes through pro
 * **Language & UI:** Java 21, JavaFX 23.
 * **Build Tool:** Maven.
 * **Database:** MongoDB.
+
+## Made by:
+* Çınar Sakin
+* Deniz Akyol
+* Doruk Özkan
+* Kemal Purtaş
+* Eren Kozan
