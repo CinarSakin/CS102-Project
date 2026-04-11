@@ -320,6 +320,7 @@ public class Game{
 
     private void loadGame(char aSaveSlot) {
         App.gameOverShown = false;
+        Hero.resetHero();
         Level.resetLevel();
         try {
             level = Level.constructFromSave(aSaveSlot);

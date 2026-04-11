@@ -77,10 +77,10 @@ public class Hero extends LivingEntity {
     }
 
     public void dropWeapon(int index, double x, double y) {
-        if (weapons[index] == null) return;
+        if (weapons[index] == null || weapons[1-index] == null) return;
         dropItem(weapons[index], x, y);
         weapons[index] = null;
-        if (heldWeapon == index) heldWeapon = 1 - index;
+        if (heldWeapon == index) Hero.getHero().changeWeapon();
     }
 
     public void dropItem(Item item, double x, double y) {
